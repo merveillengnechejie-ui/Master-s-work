@@ -1,4 +1,4 @@
-# Master's Project - Optimization of BODIPY Nanoparticles for Combined PDT and PTT Therapy Targeting Breast Cancer Cellsg
+# Master's Project - Optimization of BODIPY Nanoparticles for Combined PDT and PTT Therapy Targeting Breast Cancer Cells
 
 This project explores an in-depth study of the design and quantum simulation of optimized BODIPY nanoparticles for combined photodynamic and photothermal therapy against breast cancer.
 
