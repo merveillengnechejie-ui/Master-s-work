@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <title>planning</title>
+    
+
+  </head>
+    
+  <body>
+  <!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planning Stage - 14 Semaines</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            padding: 20px;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #6c757d;
+            text-transform: uppercase;
+            margin-top: 5px;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: #e9ecef;
+            margin: 20px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .filters {
+            padding: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            background: #f8f9fa;
+        }
+        
+        .filter-btn {
+            padding: 8px 16px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        .filter-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .filter-btn.active {
+            background: #667eea;
+            color: white;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            padding: 20px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        
+        thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        th {
+            padding: 15px 10px;
+            text-align: left;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+        }
+        
+        td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        tbody tr {
+            transition: background-color 0.2s;
+        }
+        
+        tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        tbody tr.completed {
+            background-color: #d4edda;
+        }
+        
+        .phase-row {
+            background: #e7f3ff;
+            font-weight: bold;
+            color: #0056b3;
+        }
+        
+        .phase-row td {
+            padding: 15px 10px;
+            border-top: 3px solid #667eea;
+            border-bottom: 3px solid #667eea;
+        }
+        
+        .checkbox-cell {
+            text-align: center;
+        }
+        
+        .custom-checkbox {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            accent-color: #667eea;
+        }
+        
+        .semaine-cell {
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .jour-cell {
+            color: #6c757d;
+            font-weight: 500;
+        }
+        
+        .tache-cell {
+            line-height: 1.6;
+        }
+        
+        .tache-important {
+            background: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: 500;
+        }
+        
+        .export-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 15px 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .export-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(102, 126, 234, 0.6);
+        }
+        
+        @media (max-width: 768px) {
+            .stats {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            th, td {
+                padding: 8px 5px;
+                font-size: 12px;
+            }
+            
+            .header h1 {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Planning Détaillé du Stage</h1>
+            <p>Conception d'agents théranostiques pour le TNBC - 14 semaines</p>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-value" id="total-tasks">0</div>
+                <div class="stat-label">Tâches totales</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="completed-tasks">0</div>
+                <div class="stat-label">Tâches complétées</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="progress-percent">0%</div>
+                <div class="stat-label">Progression</div>
+            </div>
+        </div>
+        
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill"></div>
+        </div>
+        
+        <div class="filters">
+            <button class="filter-btn active" onclick="filterPhase('all')">Toutes les phases</button>
+            <button class="filter-btn" onclick="filterPhase('phase1')">Phase 1</button>
+            <button class="filter-btn" onclick="filterPhase('phase2')">Phase 2</button>
+            <button class="filter-btn" onclick="filterPhase('phase3')">Phase 3</button>
+            <button class="filter-btn" onclick="filterPhase('phase4')">Phase 4</button>
+        </div>
+        
+        <div class="table-container">
+            <table id="planning-table">
+                <thead>
+                    <tr>
+                        <th style="width: 10%">Semaine</th>
+                        <th style="width: 10%">Jour</th>
+                        <th style="width: 65%">Tâches</th>
+                        <th style="width: 15%">Statut</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body">
+                    <!-- Les données seront insérées ici par JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <button class="export-btn" onclick="exportToCSV()">📥 Exporter en CSV</button>
+    
+    <script>
+        const planningData = [
+            // PHASE 1
+            {phase: 'phase1', semaine: 'PHASE 1', jour: '', tache: 'IMMERSION ET CONCEPTION STRATÉGIQUE (Semaines 1-3)', isPhase: true},
+            
+            // Semaine 1
+            {phase: 'phase1', semaine: 'Semaine 1', jour: 'Lundi', tache: 'Prise en main environnement Linux + Installation ORCA, Avogadro/IQmol + Configuration Slurm'},
+            {phase: 'phase1', semaine: 'Semaine 1', jour: 'Mardi', tache: 'Lecture article 1 : TNBC caractéristiques cliniques + Résumé 1 page + Identification vulnérabilités TNBC'},
+            {phase: 'phase1', semaine: 'Semaine 1', jour: 'Mercredi', tache: 'Lecture article 2 : Fenêtre thérapeutique NIR-I/NIR-II + Résumé 1 page + Schéma pénétration lumière'},
+            {phase: 'phase1', semaine: 'Semaine 1', jour: 'Jeudi', tache: 'Lecture article 3 : BODIPY photosensibilisateurs + Résumé 1 page + Liste modifications chimiques NIR'},
+            {phase: 'phase1', semaine: 'Semaine 1', jour: 'Vendredi', tache: 'Lecture article 4 : Méthodes ADC(2)/TD-DFT BODIPY + Résumé 1 page + Compilation plan de lecture'},
+            
+            // Semaine 2
+            {phase: 'phase1', semaine: 'Semaine 2', jour: 'Lundi', tache: 'Lecture article 5 : Ciblage mitochondrial TPP+ + Lecture article 6 : Effet atome lourd et SOC + Notes'},
+            {phase: 'phase1', semaine: 'Semaine 2', jour: 'Mardi', tache: 'Rédaction synthèse bibliographique Section 1 : TNBC + Section 2 : PDT/PTT'},
+            {phase: 'phase1', semaine: 'Semaine 2', jour: 'Mercredi', tache: 'Rédaction synthèse Section 3 : BODIPY et NIR + Section 4 : Méthodes computationnelles'},
+            {phase: 'phase1', semaine: 'Semaine 2', jour: 'Jeudi', tache: 'Définition Prototype A (BODIPY-meso-phényle) + Prototype B (BODIPY + Iode) + Prototype C (BODIPY + Iode + TPP+)'},
+            {phase: 'phase1', semaine: 'Semaine 2', jour: 'Vendredi', tache: 'Finalisation synthèse biblio 2-3 pages + Validation 3 prototypes avec encadrant + Préparation structures'},
+            
+            // Semaine 3
+            {phase: 'phase1', semaine: 'Semaine 3', jour: 'Lundi', tache: 'Construction Prototype A dans Avogadro + Vérification géométrie + Export .xyz'},
+            {phase: 'phase1', semaine: 'Semaine 3', jour: 'Mardi', tache: 'Construction Prototype B dans Avogadro + Vérification géométrie + Export .xyz'},
+            {phase: 'phase1', semaine: 'Semaine 3', jour: 'Mercredi', tache: 'Construction Prototype C dans Avogadro + Vérification géométrie + Export .xyz'},
+            {phase: 'phase1', semaine: 'Semaine 3', jour: 'Jeudi', tache: 'Pré-optimisation Prototype A (GFN2-xTB) + Pré-optimisation Prototype B + Pré-optimisation Prototype C'},
+            {phase: 'phase1', semaine: 'Semaine 3', jour: 'Vendredi', tache: 'Vérification géométries pré-optimisées + Préparation fichiers input ORCA Phase 2 + Bilan hebdomadaire'},
+            
+            // PHASE 2
+            {phase: 'phase2', semaine: 'PHASE 2', jour: '', tache: 'CALCULS FONDAMENTAUX (Semaines 4-7)', isPhase: true},
+            
+            // Semaine 4
+            {phase: 'phase2', semaine: 'Semaine 4', jour: 'Lundi', tache: 'Préparation input ORCA DFT Prototype A + Lancement optimisation S₀ Prototype A + Vérification démarrage'},
+            {phase: 'phase2', semaine: 'Semaine 4', jour: 'Mardi', tache: 'Préparation input ORCA DFT Prototype B + Lancement optimisation S₀ Prototype B + Surveillance calculs'},
+            {phase: 'phase2', semaine: 'Semaine 4', jour: 'Mercredi', tache: 'Préparation input ORCA DFT Prototype C + Lancement optimisation S₀ Prototype C + Surveillance calculs'},
+            {phase: 'phase2', semaine: 'Semaine 4', jour: 'Jeudi', tache: 'Vérification convergence Prototype A + Analyse fréquences (pas de fréq. imaginaires) + Validation géométrie S₀'},
+            {phase: 'phase2', semaine: 'Semaine 4', jour: 'Vendredi', tache: 'Vérification convergence B et C + Analyse fréquences B et C + Archivage géométries + Point hebdo'},
+            
+            // Semaine 5
+            {phase: 'phase2', semaine: 'Semaine 5', jour: 'Lundi', tache: 'Préparation input ADC(2) excitations verticales Prototype A + Lancement calcul ADC(2) A + Documentation'},
+            {phase: 'phase2', semaine: 'Semaine 5', jour: 'Mardi', tache: 'Préparation input ADC(2) Prototype B + Lancement calcul ADC(2) B + Surveillance calcul A'},
+            {phase: 'phase2', semaine: 'Semaine 5', jour: 'Mercredi', tache: 'Préparation input ADC(2) Prototype C + Lancement calcul ADC(2) C + Surveillance calculs A et B'},
+            {phase: 'phase2', semaine: 'Semaine 5', jour: 'Jeudi', tache: 'Extraction énergies excitation Prototype A + Calcul λ_max + Premières notes analyse'},
+            {phase: 'phase2', semaine: 'Semaine 5', jour: 'Vendredi', tache: 'Surveillance calculs B et C + Préparation script visualisation spectres + Point hebdomadaire'},
+            
+            // Semaine 6
+            {phase: 'phase2', semaine: 'Semaine 6', jour: 'Lundi', tache: 'Extraction énergies Prototype B + Extraction énergies Prototype C + Calcul λ_max pour B et C'},
+            {phase: 'phase2', semaine: 'Semaine 6', jour: 'Mardi', tache: 'Génération spectres absorption 3 prototypes + Première comparaison graphique + Identification tendances'},
+            {phase: 'phase2', semaine: 'Semaine 6', jour: 'Mercredi', tache: 'Analyse forces oscillateur + Analyse caractère transitions (CT vs local) + Tableau comparatif préliminaire'},
+            {phase: 'phase2', semaine: 'Semaine 6', jour: 'Jeudi', tache: 'Calcul décalages bathochromes/hypsochromes + Évaluation position fenêtre NIR-I + Documentation observations'},
+            {phase: 'phase2', semaine: 'Semaine 6', jour: 'Vendredi', tache: 'Vérification cohérence résultats + Identification points à approfondir + Point hebdomadaire détaillé'},
+            
+            // Semaine 7
+            {phase: 'phase2', semaine: 'Semaine 7', jour: 'Lundi', tache: 'Préparation input TD-DFT DOSOC Prototype A + Lancement calcul SOC Prototype A + Révision théorie SOC'},
+            {phase: 'phase2', semaine: 'Semaine 7', jour: 'Mardi', tache: 'Préparation input TD-DFT DOSOC Prototype B + Lancement calcul SOC Prototype B + Surveillance calcul A'},
+            {phase: 'phase2', semaine: 'Semaine 7', jour: 'Mercredi', tache: 'Préparation input TD-DFT DOSOC Prototype C + Lancement calcul SOC Prototype C + Surveillance A et B'},
+            {phase: 'phase2', semaine: 'Semaine 7', jour: 'Jeudi', tache: 'Extraction valeurs SOC 3 prototypes + Calcul rapports SOC(B)/SOC(A) et SOC(C)/SOC(A) + Analyse effet atome lourd'},
+            {phase: 'phase2', semaine: 'Semaine 7', jour: 'Vendredi', tache: 'Compilation résultats SOC tableau + Première évaluation potentiel PDT + Bilan Phase 2 complète + Point hebdo'},
+            
+            // PHASE 3
+            {phase: 'phase3', semaine: 'PHASE 3', jour: '', tache: 'ANALYSE APPROFONDIE ET INTERPRÉTATION (Semaines 8-10)', isPhase: true},
+            
+            // Semaine 8
+            {phase: 'phase3', semaine: 'Semaine 8', jour: 'Lundi', tache: 'Analyse détaillée spectre Prototype A + Identification pics secondaires + Attribution transitions'},
+            {phase: 'phase3', semaine: 'Semaine 8', jour: 'Mardi', tache: 'Analyse détaillée spectres B et C + Comparaison profils spectraux + Tableau récap λ_max et forces oscillateur'},
+            {phase: 'phase3', semaine: 'Semaine 8', jour: 'Mercredi', tache: 'Préparation fichiers Multiwfn (Prototype C) + Calcul charges atomiques + Génération cartes MEP'},
+            {phase: 'phase3', semaine: 'Semaine 8', jour: 'Jeudi', tache: 'Analyse MEP : localisation charge positive TPP+ + Évaluation accessibilité stérique + Visualisation 3D VMD/PyMOL'},
+            {phase: 'phase3', semaine: 'Semaine 8', jour: 'Vendredi', tache: 'Compilation tableau comparatif propriétés absorption + Finalisation cartes MEP rapport + Synthèse observations'},
+            
+            // Semaine 9
+            {phase: 'phase3', semaine: 'Semaine 9', jour: 'Lundi', tache: 'Recherche données expérimentales BODIPY similaires + Compilation λ_max expérimentales + Tableau théorie/expérience'},
+            {phase: 'phase3', semaine: 'Semaine 9', jour: 'Mardi', tache: 'Calcul erreurs absolues et relatives + Analyse performance ADC(2) + Validation "bon résultat bonne raison"'},
+            {phase: 'phase3', semaine: 'Semaine 9', jour: 'Mercredi', tache: 'Comparaison effet iode théorie vs littérature + Analyse cohérence tendances + Documentation limitations méthode'},
+            {phase: 'phase3', semaine: 'Semaine 9', jour: 'Jeudi', tache: 'Analyse comparative 3 prototypes : λ_max + SOC + forces oscillateur'},
+            {phase: 'phase3', semaine: 'Semaine 9', jour: 'Vendredi', tache: 'Rédaction section Benchmarking rapport + Identification prototype le plus prometteur + Justification choix multi-critères'},
+            
+            // Semaine 10
+            {phase: 'phase3', semaine: 'Semaine 10', jour: 'Lundi', tache: 'Préparation input optimisation S₁ (prototype sélectionné) + Lancement optimisation géométrie S₁ + Documentation'},
+            {phase: 'phase3', semaine: 'Semaine 10', jour: 'Mardi', tache: 'Surveillance calcul optimisation S₁ + Relecture littérature PTT + Préparation analyse énergies adiabatiques'},
+            {phase: 'phase3', semaine: 'Semaine 10', jour: 'Mercredi', tache: 'Vérification convergence optimisation S₁ + Extraction géométrie S₁ optimisée + Comparaison géométries S₀ et S₁'},
+            {phase: 'phase3', semaine: 'Semaine 10', jour: 'Jeudi', tache: 'Calcul énergie adiabatique (ΔE S₁-S₀) + Analyse écart énergétique potentiel PTT + Évaluation mécanismes désactivation'},
+            {phase: 'phase3', semaine: 'Semaine 10', jour: 'Vendredi', tache: 'Synthèse complète résultats photophysiques + Tableau récapitulatif tous paramètres + Préparation transition Phase 4'},
+            
+            // PHASE 4
+            {phase: 'phase4', semaine: 'PHASE 4', jour: '', tache: 'SYNTHÈSE ET COMMUNICATION (Semaines 11-14)', isPhase: true},
+            
+            // Semaine 11
+            {phase: 'phase4', semaine: 'Semaine 11', jour: 'Lundi', tache: 'Structure détaillée rapport + Rédaction Introduction (objectifs, TNBC) + Révision avec encadrant'},
+            {phase: 'phase4', semaine: 'Semaine 11', jour: 'Mardi', tache: 'Rédaction section Méthodes (DFT, ADC(2)) + Rédaction Méthodes (TD-DFT, SOC) + Schémas méthodologiques'},
+            {phase: 'phase4', semaine: 'Semaine 11', jour: 'Mercredi', tache: 'Rédaction Résultats partie 1 (géométries, spectres) + Intégration figures spectres + Légendes descriptions'},
+            {phase: 'phase4', semaine: 'Semaine 11', jour: 'Jeudi', tache: 'Rédaction Résultats partie 2 (SOC, benchmarking) + Intégration tableaux comparatifs + Intégration cartes MEP'},
+            {phase: 'phase4', semaine: 'Semaine 11', jour: 'Vendredi', tache: 'Rédaction Résultats partie 3 (état excité, PTT) + Relecture cohérence sections 1-3 + Liste points clarifier'},
+            
+            // Semaine 12
+            {phase: 'phase4', semaine: 'Semaine 12', jour: 'Lundi', tache: 'Rédaction Discussion : validation méthode + comparaison prototypes + Analyse tendances observées'},
+            {phase: 'phase4', semaine: 'Semaine 12', jour: 'Mardi', tache: 'Rédaction Discussion : lien défis cliniques + Discussion hypoxie tumorale PDT Type I + sélectivité TME'},
+            {phase: 'phase4', semaine: 'Semaine 12', jour: 'Mercredi', tache: 'Rédaction Discussion : perspectives nanotechnologiques + fenêtre NIR-II + ferroptose TNBC'},
+            {phase: 'phase4', semaine: 'Semaine 12', jour: 'Jeudi', tache: 'Rédaction Conclusion et perspectives + Rédaction Abstract/Résumé + Vérification bibliographie'},
+            {phase: 'phase4', semaine: 'Semaine 12', jour: 'Vendredi', tache: 'Relecture complète rapport + Corrections orthographe style + Vérification numérotation figures/tableaux + Envoi V1 encadrant'},
+            
+            // Semaine 13
+            {phase: 'phase4', semaine: 'Semaine 13', jour: 'Lundi', tache: 'Structure présentation (plan détaillé) + Création diapo 1-5 (intro, contexte TNBC) + Sélection figures clés'},
+            {phase: 'phase4', semaine: 'Semaine 13', jour: 'Mardi', tache: 'Création diapo 6-10 (méthodes, workflow) + Schémas simplifiés DFT/ADC(2) + Timeline projet'},
+            {phase: 'phase4', semaine: 'Semaine 13', jour: 'Mercredi', tache: 'Création diapo 11-15 (résultats spectres) + Diapo 16-20 (SOC, benchmarking) + Graphiques impact visuel'},
+            {phase: 'phase4', semaine: 'Semaine 13', jour: 'Jeudi', tache: 'Création diapo 21-25 (discussion, perspectives) + Diapo conclusion messages clés + Diapo remerciements'},
+            {phase: 'phase4', semaine: 'Semaine 13', jour: 'Vendredi', tache: 'Répétition présentation complète (timing) + Ajustements suite répétition + Préparation réponses questions types'},
+            
+            // Semaine 14
+            {phase: 'phase4', semaine: 'Semaine 14', jour: 'Lundi', tache: 'Intégration retours encadrant rapport + Corrections majeures rapport + Mise en forme finale'},
+            {phase: 'phase4', semaine: 'Semaine 14', jour: 'Mardi', tache: 'Corrections finales rapport + Vérification conformité format + Génération PDF final'},
+            {phase: 'phase4', semaine: 'Semaine 14', jour: 'Mercredi', tache: 'Ajustements finaux présentation + Répétition présentation finale + Vérification technique (vidéoprojecteur)'},
+            {phase: 'phase4', semaine: 'Semaine 14', jour: 'Jeudi', tache: 'Soumission rapport final + Archivage fichiers de calcul + Préparation matériel soutenance'},
+            {phase: 'phase4', semaine: 'Semaine 14', jour: 'Vendredi', tache: 'SOUTENANCE ORALE + Célébration fin de stage ! + Réflexion bilan personnel'}
+        ];
+        
+        function renderTable() {
+            const tbody = document.getElementById('table-body');
+            tbody.innerHTML = '';
+            
+            planningData.forEach((row, index) => {
+                const tr = document.createElement('tr');
+                tr.setAttribute('data-phase', row.phase);
+                
+                if (row.isPhase) {
+                    tr.className = 'phase-row';
+                    tr.innerHTML = `
+                        <td colspan="4">${row.tache}</td>
+                    `;
+                } else {
+                    tr.innerHTML = `
+                        <td class="semaine-cell">${row.semaine}</td>
+                        <td class="jour-cell">${row.jour}</td>
+                        <td class="tache-cell">${row.tache}</td>
+                        <td class="checkbox-cell">
+                            <input type="checkbox" class="custom-checkbox" data-index="${index}" onchange="updateProgress()">
+                        </td>
+                    `;
+                }
+                
+                tbody.appendChild(tr);
+            });
+            
+            updateProgress();
+        }
+        
+        function updateProgress() {
+            const checkboxes = document.querySelectorAll('.custom-checkbox');
+            const total = checkboxes.length;
+            const completed = Array.from(checkboxes).filter(cb => cb.checked).length;
+            const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+            
+            document.getElementById('total-tasks').textContent = total;
+            document.getElementById('completed-tasks').textContent = completed;
+            document.getElementById('progress-percent').textContent = percentage + '%';
+            document.getElementById('progress-fill').style.width = percentage + '%';
+            
+            checkboxes.forEach(cb => {
+                const row = cb.closest('tr');
+                if (cb.checked) {
+                    row.classList.add('completed');
+                } else {
+                    row.classList.remove('completed');
+                }
+            });
+            
+            saveProgress();
+        }
+        
+        function filterPhase(phase) {
+            const buttons = document.querySelectorAll('.filter-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            const rows = document.querySelectorAll('tbody tr');
+            rows.forEach(row => {
+                if (phase === 'all') {
+                    row.style.display = '';
+                } else {
+                    const rowPhase = row.getAttribute('data-phase');
+                    row.style.display = rowPhase === phase ? '' : 'none';
+                }
+            });
+        }
+        
+        function saveProgress() {
+            const checkboxes = document.querySelectorAll('.custom-checkbox');
+            const progress = {};
+            checkboxes.forEach(cb => {
+                progress[cb.dataset.index] = cb.checked;
+            });
+            localStorage.setItem('stageProgress', JSON.stringify(progress));
+        }
+        
+        function loadProgress() {
+            const saved = localStorage.getItem('stageProgress');
+            if (saved) {
+                const progress = JSON.parse(saved);
+                Object.keys(progress).forEach(index => {
+                    const checkbox = document.querySelector(`[data-index="${index}"]`);
+                    if (checkbox) {
+                        checkbox.checked = progress[index];
+                    }
+                });
+                updateProgress();
+            }
+        }
+        
+        function exportToCSV() {
+            let csv = 'Semaine,Jour,Tâches,Statut\n';
+            
+            const checkboxes = document.querySelectorAll('.custom-checkbox');
+            planningData.forEach((row, index) => {
+                if (!row.isPhase) {
+                    const checkbox = document.querySelector(`[data-index="${index}"]`);
+                    const status = checkbox && checkbox.checked ? 'Complété' : 'À faire';
+                    const tache = row.tache.replace(/"/g, '""');
+                    csv += `"${row.semaine}","${row.jour}","${tache}","${status}"\n`;
+                }
+            });
+            
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', 'planning_stage_14semaines.csv');
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+        
+        // Initialisation
+        renderTable();
+        loadProgress();
+    </script>
+</body>
+</html>
+    
+  </body>
+  
+</html>
