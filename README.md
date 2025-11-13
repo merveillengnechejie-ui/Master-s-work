@@ -5,20 +5,28 @@ This project focuses on the geometric optimization of BODIPY molecules, key phot
 ## 🎯 Goals
 
 Understand the importance of molecular geometry on the photophysical properties of BODIPY nanoparticles;
+
 Perform precise geometric optimization of BODIPY molecular prototypes via the fast semi-empirical method (xTB and xTB-GFN2);
+
 Intensive reading of articles on triple-negative breast cancer (TNBC) and production of a summary;
+
 Understanding the structure of BODIPY and its derivatives: Investigation of their properties and function in phototherapies, particularly for the treatment of triple-negative breast cancer (TNBC).
 
 ## 📂 Repository Content
 
 Geometry optimization:  Scripts and input files for geometric optimization via xTB and xTB-GFN2 methods,
+
                         BODIPY molecular structure optimization results;
+                        
 Report on triple-negative breast cancer (TNBC);
+
 Work plan for the final completion of the thesis report;
+
 Summary on BODIPY nanoparticles: Study of their physicochemical and optical properties, and analysis of their role in phototherapies.
 ## 🚀 Methodology and Workflow
 
  Initial modeling of molecular prototypes with Avogadro;
+ 
 Fast geometry optimization (ground state) via the xTB semi-empirical method;
 
 Finer geometric optimization via the xTB-GFN2 method for increased precision.
