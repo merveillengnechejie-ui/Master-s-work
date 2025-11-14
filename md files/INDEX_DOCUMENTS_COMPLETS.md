@@ -302,6 +302,14 @@ Comparé aux documents originaux, cette nouvelle suite ajoute :
 - Justification théorique détaillée
 - Codes ORCA 6.1 pour ΔUKS, ΔROKS, FIC-NEVPT2
 
+### 🔎 Remarques méthodologiques complémentaires (MAJ)
+
+- Intégration des recommandations de benchmarking : cibles MAE à viser — ΔE_{ST} < 0,05 eV ; λ_max / E_em ≤ 0,1 eV.
+- Préconiser l'utilisation d'un modèle de solvatation état-spécifique non-équilibre (ptSS-PCM) pour les calculs d'émission des états CT afin d'améliorer la précision en solution.
+- Fonctionnelles recommandées : OT-ωB97M-V (pour ΔUKS/ΔROKS en émission), PBE0 (pour ΔUKS rapide/robuste) et PBE38-D4 (pour robustesse sur E_em).
+- Pour les états ICT (dimères/supramolécules) : privilégier IMOM pour la stabilité de convergence et la robustesse des résultats.
+- Attention au coût : réserver CASSCF/NEVPT2 pour le SOC aux candidats retenus (étape coûteuse). Utiliser TD-DFT dosoc pour des screenings rapides.
+
 ### ✅ Codes ORCA Prêts à l'Emploi
 - 8 templates d'input ORCA complets
 - Script bash d'automatisation du workflow
@@ -415,4 +423,4 @@ Tous ces documents ont été créés spécifiquement pour votre stage Master 2. 
 **Créé le 13 novembre 2025**  
 **Pour : Stage Master 2 - UY1 Montpellier**  
 **Supervisé par : [Encadrant]**  
-**Sujet : Conception *In Silico* d'Agents Théranostiques Photodynamiques pour le TNBC**
+**Sujet : Optimisation de nanoparticules de BODIPY pour une thérapie combinée photodynamique et photothermique ciblée sur les cellules de cancer du sein triple négatif**

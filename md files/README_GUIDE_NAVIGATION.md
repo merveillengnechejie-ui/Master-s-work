@@ -24,6 +24,12 @@ Ce projet vise à concevoir et valider *in silico* trois prototypes de molécule
 - ✅ Défis cliniques et perspectives (section 6)
 - ✅ Chronogramme 14 semaines (section 7)
 
+**Points méthodologiques pratiques inclus :**
+- Recommandation d'utiliser ptSS-PCM pour les calculs d'émission (états CT) en solution
+- Fonctionnelles conseillées : OT-ωB97M-V (ΔUKS/ΔROKS), PBE0 (ΔUKS robuste), PBE38-D4 (robustesse E_em)
+- Méthode IMOM recommandée pour les excitations ICT (stabilité de convergence)
+- Objectifs de benchmarking : ΔE_{ST} cible MAE < 0,05 eV ; λ_max/E_em ≤ 0,1 eV
+
 **À quand l'utiliser :**
 - **Premier jour :** Lire sections 1-2 pour comprendre la théorie
 - **Semaine 1 :** Imprimer et annoter les codes ORCA (section 3)
@@ -32,6 +38,7 @@ Ce projet vise à concevoir et valider *in silico* trois prototypes de molécule
 
 **Comment l'utiliser :**
 1. Lire d'abord l'Introduction (Partie 1) : contexte, objectifs
+  > Thématique du stage : Optimisation de nanoparticules de BODIPY pour une thérapie combinée photodynamique et photothermique ciblée sur les cellules de cancer du sein triple négatif
 2. Comprendre les théories (Partie 2) : DFT, ADC(2), OO-DFT
 3. Utiliser les codes ORCA comme templates (Partie 3)
 4. Adapter le chronogramme à votre calendrier (Partie 4)

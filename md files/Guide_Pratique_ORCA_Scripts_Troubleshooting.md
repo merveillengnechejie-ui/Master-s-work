@@ -916,3 +916,18 @@ if __name__ == "__main__":
 ---
 
 **Document complément à "demarche_methodologique_stage_v2_integree.md"**
+
+## Annex : Emplacement des templates ORCA
+
+Les templates d'input ORCA 6.1 cités dans la section 1.2 sont fournis en clair dans le
+répertoire `Corine_codes` à la racine du projet :
+
+```
+/home/taamangtchu/Documents/UY1Master_2025/Corine/Corine_codes/
+```
+
+Ce dossier contient : `S0_gas_opt.inp`, `S0_water_opt.inp`, `ADC2_vertical.inp`,
+`T1_opt_UKS.inp`, `S1_opt_DeltaUKS.inp`, `NEVPT2_SOC.inp`, `TDDFT_SOC_quick.inp`
+et un `run_examples.README.md` avec instructions d'utilisation. Adaptez les chemins
+et les paramètres (`%pal nprocs`, `%casscf nel/norb`, etc.) avant exécution.
+

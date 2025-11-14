@@ -1,5 +1,15 @@
 # Résumé Exécutif : Comparaison TD-DFT vs OO-DFT/ΔDFT et Aide-Mémoire Pratique
 
+> Rappel méthodologique (à lire en première minute) :
+>
+>- Pour les émissions CT en solution, privilégier un modèle de solvatation état-spécifique non-équilibre (ptSS-PCM).
+>- Fonctionnelles recommandées : OT-ωB97M-V (ΔUKS/ΔROKS), PBE0 (ΔUKS robuste), PBE38-D4 (robustesse E_em).
+>- Méthode IMOM conseillée pour les systèmes ICT (dimères / transfert de charge intermoléculaire).
+>- Cibles de benchmarking : ΔE_{ST} MAE < 0,05 eV ; λ_max / E_em MAE ≤ 0,1 eV.
+>
+>Thématique du stage : Optimisation de nanoparticules de BODIPY pour une thérapie combinée photodynamique et photothermique ciblée sur les cellules de cancer du sein triple négatif.
+Ces points résument les ajustements pratiques intégrés dans `demarche_methodologique_stage_v2_integree.md`.
+
 ## Partie 1 : Tableau Comparatif Détaillé TD-DFT vs OO-DFT/ΔDFT
 
 | Aspect | TD-DFT (Ancien) | OO-DFT/ΔDFT (Nouveau) | Avantage pour BODIPY |

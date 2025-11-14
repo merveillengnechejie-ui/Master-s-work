@@ -1,10 +1,11 @@
-# Conception *In Silico* d'Agents Théranostiques Photodynamiques pour le TNBC : Méthodologie Intégrée avec OO-DFT/ΔDFTet ORCA 6.1
+## Optimisation de nanoparticules de BODIPY pour une thérapie combinée photodynamique et photothermique ciblée sur les cellules de cancer du sein triple négatif
 
 **Version améliorée intégrant les méthodes OO-DFT (Orbital-Optimized DFT), ΔDFT et ΔSCF pour une précision chimique accrue**
 
 ---
 
 ## 1. Introduction et objectifs : vers une stratégie thérapeutique intégrée
+Ce stage porte sur l'optimisation de nanoparticules de BODIPY pour une thérapie combinée photodynamique (PDT) et photothermique (PTT) ciblée sur les cellules de cancer du sein triple négatif (TNBC). L'objectif est de concevoir, modéliser et benchmarker des agents théranostiques capables d'une double action (imagerie et traitement) via des approches computationnelles avancées.
 
 Ce projet vise à concevoir de nouvelles armes moléculaires contre les cancers agressifs en répondant à des interrogations scientifiques fondamentales. Pour ce faire, nous utilisons le cancer du sein triple négatif (TNBC) comme un cas d'étude paradigmatique.
 
@@ -63,6 +64,23 @@ Les BODIPYs présentent un « **caractère légèrement couche ouverte** » (*mi
 - L'**effet implicite des doubles excitations** (crucial pour les CT et ΔE_{ST})
 
 **Résultat :** Précision chimique (erreur absolue moyenne < 0,05 eV) pour ΔE_{ST}, contre des erreurs > 0.3 eV avec la TD-DFT.
+
+### 2.3 Recommandations pratiques et choix de frameworks (synthèse de benchmarking)
+
+Sur la base des analyses comparatives récentes et des remarques issues de l'audit interne, les choix méthodologiques recommandés pour obtenir la meilleure robustesse/précision pratique sont :
+
+- Pour les écarts singlet-triplet (ΔE_{ST}) et les énergies d'émission (E_{em}) en solution : utiliser ΔROKS ou ΔUKS couplés à un modèle de solvatation état-spécifique non-équilibre (ptSS-PCM). Ces combinaisons donnent typiquement une précision chimique (MAE souvent < 0,05 eV) lorsque les fonctionnelles optimisées (OT-ωB97M-V) ou PBE0 sont employées selon le cas.
+- Pour des évaluations rapides et robustes de ΔE_{ST} : ΔUKS/PBE0 offre un excellent compromis précision-coût (MAD ≈ 0,035 eV sur jeux de référence).
+- Pour les énergies d'émission (E_{em}) des états CT : ΔUKS/OT-ωB97M-V/ptSS-PCM et ΔUKS/PBE38-D4/ptSS-PCM montrent une très bonne performance et une faible dispersion des résultats.
+- Pour les excitations de transfert de charge intermoléculaire (ICT) dans des dimères ou systèmes supramoléculaires : privilégier IMOM (Initial Maximum Overlap Method) pour sa stabilité de convergence et sa robustesse sur les états ICT (meilleure stabilité que MOM/SGM dans les cas testés).
+- Pour le calcul du couplage spin-orbite (SOC) : la combinaison CASSCF/ZORA → FIC-NEVPT2 reste le gold standard mais très coûteuse. En cas de contraintes de ressources, utiliser une TD-DFT relativiste comme méthode de tendance (dosoc) pour screening, puis réserver NEVPT2 pour les candidats retenus.
+
+Objectifs de benchmarking à viser (règles pratiques) :
+
+- ΔE_{ST} : cible MAE < 0,05 eV (précision chimique souhaitée pour décisions design)
+- λ_max / E_{em} : viser MAE ≤ 0,1 eV (≈ 10 nm à ~700 nm) pour validation contre données expérimentales
+
+Remarque sur l'avenir : des méthodes inspirées de l'informatique quantique (ΔADAPT-VQE, ΔUCCSD) ont montré un fort potentiel pour certains systèmes BODIPY et méritent une veille méthodologique pour des études futures.
 
 ---
 

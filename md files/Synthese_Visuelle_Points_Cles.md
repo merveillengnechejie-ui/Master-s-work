@@ -1,5 +1,12 @@
 # 🎯 Synthèse Visuelle : Points-Clés et Diagrammes
 
+> Note rapide : recommandations méthodologiques à garder en tête
+>
+>- Pour les émissions CT en solution : ptSS-PCM (solvatation état-spécifique non-équilibre).
+>- Fonctionnelles conseillées : OT-ωB97M-V (ΔUKS/ΔROKS), PBE0 (ΔUKS), PBE38-D4 (robustesse E_em).
+>- Pour états ICT/dimères : privilégier IMOM pour la stabilité de convergence.
+>- Cibles de benchmarking : ΔE_{ST} MAE < 0,05 eV ; λ_max / E_em MAE ≤ 0,1 eV.
+
 ## Partie 1 : Les 7 Décisions Critiques du Projet
 
 ### 1️⃣ Changement Méthodologique : TD-DFT → OO-DFT/ΔDFT
@@ -249,7 +256,8 @@ SCÉNARIO RAPIDE (< 10 semaines):
         │  │  │   │  │ 🎯 NIR-I WINDOW (600-900 nm)    │ 🎯 NIR-II
         │  │  │   │  │ (Penetration ~5-10 mm)          │ (Penetration ~15-20 mm)
         │
-    OBJECTIF DU PROJET:
+  OBJECTIF DU PROJET:
+  Optimisation de nanoparticules de BODIPY pour une thérapie combinée photodynamique et photothermique ciblée sur les cellules de cancer du sein triple négatif (TNBC)
     ✅ Positionner λ_max entre 750-850 nm (NIR-I optimal)
     🔮 Perspective: Atteindre NIR-II (1000-1700 nm) avec extensions
 ```

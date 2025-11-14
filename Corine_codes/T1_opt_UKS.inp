@@ -1,0 +1,28 @@
+! Opt UKS B3LYP D3BJ def2-SVP TightSCF TIGHTOPT
+! CPCM(Water)
+
+%pal
+  nprocs 8
+end
+
+%cpcm
+  epsilon 80.0
+end
+
+%scf
+  HFTyp UKS
+  SCF_ALGORITHM DIIS_TRAH
+  MaxIter 500
+  ConvForce 1e-6
+end
+
+%geom
+  MaxStep 0.2
+  Trust 0.3
+end
+
+* xyzfile 0 3 S0_water_opt.xyz
+
+# Notes:
+# - Triplet optimization: multiplicity 3 in the geometry read line above
+# - Adjust functional/basis as required

@@ -1,6 +1,9 @@
-## 1. Introduction et objectifs : vers une stratégie thérapeutique intégrée
 
-Ce projet vise à concevoir de nouvelles armes moléculaires contre les cancers agressifs en répondant à des interrogations scientifiques fondamentales. Pour ce faire, nous utilisons le cancer du sein triple négatif (TNBC) comme un cas d'étude paradigmatique.
+## Optimisation de nanoparticules de BODIPY pour une thérapie combinée photodynamique et photothermique ciblée sur les cellules de cancer du sein triple négatif
+
+Ce stage porte sur l'optimisation de nanoparticules de BODIPY pour une thérapie combinée photodynamique (PDT) et photothermique (PTT) ciblée sur les cellules de cancer du sein triple négatif (TNBC). L'objectif est de concevoir, modéliser et benchmarker des agents théranostiques capables d'une double action (imagerie et traitement) via des approches computationnelles avancées.
+
+> **Note (MAJ) :** Une version enrichie et intégrée de cette démarche existe : `demarche_methodologique_stage_v2_integree.md`. Elle inclut les recommandations issues d'un audit méthodologique (intégration des méthodes OO-DFT/ΔDFT, usage de ptSS-PCM pour les émissions CT, recommandations de fonctionnelles comme OT-ωB97M-V/PBE0, et l'emploi d'IMOM pour les cas ICT). Lire la version v2 en priorité pour les détails pratiques et le benchmarking.
 
 ### Interrogation 1 : le TNBC, un "modèle parfait" pour attaquer les cancers résistants ?
 

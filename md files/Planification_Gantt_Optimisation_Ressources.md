@@ -154,7 +154,15 @@ Jeudi-Vendredi: Monitoring et troubleshooting
 
 ---
 
-### Semaine 9 : Couplage Spin-Orbite (50-300 heures CPU)
+
+### Semaine 9 : Couplage Spin-Orbite (SOC) — Stratégie Pragmatique
+
+> **Encart pratique SOC**
+>
+> - Pour le screening et la validation rapide des tendances SOC, utiliser systématiquement la méthode TD-DFT/ΔSCF (`dosoc` ORCA) sur tous les prototypes. Cette approche est rapide, fiable pour les comparaisons relatives, et adaptée au cadre d'un stage.
+> - Les méthodes multi-références (FIC-NEVPT2/CASSCF) sont réservées aux finalistes ou aux cas où les ressources CPU le permettent. Elles sont très coûteuses et ne doivent pas être utilisées pour le screening de routine.
+> - Mentionner explicitement dans le rapport si les valeurs SOC proviennent de TD-DFT rapide, et présenter NEVPT2/CASSCF comme une perspective future ou une validation ultime.
+> - Cette stratégie garantit un workflow efficace, reproductible et adapté aux contraintes du projet.
 
 **Option 1 : FIC-NEVPT2 (Haute Précision, 150-300 h CPU)**
 

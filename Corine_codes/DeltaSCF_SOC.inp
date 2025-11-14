@@ -1,0 +1,26 @@
+! wB97X-D3BJ def2-SVP ZORA RIJCOSX AutoAux
+! CPCM(Water)
+
+%pal
+  nprocs 8
+end
+
+%cpcm
+  epsilon 80.0
+end
+
+# Pragmatic Delta-SCF SOC workflow (screening):
+# 1) Optimize S1 and T1 geometries using ΔUKS/ΔROKS (S1: S1_water_opt.gbw/S1_water_opt.xyz, T1: T1_water_opt.gbw/T1_water_opt.xyz)
+# 2) Run a TD-DFT SOC single-point on the relaxed S1 geometry to estimate coupling trends.
+# Note: this is an approximation but drastically cheaper than CASSCF/NEVPT2.
+
+%tddft
+  nstates 6
+  ntrips 6
+  dosoc true
+end
+
+* xyzfile 0 1 S1_water_opt.xyz
+
+# Output: SOC estimates (use comparatively across prototypes). For final candidates,
+# consider running multi-reference SOC (NEVPT2) if resources allow.

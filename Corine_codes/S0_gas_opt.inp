@@ -1,0 +1,21 @@
+! Opt RKS B3LYP D3BJ def2-SVP TightSCF TIGHTOPT
+%pal
+  nprocs 8
+end
+%scf
+  MaxIter 500
+  ConvForce 1e-6
+end
+%geom
+  MaxStep 0.2
+  Trust 0.3
+end
+
+* xyz 0 1
+[COORDINATES]
+*
+
+# Notes:
+# - Replace [COORDINATES] with the molecule XYZ coordinates or use * xyzfile ...
+# - Adjust nprocs to match available cores
+# - This input performs a ground-state geometry optimization (gas phase)

@@ -1,0 +1,22 @@
+! wB97X-D3BJ def2-SVP ZORA RIJCOSX AutoAux
+! CPCM(Water)
+
+%pal
+  nprocs 8
+end
+
+%cpcm
+  epsilon 80.0
+end
+
+%tddft
+  nstates 10
+  ntrips 10
+  dosoc true
+end
+
+* xyzfile 0 1 S0_water_opt.xyz
+
+# Notes:
+# - Fast SOC estimate using TD-DFT (good for screening trends)
+# - Not a substitute for NEVPT2 for final values
