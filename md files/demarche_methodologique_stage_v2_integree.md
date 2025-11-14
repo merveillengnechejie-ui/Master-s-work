@@ -86,6 +86,8 @@ Remarque sur l'avenir : des méthodes inspirées de l'informatique quantique (Δ
 
 ## 3. Protocole détaillé : calculs ORCA 6.1 et stratégies de convergence
 
+> **Note** : Les estimations de temps de calcul détaillées pour chaque étape, incluant l'analyse des goulets d'étranglement et des recommandations de planification, sont disponibles dans la **section 4 (Tableau synthétique et estimation des temps)**, en particulier la section 4.3 qui détaille l'efficacité des méthodes ΔDFT, les défis de convergence, et le calendrier recommandé pour les 14 semaines du stage.
+
 ### Phase 1 : Géométrie de l'état fondamental (S₀)
 
 #### Objectif
@@ -398,25 +400,150 @@ multiwfn S0_water_opt.out
 
 ---
 
-## 4. Tableau synthétique des temps de calcul
+## 4. Tableau synthétique et estimation des temps de calcul
 
-| Étape | Méthode | Système | CPU (n=8) | GPU | Remarques |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **S₀ optim. (gaz)** | B3LYP-D3/def2-SVP | BODIPY (~30 atomes) | 30-60 min | 10-15 min | Étape de reconnaissance rapide |
-| **S₀ optim. (eau)** | B3LYP-D3/def2-SVP + CPCM | BODIPY (~30 atomes) | 45-90 min | 15-25 min | Point de départ pour tous les calculs |
-| **Excitation verticale** | RI-ADC(2)/def2-SVP | BODIPY (~30 atomes) | 60-120 min | 25-40 min | Coûteux mais très précis (λ_max) |
-| **T₁ optim.** | ΔUKS B3LYP/def2-SVP + CPCM | BODIPY (~30 atomes) | 60-120 min | 20-35 min | Robuste, généralement bon | 
-| **S₁ optim. (ΔSCF)** | ΔUKS B3LYP/def2-SVP + CPCM | BODIPY (~30 atomes) | 120-180 min | 40-60 min | Difficile, peut nécessiter plusieurs tentatives |
-| **SOC (NEVPT2)** | FIC-NEVPT2 wB97X/def2-TZVP | BODIPY (~30 atomes) | 150-300 min | 50-100 min | Très coûteux, mais le gold standard |
-| **SOC (rapide)** | TD-DFT wB97X/def2-SVP | BODIPY (~30 atomes) | 30-60 min | 10-20 min | Utiliser pour validation rapide ou tendances |
-| **MEP (Multiwfn)** | Post-traitement | BODIPY (~30 atomes) | 5-15 min | N/A | Analyse des charges atomiques |
+### 4.1 Tableau détaillé des temps par étape
 
-**Notes importantes :**
-- Les temps sont estimés pour 3 prototypes (proto-A, proto-B, proto-C)
-- **Total pour le projet complet :** ~40-60 heures CPU par prototype (soit 120-180 h CPU au total)
-- Les GPU réduisent les temps d'un facteur 3-4 (recommandé si disponibles)
-- Les étapes S₁ optim. et NEVPT2 SOC sont les goulets d'étranglement
-- La convergence de ΔSCF peut être difficile et nécessiter des stratégies spéciales (voir section 5)
+Le tableau suivant synthétise les temps de calcul (*Wall Time*, temps réel) pour **une étape sur un prototype BODIPY d'environ 30 atomes**, exécutée sur une machine simple à **8 cœurs (RYZEN 5000)** avec ORCA 6.1.
+
+| Phase | Méthode & Niveau de Théorie | Propriété Calculée | Complexité (Échelle) | Temps Estimé (8 cœurs) | GPU (optionnel) | Remarques |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **Phase 1a : S₀ optim. (gaz)** | B3LYP-D3/def2-SVP | Géométrie S₀ | DFT (Économique) | 30–60 min | 10–15 min | Étape de reconnaissance rapide |
+| **Phase 1b : S₀ optim. (eau)** | B3LYP-D3/def2-SVP + CPCM | Géométrie S₀ en solution | DFT (Économique) | **45–90 min** | 15–25 min | Point de départ pour tous les calculs |
+| **Phase 2 : Absorption verticale** | RI-ADC(2)/def2-SVP | Énergie d'excitation verticale ($\lambda_{\max}$) | WFT (Coût Modéré) | **60–120 min** | 25–40 min | Très précis pour λ_max, coûteux |
+| **Phase 3a : T₁ relaxé** | **ΔUKS B3LYP**/def2-SVP + CPCM | Optimisation géométrie $T_1$ | ΔDFT (Efficace) | **60–120 min** | 20–35 min | Robuste, généralement bon ; crucial pour ΔE_{ST} |
+| **Phase 3b : S₁ relaxé (ΔSCF)** | **ΔUKS B3LYP**/def2-SVP + CPCM | Optimisation géométrie $S_1$ | ΔDFT (Difficile) | **120–180 min** | 40–60 min | Étape délicate, convergence exigeante, tentatives multiples |
+| **Phase 4a : SOC haute précision** | **FIC-NEVPT2** (wB97X/def2-TZVP) | Constantes de couplage spin-orbite (ISC) | MR-WFT (Très Coûteux) | **150–300 min** | 50–100 min | Gold standard, coût très élevé ; goulet d'étranglement |
+| **Phase 4b : SOC rapide/tendance** | TD-DFT (wB97X/def2-SVP) + SOC | Tendance de la constante SOC | TD-DFT (Économique) | **30–60 min** | 10–20 min | À utiliser pour validation rapide ou screening |
+| **Phase 5 : Post-traitement** | Multiwfn (ESP, charges atomiques) | Potentiel Électrostatique (MEP), charges | Post-SCF (Très Rapide) | **5–15 min** | N/A | Analyse locale, très rapide |
+
+**Interprétation des colonnes :**
+- **Complexité (Échelle)** : évaluation du coût de calcul relatif (Économique → Très Coûteux)
+- **Temps Estimé** : temps mur (wall time) pour 8 cœurs RYZEN parallèles
+- **GPU** : accélération typique d'un facteur 3–4 si GPU disponible (optionnel)
+
+### 4.2 Synthèse des temps totaux par prototype et pour le projet
+
+**Temps estimés par étape (priorité exécution) :**
+
+1. **Phase 1 (S₀ optimisation)** : 75–150 min par prototype (gaz + eau)
+2. **Phase 2 (ADC(2) verticale)** : 60–120 min par prototype
+3. **Phase 3 (États relaxés)** : 180–300 min par prototype (T₁ + S₁)
+4. **Phase 4 (SOC)** : 150–300 min par prototype (NEVPT2) ou 30–60 min (rapide)
+5. **Phase 5 (Post-traitement)** : 5–15 min par prototype
+
+**Total estimé par prototype :**
+- **Approche complète (NEVPT2)** : ~40–60 heures CPU = **5–7.5 heures mur** (100% parallélisation à 8 cœurs)
+- **Approche rapide (TD-DFT SOC)** : ~25–35 heures CPU = **3–4.5 heures mur**
+
+**Total pour le projet (3 prototypes) :**
+- **Complète** : 120–180 heures CPU = **15–22.5 heures mur** (parallélisable en partie)
+- **Rapide** : 75–105 heures CPU = **9–13 heures mur**
+
+**Note sur l'efficacité de parallélisation :**
+- Efficacité typique jusqu'à 8 cœurs : 70–90% (RI-DFT, ADC(2), NEVPT2)
+- Efficacité au-delà de 16 cœurs : variable selon la méthode
+- Recommandation : garder n ≤ 8 pour BODIPY (~30 atomes) ; au-delà, rendements décroissants
+
+### 4.3 Remarques détaillées sur l'extrapolation et les défis de timing
+
+#### 4.3.1 Efficacité des méthodes ΔDFT (OO-DFT) pour le criblage
+
+Les méthodes **ΔDFT (ΔUKS et ΔROKS)** se sont avérées être des candidats **très prometteurs pour le criblage à haut débit**, grâce à leur coût de calcul nettement inférieur aux méthodes de fonction d'onde de haute précision (WFT) comme CC2 ou CASSCF/NEVPT2.
+
+**Comparaison empirique (données de littérature) :**
+
+Pour une molécule de taille moyenne (46 atomes, 428 fonctions de base avec def2-SVP) :
+- **ΔUKS/PBE0** (8 états excités singulet + triplet) : ~20 min sur 4 cœurs Intel Xeon
+  - **Extrapolation à 8 cœurs RYZEN** : ~10–15 min estimés (efficacité ≥ 70%)
+  - **Scalabilité** : très bonne jusqu'à 8 cœurs
+  
+- **LR-CC2** (même molécule, même machine, 4 cœurs) : **83 heures**
+  - **Ratio** : LR-CC2 est environ **250–300 fois plus lente** que ΔUKS
+  - **Implication** : ΔUKS devient indispensable pour les études de criblage multi-molécule
+
+**Conclusion** : Les estimations de **60–120 min** pour T₁ et **120–180 min** pour S₁ (ΔSCF) sont conservative et justifiées empiriquement.
+
+#### 4.3.2 Goulets d'étranglement (bottlenecks) critiques
+
+Deux étapes dominent le coût total du projet et nécessitent une gestion spéciale :
+
+**1. Optimisation S₁ par ΔSCF (120–180 min, parfois plus)**
+
+- **Défi** : Risque d'effondrement variationnel vers l'état fondamental S₀ (état false vacuum)
+- **Manifestation** : Mauvaise convergence, oscillations énergétiques, géométrie non-physique
+- **Solutions** (voir section 5 en détail) :
+  - Augmenter l'amortissement SCF (`DampPercentage 60`)
+  - Utiliser `DIIS_TRAH` avec `/  trah_maxdim 20`
+  - Réduire le pas de géométrie (`MaxStep 0.1`)
+  - Générer un *guess* excité manuellement (HOMO → LUMO inversé)
+  
+- **Impact pratique** : Cette étape peut nécessiter **2–3 tentatives**, multipliant son coût par 2–3× (jusqu'à 300–500 min dans les pires cas)
+
+**2. Couplage Spin-Orbite par FIC-NEVPT2 (150–300 min)**
+
+- **Coût formel** : O(N⁶) ou supérieur pour les itérations CC (couplage cluster)
+- **Défi** : Très gourmande en mémoire et CPU
+- **Exemple** : DFT/MRCI pour un système de 90 atomes sur 16 cœurs : **~12 heures**
+  - NEVPT2 pour 30 atomes sur 8 cœurs : 150–300 min est cohérent avec cette extrapolation
+  
+- **Stratégie alternative** : TD-DFT rapide (30–60 min) pour validation initiale, puis réserver NEVPT2 pour candidats retenus
+
+**Conclusion** : **Total réaliste pour 3 prototypes complets (NEVPT2) : 15–25 heures mur**, avec risque d'extension si convergence difficile.
+
+#### 4.3.3 Impact de l'utilisation de RIJCOSX (accélération DFT)
+
+La plupart des calculs DFT et hybrides modernes bénéficient de l'**approximation RIJCOSX** (*Resolution-of-the-Identity X*).
+
+**Gains de performance** :
+- **RIJCOSX vs. RI-JK** : accélération typique d'un facteur **1.5–2×** pour les hybrides (B3LYP, PBE0, etc.)
+- **Impact sur B3LYP-D3/def2-SVP** : déjà rapide en base SVP ; RIJCOSX apporte un gain supplémentaire ~30–40%
+- **Recommandation ORCA 6.1** : ajouter `RIJCOSX` systématiquement dans les blocs `!` pour les géométries
+
+**Effet sur le chronogramme** :
+- S₀ optim. (gaz) : 30–60 min → **20–40 min** (gain ~30%)
+- S₀ optim. (eau) : 45–90 min → **30–60 min** (gain ~35%)
+
+**Remarque** : RIJCOSX est quasi-transparent en utilisation (pas d'option supplémentaire), les gains sont " gratuits ".
+
+#### 4.3.4 Temps total du projet et recommandations de planification
+
+**Scénario 1 : Approche complète (NEVPT2 haute précision)**
+
+```
+Phase 1 (S₀)       : 3 proto × 75 min   =  225 min (3.75 h)
+Phase 2 (ADC2)     : 3 proto × 90 min   =  270 min (4.5 h)
+Phase 3 (T₁+S₁)    : 3 proto × 240 min  =  720 min (12 h)
+Phase 4 (NEVPT2)   : 3 proto × 225 min  =  675 min (11.25 h)
+Phase 5 (Multiwfn) : 3 proto × 10 min   =   30 min (0.5 h)
+
+Total mur (8 cœurs, 70-90% efficacité) : ~31 h mur (potentiellement 22–26 h avec parallélisation partiels)
+```
+
+**Scénario 2 : Approche rapide (TD-DFT SOC pour tendance)**
+
+```
+Phase 1 (S₀)       : 3 proto × 75 min   =  225 min (3.75 h)
+Phase 2 (ADC2)     : 3 proto × 90 min   =  270 min (4.5 h)
+Phase 3 (T₁+S₁)    : 3 proto × 240 min  =  720 min (12 h)
+Phase 4 (TD-DFT)   : 3 proto × 45 min   =  135 min (2.25 h)
+Phase 5 (Multiwfn) : 3 proto × 10 min   =   30 min (0.5 h)
+
+Total mur (8 cœurs) : ~13 h mur
+```
+
+**Recommandation de planification (14 semaines de stage) :**
+
+- **Semaine 4–5** : Phase 1 (S₀) — ~4 h mur, peut être parallélisée en batch
+- **Semaine 6** : Phase 2 (ADC2) — ~5 h mur, coûteux mais serial
+- **Semaine 7–8** : Phase 3 (T₁, S₁) — ~12 h mur + **buffer pour convergence difficile** (ajouter 50% de buffer)
+- **Semaine 9** : Phase 4a/4b (SOC) — ~11–2 h mur selon approche (préférer 4b en première passe si ressources limitées)
+- **Semaine 10** : Phase 5 + analyse
+
+**Buffer temporel à prévoir** :
+- Convergence S₁ problématique : +100–200% (multiplier par 2–3)
+- Erreur utilisateur, requêtes rechargement : +50%
+- **Total recommandé** : ajouter **30–40% de buffer** au-dessus des estimations nominales
 
 ---
 
@@ -528,17 +655,29 @@ NIR-I (600-900 nm) est une condition essentielle, mais NIR-II (1000-1700 nm) off
 
 **Semaine 4 :** Optimisation S₀ des 3 prototypes
 - B3LYP-D3/def2-SVP en phase gaz ET en solution CPCM
-- **Livrable :** S₀_proto-A/B/C_water_opt.gbw
+- **Temps estimé** : ~30–60 min (gaz) + 45–90 min (eau) par prototype = ~4 h mur pour les 3
+- **Stratégie** : Lancer les 3 calculs gaz simultanément (parallélisation batch), puis eau
+- **Livrable :** S₀_proto-A/B/C_water_opt.gbw et .xyz
 
 **Semaines 5-6 :** Excitations verticales (ADC(2)) pour les 3 prototypes
 - RI-ADC(2)/def2-SVP pour λ_max
-- Comparer avec les données expérimentales (benchmarking)
+- **Temps estimé** : ~60–120 min par prototype = ~5 h mur pour les 3 (à faire en série)
+- Comparer avec les données expérimentales (benchmarking, voir section 8)
+- **Difficultés attendues** : ADC(2) coûteux en mémoire ; vérifier convergence
 - **Livrable :** Spectres d'absorption et valeurs λ_max
 
 **Semaines 7-8 :** États excités relaxés et SOC
-- Optimisations T₁ (rapide) et S₁ (difficile) par ΔUKS
-- Calcul du SOC via FIC-NEVPT2 (ou TD-DFT rapide si temps limité)
-- **Livrable :** Énergies E_{ad}, ΔE_{ST}, valeurs SOC
+- **Optimisations T₁** (rapide, 60–120 min par prototype)
+  - Lancez en parallèle : robuste, bon succès attendu
+- **Optimisations S₁ (ΔSCF)** (120–180 min par prototype, peut nécessiter 2–3 tentatives)
+  - **⚠ Étape critique** : voir section 5 pour stratégies de convergence
+  - Buffer temporel : ajouter **50–100% du temps nominal** pour gestion des échecs
+  - Conseil : commencer par proto-A pour tester l'approche
+- **Couplage spin-orbite (SOC)** :
+  - Option A (prioritaire si temps limité) : **TD-DFT rapide** (30–60 min par proto) pour validation de tendance
+  - Option B (haute précision) : **FIC-NEVPT2** (150–300 min par proto) après validation
+- **Temps réaliste pour la phase** : ~12–18 h mur (S₁ difficile peut s'étendre)
+- **Livrable :** Énergies E_{ad}, ΔE_{ST}, valeurs SOC (tendance ou haute précision)
 
 ### Phase 3 : Analyse approfondie (semaines 9-11)
 
