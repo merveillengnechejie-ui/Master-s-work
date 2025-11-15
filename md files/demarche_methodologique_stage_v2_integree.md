@@ -1,11 +1,18 @@
 ## Optimisation de nanoparticules de BODIPY pour une thérapie combinée photodynamique et photothermique ciblée sur les cellules de cancer du sein triple négatif
 
-**Version améliorée intégrant les méthodes OO-DFT (Orbital-Optimized DFT), ΔDFT et ΔSCF pour une précision chimique accrue**
+**Version améliorée intégrant les méthodes OO-DFT (Orbital-Optimized DFT), ΔDFT et ΔSCF pour une précision chimique accrue — portée révisée à 2 molécules et SOC via ΔDFT+SOC**
 
 ---
 
 ## 1. Introduction et objectifs : vers une stratégie thérapeutique intégrée
 Ce stage porte sur l'optimisation de nanoparticules de BODIPY pour une thérapie combinée photodynamique (PDT) et photothermique (PTT) ciblée sur les cellules de cancer du sein triple négatif (TNBC). L'objectif est de concevoir, modéliser et benchmarker des agents théranostiques capables d'une double action (imagerie et traitement) via des approches computationnelles avancées.
+
+Portée révisée du projet (suite à l'analyse du 15/11/2025) :
+- **Structure: 1 molécule de référence (externe, publiée) + 2 molécules internes**
+  - **Référence expérimentale** : BODIPY de la littérature avec λ_max, Φ_f, et si possible SOC publiés (voir section 8.1)
+  - **Prototype 1 : Iodo-BODIPY** (PDT optimisée) — tester l'effet d'atome lourd sur ISC et NIR-I
+  - **Prototype 2 : TPP–Iodo–BODIPY** (théranostique ciblé) — ajouter un ciblage mitochondrial TPP+ sans dégrader les performances optiques
+- Remplacement du calcul SOC FIC-NEVPT2 par un workflow ΔDFT+SOC (perturbatif).
 
 Ce projet vise à concevoir de nouvelles armes moléculaires contre les cancers agressifs en répondant à des interrogations scientifiques fondamentales. Pour ce faire, nous utilisons le cancer du sein triple négatif (TNBC) comme un cas d'étude paradigmatique.
 
@@ -43,10 +50,10 @@ L'objectif de ce stage est de mener une **mission de conception *in silico*** po
 Pour concevoir une molécule *in silico*, nous utilisons une approche en cascade, combinant plusieurs niveaux de théorie :
 
 1. **Géométries de référence** : DFT classique (B3LYP-D3/def2-SVP en phase gaz et CPCM(eau))
-2. **Énergies d'excitation verticales** : ADC(2)/def2-SVP pour la précision sur λ_max
+2. **Énergies d'excitation verticales** : ADC(2)/def2-TZVP pour améliorer la précision sur λ_max
 3. **États excités relaxés** : **ΔUKSou ΔROKS** pour les énergies adiabatiques (PTT)
 4. **Écarts singlet-triplet** : **ΔUKSet ΔROKS** pour ΔE_{ST} (crucial pour la PDT/ISC)
-5. **Couplage spin-orbite** : FIC-NEVPT2 ou CASSCF/ZORA pour les constantes SOC
+5. **Couplage spin-orbite** : ΔDFT+SOC perturbatif (ZORA, dosoc) pour les constantes SOC; réserver les méthodes MR (NEVPT2/CASSCF) uniquement pour validation ponctuelle si nécessaire
 
 Cette approche remplace la stratégie initiale basée sur la TD-DFT, qui était imprécise pour les BODIPY (système avec caractère de couche ouverte mildement prononcé).
 
@@ -67,6 +74,10 @@ Les BODIPYs présentent un « **caractère légèrement couche ouverte** » (*mi
 
 ### 2.3 Recommandations pratiques et choix de frameworks (synthèse de benchmarking)
 
+Note sur ptSS-PCM (non-équilibre) pour états excités
+- Pour ΔDFT (S1/T1), utiliser un schéma état-spécifique (ptSS-PCM) lorsque la relaxation de solvant impacte l’émission/ΔE_ST.
+- Impact: coût légèrement accru et convergence parfois plus délicate; bénéfice: meilleure cohérence solution.
+
 Sur la base des analyses comparatives récentes et des remarques issues de l'audit interne, les choix méthodologiques recommandés pour obtenir la meilleure robustesse/précision pratique sont :
 
 - Pour les écarts singlet-triplet (ΔE_{ST}) et les énergies d'émission (E_{em}) en solution : utiliser ΔROKS ou ΔUKS couplés à un modèle de solvatation état-spécifique non-équilibre (ptSS-PCM). Ces combinaisons donnent typiquement une précision chimique (MAE souvent < 0,05 eV) lorsque les fonctionnelles optimisées (OT-ωB97M-V) ou PBE0 sont employées selon le cas.
@@ -78,7 +89,7 @@ Sur la base des analyses comparatives récentes et des remarques issues de l'aud
 Objectifs de benchmarking à viser (règles pratiques) :
 
 - ΔE_{ST} : cible MAE < 0,05 eV (précision chimique souhaitée pour décisions design)
-- λ_max / E_{em} : viser MAE ≤ 0,1 eV (≈ 10 nm à ~700 nm) pour validation contre données expérimentales
+- λ_max / E_{em} : viser MAE ≤ 0,1 eV (≈ 10 nm à ~700 nm) avec ADC(2)/def2-TZVP pour validation contre données expérimentales
 
 Remarque sur l'avenir : des méthodes inspirées de l'informatique quantique (ΔADAPT-VQE, ΔUCCSD) ont montré un fort potentiel pour certains systèmes BODIPY et méritent une veille méthodologique pour des études futures.
 
@@ -162,7 +173,7 @@ Calculer l'énergie d'absorption (S₀ → S₁) sur la géométrie figée de S�
 #### Input ORCA 6.1 : ADC(2) pour l'excitation verticale
 
 ```orca
-! RI-ADC(2) def2-SVP AutoAux FrozenCore
+! RI-ADC(2) def2-TZVP AutoAux FrozenCore
 ! CPCM(Water)
 
 %pal
@@ -189,7 +200,7 @@ $$\lambda_{\text{max}} (\text{nm}) = \frac{1240 \text{ eV·nm}}{E_{\text{S}_1} (
 
 **Fichier de sortie :** `ADC2_vertical.out`
 
-**Temps de calcul estimé :** 60-120 min (méthode coûteuse mais très précise)
+**Temps de calcul estimé :** 240–360 min (4–6 h) par molécule avec def2-TZVP (plus précis que def2-SVP)
 
 #### Analyse
 - **Objectif clinique :** λ_max doit être dans la fenêtre NIR-I (600-900 nm), idéalement 750-850 nm.
@@ -305,12 +316,12 @@ $$\Delta E_{\text{ST}} = E_{\text{S}_1}(\text{géom S}_1) - E_{\text{T}_1}(\text
 
 #### Justification du changement de méthode
 
-Contrairement à la TD-DFT qui offre une fonctionnalité SOC intégrée mais imprécise, les méthodes OO-DFT/ΔDFT nécessitent une approche multi-références pour calculer rigoureusement le SOC. La recommandation est d'utiliser **FIC-NEVPT2** ou **CASSCF** avec l'option relativiste ZORA et `DoSOC=true`.
+Remplacement NEVPT2 → ΔDFT+SOC perturbatif. Ce choix privilégie la cohérence méthodologique avec la chaîne ΔDFT (S1/T1, ΔE_ST) et un coût réduit d'un ordre de grandeur par rapport à NEVPT2, tout en fournissant des constantes SOC de tendance fiables sous ZORA avec l'option `dosoc true`. Les méthodes multi-référence (NEVPT2/CASSCF) sont réservées à une validation ponctuelle si nécessaire.
 
-#### Input ORCA 6.1 : FIC-NEVPT2 pour le SOC
+#### Input ORCA 6.1 : ΔDFT+SOC perturbatif (recommandé)
 
 ```orca
-! FIC-NEVPT2 wB97X-D3BJ def2-TZVP ZORA RIJCOSX AutoAux
+! UKS PBE0 D3BJ def2-SVP ZORA RIJCOSX AutoAux TightSCF
 ! CPCM(Water)
 
 %pal
@@ -321,12 +332,43 @@ end
   epsilon 80.0
 end
 
+%scf
+  HFTyp UKS
+  SCF_ALGORITHM DIIS_TRAH
+  MaxIter 500
+  ConvForce 1e-6
+end
+
+%tddft
+  dosoc true    # active le SOC perturbatif sur la base des états ΔDFT/UKS
+end
+
+* xyzfile 0 1 S0_water_opt.xyz
+```
+
+Optionnel (pour cohérence état-spécifique) : calculer SOC sur géométries T1/S1 optimisées et extraire les éléments <S1|H_SOC|Tn> pertinents.
+
+**Interprétation du résultat :**
+- Chercher : "Spin-Orbit Coupling elements" et identifier les couplages S1↔T1 dominants
+- Valeurs typiques : 1–10 cm⁻¹ (sans atome lourd), 50–200 cm⁻¹ (avec I)
+
+**Fichier de sortie :** `DeltaDFT_SOC.out`
+
+**Temps de calcul estimé :** 30–60 min (≈10× plus rapide que NEVPT2)
+
+#### Option de validation ponctuelle (facultatif)
+- Réserver FIC-NEVPT2/CASSCF à un unique point de validation si des ressources additionnelles sont disponibles.
+
+**Encadré : NEVPT2 pour non-initiés (si validation ponctuelle)**
+
+Si vous décidez de valider un point avec FIC-NEVPT2, voici les paramètres recommandés pour un BODIPY standard :
+
+```orca
 %casscf
-  nel 8              # Nombre d'électrons de valence (à adapter)
-  norb 6             # Nombre d'orbitales actives (à adapter)
+  nel 8              # 8 électrons de valence (4 π du cœur BODIPY + 2 n sur N + 2 π)
+  norb 6             # 6 orbitales actives (4 π + 2 n)
   mult 1,3           # Calculer singlet (mult=1) et triplet (mult=3)
   nroots 1,1         # 1 racine S₁ et 1 racine T₁
-  
   TraceCI 1.0
   MaxIter 150
 end
@@ -336,36 +378,9 @@ end
   Method ZORA        # Approche relativiste scalaire
   zcora_model 6      # Model 6 : approximation relativiste standard
 end
-
-* xyzfile 0 1 S0_water_opt.xyz
 ```
 
-**Interprétation du résultat :**
-- Chercher dans la sortie : **"Spin-Orbit Coupling Matrix"**
-- Valeurs typiques pour BODIPY : 1-10 cm$^{-1}$ (sans atome lourd), 50-200 cm$^{-1}$ (avec atome lourd comme l'iode)
-
-**Fichier de sortie :** `NEVPT2_SOC.out`
-
-**Temps de calcul estimé :** 150-300 min (très coûteux, mais haute précision)
-
-#### Alternative simplifiée (si ressources limitées)
-
-Utiliser la TD-DFT rapide avec l'option `dosoc` pour obtenir une tendance (non recommandé pour des résultats finaux, mais utile en validation rapide) :
-
-```orca
-! wB97X-D3BJ def2-SVP ZORA RIJCOSX AutoAux
-! CPCM(Water)
-
-%tddft
-  nstates 10
-  ntrips 10
-  dosoc true          # Calcul rapide du SOC
-end
-
-* xyzfile 0 1 S0_water_opt.xyz
-```
-
-**Temps de calcul :** 30-60 min
+**Stratégie :** Utiliser les **orbitales naturelles du SCF** comme guess initial pour accélérer la convergence CASSCF. Ne pas modifier `nel` et `norb` sans expertise.
 
 ---
 
@@ -410,11 +425,11 @@ Le tableau suivant synthétise les temps de calcul (*Wall Time*, temps réel) po
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | **Phase 1a : S₀ optim. (gaz)** | B3LYP-D3/def2-SVP | Géométrie S₀ | DFT (Économique) | 30–60 min | 10–15 min | Étape de reconnaissance rapide |
 | **Phase 1b : S₀ optim. (eau)** | B3LYP-D3/def2-SVP + CPCM | Géométrie S₀ en solution | DFT (Économique) | **45–90 min** | 15–25 min | Point de départ pour tous les calculs |
-| **Phase 2 : Absorption verticale** | RI-ADC(2)/def2-SVP | Énergie d'excitation verticale ($\lambda_{\max}$) | WFT (Coût Modéré) | **60–120 min** | 25–40 min | Très précis pour λ_max, coûteux |
+| **Phase 2 : Absorption verticale** | RI-ADC(2)/def2-TZVP | Énergie d'excitation verticale ($\lambda_{\max}$) | WFT (Coût Élevé) | **240–360 min** | 60–120 min | Standardisé pour la précision sur λ_max |
 | **Phase 3a : T₁ relaxé** | **ΔUKS B3LYP**/def2-SVP + CPCM | Optimisation géométrie $T_1$ | ΔDFT (Efficace) | **60–120 min** | 20–35 min | Robuste, généralement bon ; crucial pour ΔE_{ST} |
 | **Phase 3b : S₁ relaxé (ΔSCF)** | **ΔUKS B3LYP**/def2-SVP + CPCM | Optimisation géométrie $S_1$ | ΔDFT (Difficile) | **120–180 min** | 40–60 min | Étape délicate, convergence exigeante, tentatives multiples |
-| **Phase 4a : SOC haute précision** | **FIC-NEVPT2** (wB97X/def2-TZVP) | Constantes de couplage spin-orbite (ISC) | MR-WFT (Très Coûteux) | **150–300 min** | 50–100 min | Gold standard, coût très élevé ; goulet d'étranglement |
-| **Phase 4b : SOC rapide/tendance** | TD-DFT (wB97X/def2-SVP) + SOC | Tendance de la constante SOC | TD-DFT (Économique) | **30–60 min** | 10–20 min | À utiliser pour validation rapide ou screening |
+| **Phase 4 : SOC (recommandé)** | **ΔDFT+SOC** (UKS/PBE0, ZORA, dosoc) | Constantes de couplage spin-orbite (ISC) | ΔDFT (Économique) | **30–60 min** | 10–20 min | Suffisant pour le criblage; cohérent avec ΔDFT |
+| (Validation ponctuelle) | FIC-NEVPT2/CASSCF | Point de contrôle méthodologique | MR-WFT (Très Coûteux) | **150–300 min** | 50–100 min | Facultatif si ressources disponibles |
 | **Phase 5 : Post-traitement** | Multiwfn (ESP, charges atomiques) | Potentiel Électrostatique (MEP), charges | Post-SCF (Très Rapide) | **5–15 min** | N/A | Analyse locale, très rapide |
 
 **Interprétation des colonnes :**
@@ -427,7 +442,7 @@ Le tableau suivant synthétise les temps de calcul (*Wall Time*, temps réel) po
 **Temps estimés par étape (priorité exécution) :**
 
 1. **Phase 1 (S₀ optimisation)** : 75–150 min par prototype (gaz + eau)
-2. **Phase 2 (ADC(2) verticale)** : 60–120 min par prototype
+2. **Phase 2 (ADC(2) verticale)** : 240–360 min (4–6 h) par molécule
 3. **Phase 3 (États relaxés)** : 180–300 min par prototype (T₁ + S₁)
 4. **Phase 4 (SOC)** : 150–300 min par prototype (NEVPT2) ou 30–60 min (rapide)
 5. **Phase 5 (Post-traitement)** : 5–15 min par prototype
@@ -436,9 +451,9 @@ Le tableau suivant synthétise les temps de calcul (*Wall Time*, temps réel) po
 - **Approche complète (NEVPT2)** : ~40–60 heures CPU = **5–7.5 heures mur** (100% parallélisation à 8 cœurs)
 - **Approche rapide (TD-DFT SOC)** : ~25–35 heures CPU = **3–4.5 heures mur**
 
-**Total pour le projet (3 prototypes) :**
-- **Complète** : 120–180 heures CPU = **15–22.5 heures mur** (parallélisable en partie)
-- **Rapide** : 75–105 heures CPU = **9–13 heures mur**
+**Total pour le projet (2 prototypes révisés) :**
+- **Chaîne ΔDFT complète (ΔDFT+SOC)** : ~50–70 heures CPU = **6–9 heures mur**
+- **Avec validation ponctuelle NEVPT2 (facultatif, 1 point)** : ajouter **2–5 heures mur** selon la taille
 
 **Note sur l'efficacité de parallélisation :**
 - Efficacité typique jusqu'à 8 cœurs : 70–90% (RI-DFT, ADC(2), NEVPT2)
@@ -446,6 +461,12 @@ Le tableau suivant synthétise les temps de calcul (*Wall Time*, temps réel) po
 - Recommandation : garder n ≤ 8 pour BODIPY (~30 atomes) ; au-delà, rendements décroissants
 
 ### 4.3 Remarques détaillées sur l'extrapolation et les défis de timing
+
+#### 4.3.0 Pré-flight HPC et exécution
+- Vérifier ressources: cœurs disponibles, RAM (≥ 32–64 Go pour ADC(2) def2-TZVP), espace disque
+- Politique de file: prévoir batch de nuit pour ADC(2)/def2-TZVP (4–6 h)
+- Activer RI/AutoAux lorsque pertinent; monitorer les jobs (logs réguliers), éviter l’I/O excessif
+- Paralléliser par molécule si possible (2 jobs en parallèle) plutôt que sur-nbr de cœurs par job
 
 #### 4.3.1 Efficacité des méthodes ΔDFT (OO-DFT) pour le criblage
 
@@ -508,46 +529,64 @@ La plupart des calculs DFT et hybrides modernes bénéficient de l'**approximati
 
 #### 4.3.4 Temps total du projet et recommandations de planification
 
-**Scénario 1 : Approche complète (NEVPT2 haute précision)**
+**Scénario : Approche ΔDFT+SOC (recommandée, 3 molécules = 1 référence + 2 prototypes)**
 
 ```
-Phase 1 (S₀)       : 3 proto × 75 min   =  225 min (3.75 h)
-Phase 2 (ADC2)     : 3 proto × 90 min   =  270 min (4.5 h)
-Phase 3 (T₁+S₁)    : 3 proto × 240 min  =  720 min (12 h)
-Phase 4 (NEVPT2)   : 3 proto × 225 min  =  675 min (11.25 h)
-Phase 5 (Multiwfn) : 3 proto × 10 min   =   30 min (0.5 h)
+Phase 1 (S₀)       : 3 mol × 75 min   =  225 min (3.75 h)
+Phase 2 (ADC2/def2-TZVP) : 3 mol × 300 min = 900 min (15 h)
+Phase 3 (T₁+S₁ avec buffer 200–300%) : 3 mol × 600 min = 1800 min (30 h)
+Phase 4 (ΔDFT+SOC) : 3 mol × 45 min   =  135 min (2.25 h)
+Phase 5 (Multiwfn) : 3 mol × 10 min   =   30 min (0.5 h)
 
-Total mur (8 cœurs, 70-90% efficacité) : ~31 h mur (potentiellement 22–26 h avec parallélisation partiels)
+Total mur (8 cœurs, 70–90% efficacité) : ~51 h mur (réaliste avec buffer S1)
 ```
 
-**Scénario 2 : Approche rapide (TD-DFT SOC pour tendance)**
+**Remarque** : Ce scénario intègre le buffer +200–300% pour ΔSCF S1 (3–5 tentatives par molécule). Sans buffer, le total serait ~20 h mur, mais cela sous-estime le risque réel d'effondrement vers S0.
 
-```
-Phase 1 (S₀)       : 3 proto × 75 min   =  225 min (3.75 h)
-Phase 2 (ADC2)     : 3 proto × 90 min   =  270 min (4.5 h)
-Phase 3 (T₁+S₁)    : 3 proto × 240 min  =  720 min (12 h)
-Phase 4 (TD-DFT)   : 3 proto × 45 min   =  135 min (2.25 h)
-Phase 5 (Multiwfn) : 3 proto × 10 min   =   30 min (0.5 h)
+**Recommandation de planification (14 semaines, portée 2 molécules) :**
 
-Total mur (8 cœurs) : ~13 h mur
-```
+- **Semaines 1–2** : Bibliographie ciblée + sélection de la molécule de référence expérimentale pour benchmarking (λ_max, Φ_f)
+- **Semaines 3–4** : Phase 1 (S₀) — ~2–3 h mur total (2 molécules)
+- **Semaines 5–6** : Phase 2 (ADC(2)) — ~12–18 h mur total (3 molécules, def2-TZVP). Planifier des créneaux longs (batch de nuit recommandé).
+- **Semaines 7–9** : Phase 3 (T₁, S₁) — ~18–24 h mur (buffer +200–300% pour ΔSCF S₁, 3–5 tentatives par molécule)
+- **Semaine 10** : Phase 4 (ΔDFT+SOC) — ~1.5–3 h mur total (3 molécules × 30–60 min)
 
-**Recommandation de planification (14 semaines de stage) :**
-
-- **Semaine 4–5** : Phase 1 (S₀) — ~4 h mur, peut être parallélisée en batch
-- **Semaine 6** : Phase 2 (ADC2) — ~5 h mur, coûteux mais serial
-- **Semaine 7–8** : Phase 3 (T₁, S₁) — ~12 h mur + **buffer pour convergence difficile** (ajouter 50% de buffer)
-- **Semaine 9** : Phase 4a/4b (SOC) — ~11–2 h mur selon approche (préférer 4b en première passe si ressources limitées)
-- **Semaine 10** : Phase 5 + analyse
+Plan B (si ΔSCF S₁ échoue après 3–5 tentatives et escalades)
+- Basculer sur TD-DFT (ωB97X-D) pour excitations verticales diagnostiques uniquement
+- Continuer T1 (ΔUKS) + SOC (ΔDFT+SOC) pour les tendances
+- Reporter l’optimisation S1 complète en perspective
+- **Semaines 11–12** : Phase 5 + analyse MEP/ciblage
+- **Semaines 13–14** : Rédaction et soutenance
 
 **Buffer temporel à prévoir** :
-- Convergence S₁ problématique : +100–200% (multiplier par 2–3)
+- Convergence S₁ problématique : **+200–300%** (prévoir 3–5 tentatives par molécule, risque d'effondrement vers S0)
 - Erreur utilisateur, requêtes rechargement : +50%
-- **Total recommandé** : ajouter **30–40% de buffer** au-dessus des estimations nominales
+- **Total recommandé** : ajouter **50–70% de buffer** au-dessus des estimations nominales (incluant S1)
 
 ---
 
 ## 5. Stratégies de convergence robuste pour les cas difficiles
+
+Checklist ΔSCF (ordre d’escalade pratique):
+1) Paramètres SCF
+- Augmenter l’amortissement: `DampPercentage 60`
+- Augmenter le décalage: `LevelShift 0.5`
+- Algorithme robuste: `SCF_ALGORITHM DIIS_TRAH` et `TRAH_MaxDim 20`
+2) Pas géométrique
+- Réduire: `MaxStep 0.1`, `Trust 0.15`
+3) Base et solvant
+- Passer à def2-TZVP si nécessaire pour plus de flexibilité
+- Utiliser CPCM(eau) cohérent avec l’expérience; pour états excités envisager ptSS-PCM (non-équilibre)
+4) Guesses variés pour S1
+- Tester HOMO→LUMO, HOMO−1→LUMO, HOMO→LUMO+1 (MOM/IMOM)
+- Relancer avec `%moinp` depuis S0 ou tentative précédente
+5) Automatisation
+- Utiliser: `./run_troubleshoot_S1.sh` (escalade LevelShift/Damp/DIIS_TRAH)
+- Utiliser: `./gen_s1_guesses.sh` (génère 3 guesses et sélectionne le meilleur)
+
+Encadré “Mode d’emploi rapide”
+- Pré-test des guesses: `./gen_s1_guesses.sh -t S1_short_template.inp -x S0_water_opt.xyz -g S0_water_opt.gbw -n 8`
+- Optimisation complète avec escalade auto: `./run_troubleshoot_S1.sh -i S1_template.inp -x S0_water_opt.xyz -g S0_water_opt.gbw -n 8`
 
 ### Problème : Optimisation S₁ ne converge pas
 
@@ -636,20 +675,31 @@ NIR-I (600-900 nm) est une condition essentielle, mais NIR-II (1000-1700 nm) off
 
 ### Phase 1 : Immersion et conception stratégique (semaines 1-3)
 
-**Semaine 1 :** Formation et bibliographie intensive
+**Semaine 1 :** Formation et bibliographie intensive + validation de la chaîne de calcul
 - Prise en main de Linux/Slurm
 - Lecture sur TNBC, fenêtre thérapeutique, BODIPY, ADC(2), OO-DFT
-- **Livrable :** Plan de lecture et résumés d'articles clés
+- **Jeu de test pré-rempli** : L'encadrant fournit un BODIPY de référence avec tous les fichiers ORCA pré-remplis (S0_opt.gbw, S0_opt.xyz, templates d'inputs) pour valider la chaîne de calcul complète (S0 → ADC(2) → T1/S1 → SOC)
+- **Validation rapide** : Exécuter la chaîne sur ce jeu de test pour vérifier convergence, timing, et familiarisation avec ORCA
+- **Archivage systématique** : Créer une convention de nommage pour les fichiers (ex: `S1_protoA_attempt3_opt.gbw`, `ADC2_ref_def2TZVP.out`) et archiver tous les `.gbw` et `.out` avec version
+- **Livrable :** Plan de lecture + rapport de validation chaîne de calcul + fichiers ORCA validés + convention de nommage documentée
 
-**Semaine 2 :** Synthèse de l'état de l'art et sélection des prototypes
+**Semaine 2 :** Synthèse de l'état de l'art, sélection des prototypes et définition des critères
 - Rédiger synthèse bibliographique (2-3 pages)
-- Sélectionner 3 prototypes (référence, PDT-boost avec I, ciblage + PDT)
-- **Livrable :** Synthèse bibliographique
+- **Sélectionner 1 molécule de référence expérimentale** (voir section 8.1 pour critères)
+- Sélectionner 2 prototypes internes (Iodo-BODIPY, TPP–Iodo–BODIPY)
+- **Définir la grille Go/No-Go** (voir section 7, Phase 3) avec critères quantitatifs
+- **Livrable :** Synthèse bibliographique + grille Go/No-Go validée
 
-**Semaine 3 :** Construction et pré-optimisation des molécules
-- Utiliser Avogadro/IQmol pour construire les fichiers `.xyz` des 3 prototypes
+**Semaine 3 :** Construction, pré-optimisation et test comparatif de base
+- Utiliser Avogadro/IQmol pour construire les fichiers `.xyz` des 3 molécules (référence + 2 prototypes)
 - Lancer optimisations rapides GFN2-xTB
-- **Livrable :** 3 fichiers `.xyz` validés
+- **Validation de la chaîne ΔDFT** : Tester la chaîne complète (S0 → ADC(2) → T1/S1 → SOC) sur une petite molécule de test (ex: benzène) pour vérifier convergence et timing
+- **Test comparatif ADC(2) : def2-SVP vs def2-TZVP** (CRITIQUE pour optimiser le planning)
+  - Lancer ADC(2) sur la **molécule de référence** avec les **deux bases en parallèle** (batch de nuit)
+  - Comparer λ_max calculé : MAE (def2-SVP) vs MAE (def2-TZVP) par rapport à l'expérience
+  - **Décision** : Si écart < 5 nm → garder def2-SVP (gain 3h/molécule); si écart > 10 nm → garder def2-TZVP (justifié)
+  - **Impact** : Peut économiser 9h mur sur le projet si def2-SVP suffisant
+- **Livrable :** 3 fichiers `.xyz` validés + rapport de validation chaîne ΔDFT + rapport comparatif def2-SVP vs def2-TZVP + base choisie justifiée
 
 ### Phase 2 : Calculs fondamentaux (semaines 4-8)
 
@@ -659,49 +709,82 @@ NIR-I (600-900 nm) est une condition essentielle, mais NIR-II (1000-1700 nm) off
 - **Stratégie** : Lancer les 3 calculs gaz simultanément (parallélisation batch), puis eau
 - **Livrable :** S₀_proto-A/B/C_water_opt.gbw et .xyz
 
-**Semaines 5-6 :** Excitations verticales (ADC(2)) pour les 3 prototypes
-- RI-ADC(2)/def2-SVP pour λ_max
-- **Temps estimé** : ~60–120 min par prototype = ~5 h mur pour les 3 (à faire en série)
+**Semaines 5-6 :** Excitations verticales (ADC(2)) pour les 3 molécules
+- RI-ADC(2)/def2-TZVP pour λ_max (standardisé pour la précision)
+- **Temps estimé** : ~240–360 min (4–6 h) par molécule = ~12–18 h mur pour les 3 (à faire en série, batch de nuit recommandé)
+- **Stratégie** : Lancer les calculs en batch de nuit pour optimiser l'utilisation du cluster
 - Comparer avec les données expérimentales (benchmarking, voir section 8)
-- **Difficultés attendues** : ADC(2) coûteux en mémoire ; vérifier convergence
-- **Livrable :** Spectres d'absorption et valeurs λ_max
+- **Difficultés attendues** : ADC(2)/def2-TZVP coûteux en mémoire (≥32–64 Go); vérifier convergence et disponibilité RAM
+- **Livrable :** Spectres d'absorption et valeurs λ_max pour les 3 molécules
 
-**Semaines 7-8 :** États excités relaxés et SOC
-- **Optimisations T₁** (rapide, 60–120 min par prototype)
+**Semaines 7–9 :** États excités relaxés et SOC
+- **Optimisations T₁** (60–120 min par molécule)
   - Lancez en parallèle : robuste, bon succès attendu
-- **Optimisations S₁ (ΔSCF)** (120–180 min par prototype, peut nécessiter 2–3 tentatives)
+- **Optimisations S₁ (ΔSCF)** (120–180 min par molécule, **prévoir 3–5 tentatives par molécule**)
   - **⚠ Étape critique** : voir section 5 pour stratégies de convergence
-  - Buffer temporel : ajouter **50–100% du temps nominal** pour gestion des échecs
-  - Conseil : commencer par proto-A pour tester l'approche
+  - **Buffer temporel : +200–300%** (3–5 tentatives) pour gestion des échecs d'effondrement vers S0
+  - **Semaine 7 (pré-test)** : Utiliser `./gen_s1_guesses.sh` pour générer et tester 3 guesses (HOMO→LUMO, HOMO−1→LUMO, HOMO→LUMO+1)
+  - **Semaine 8–9 (optimisation complète)** : Utiliser `./run_troubleshoot_S1.sh` pour escalade auto (LevelShift, Damp, DIIS_TRAH)
+  - Conseil : commencer par référence pour valider la méthode, puis prototypes
 - **Couplage spin-orbite (SOC)** :
-  - Option A (prioritaire si temps limité) : **TD-DFT rapide** (30–60 min par proto) pour validation de tendance
-  - Option B (haute précision) : **FIC-NEVPT2** (150–300 min par proto) après validation
-- **Temps réaliste pour la phase** : ~12–18 h mur (S₁ difficile peut s'étendre)
-- **Livrable :** Énergies E_{ad}, ΔE_{ST}, valeurs SOC (tendance ou haute précision)
+  - **Standard** : **ΔDFT+SOC** (UKS/PBE0, ZORA, dosoc) — 30–60 min par molécule
+  - Validation ponctuelle (facultatif) : FIC-NEVPT2 (150–300 min) si ressources disponibles
+- **Temps réaliste pour la phase** : ~18–24 h mur (S₁ avec buffer 200–300%)
+- **Livrable :** Énergies E_{ad}, ΔE_{ST}, valeurs SOC (ΔDFT+SOC) pour les 3 molécules
 
-### Phase 3 : Analyse approfondie (semaines 9-11)
+### Phase 3 : Analyse approfondie et décision (semaines 9-11)
+
+**Grille Go/No-Go par molécule (critères quantitatifs définis en semaine 2)**
+
+**Prototype 1 : Iodo-BODIPY (PDT optimisée)**
+- λ_max: 680–720 nm (NIR-I, redshift par atome lourd)
+- ΔE_ST: < 0,05 eV (ISC efficace)
+- SOC: > 50 cm⁻¹ (effet iode confirmé)
+- E_ad: < 1,0 eV (potentiel PTT)
+- **Pondération** : λ_max 30%, ΔE_ST 30%, SOC 25%, E_ad 15%
+
+**Prototype 2 : TPP–Iodo–BODIPY (théranostique ciblé)**
+- λ_max: 690–730 nm (NIR-I, légère perturbation par TPP+)
+- ΔE_ST: < 0,08 eV (préservation de l'ISC)
+- SOC: > 40 cm⁻¹ (légère perte acceptable)
+- E_ad: < 1,2 eV (synergie PTT maintenue)
+- Charge TPP⁺: +1,00 e (localisée sur TPP, analysée par Hirshfeld)
+- **Accessibilité TPP⁺** (critères quantitatifs) :
+  - Distance minimale TPP⁺ → centre BODIPY : > 5 Å (exposition maximale)
+  - OU Angle dièdre TPP⁺-BODIPY : > 90° (orientation perpendiculaire)
+  - Visualisation MEP : groupe TPP⁺ doit être en surface (pas enfoui)
+- **Pondération** : λ_max 25%, ΔE_ST 25%, SOC 20%, E_ad 15%, ciblage 15%
+
+**Décision finale** : Sélectionner la molécule satisfaisant le plus de critères (score ≥ 70% = Go, < 70% = No-Go).
 
 **Semaine 9 :** Analyse des spectres et ciblage
-- Analyser λ_max, forces d'oscillateur, caractère CT
-- Calcul MEP et analyse de charge (Multiwfn)
-- **Livrable :** Tableau comparatif des propriétés
+- Analyser λ_max, forces d'oscillateur, caractère CT (NTO)
+- Calcul MEP et analyse de charge (Multiwfn, Hirshfeld)
+- **Livrable :** Tableau comparatif des propriétés (3 molécules)
 
-**Semaine 10 :** Benchmarking et comparaison proto-A/B/C
-- Valider les méthodes : comparer calculs avec expérience
-- Évaluer l'effet de chaque modification chimique
-- **Livrable :** Analyse comparative rédigée
+**Semaine 10 :** Benchmarking et validation de la méthode
+- **Benchmarking** : Comparer calculs de la référence avec données expérimentales
+- Évaluer MAE (λ_max) : doit être < 0.1 eV (≈ 10 nm)
+- Si MAE > 0.1 eV : Investiguer et ajuster si nécessaire
+- Évaluer l'effet de chaque modification chimique (Iodo vs TPP–Iodo)
+- **Livrable :** Rapport de benchmarking + analyse comparative
 
-**Semaine 11 :** Évaluation du potentiel théranostique
-- Synthétiser : λ_max, E_{ad}, ΔE_{ST}, SOC, ciblage
-- Identifier le prototype le plus prometteur
-- **Livrable :** Feuille de décision (scoring) des 3 candidats
+**Semaine 11 :** Évaluation du potentiel théranostique et décision
+- Appliquer la grille Go/No-Go (définie en semaine 2)
+- Synthétiser : λ_max, E_{ad}, ΔE_{ST}, SOC, ciblage pour les 2 prototypes
+- Calculer le score final pour chaque prototype
+- Identifier le prototype le plus prometteur (score ≥ 70%)
+- **Livrable :** Feuille de décision (scoring) des 2 prototypes + recommandation
 
 ### Phase 4 : Synthèse et communication (semaines 12-14)
 
 **Semaines 12-13 :** Rédaction du rapport de stage
 - Sections clés : intro, théorie, résultats, discussion (lier calculs aux défis cliniques)
 - Mentionner les perspectives nanotechnologiques et stratégies futures
-- **Livrable :** Rapport complet (draft)
+- **Section "Résultats"** : Structurer autour de la **grille Go/No-Go** (tableau de scoring) pour objectivité
+- **Module optionnel (ML)** : Si temps disponible, ajouter une régression simple (ex: scikit-learn) sur λ_max en fonction de descripteurs moléculaires simples (HOMO-LUMO gap, moments dipolaires, substituants). Cela modernise le design et ouvre des perspectives pour le criblage rapide.
+- **Partenariat expérimental** : Inclure une lettre d'intention (ou accord) avec une équipe de synthèse/biologie pour la validation ultérieure des candidats (tests cellulaires, synthèse). Cela valorise le projet et crédibilise les prédictions.
+- **Livrable :** Rapport complet (draft) + (optionnel) script ML + lettre d'intention partenaire
 
 **Semaine 14 :** Préparation de la soutenance
 - Créer les diapositives (15-20 diapositives)
@@ -715,29 +798,49 @@ NIR-I (600-900 nm) est une condition essentielle, mais NIR-II (1000-1700 nm) off
 
 L'une des étapes critiques est de valider que nos calculs donnent « **le bon résultat pour la bonne raison** ».
 
-### Procédure
+### 8.1 Sélection de la molécule de référence expérimentale
 
-1. **Sélectionner un BODIPY de référence** de la littérature avec des données expérimentales publiées (λ_max, ε, fluorescence quantum yield, SOC estimates)
+**Critères de sélection** (priorité décroissante) :
+1. **λ_max expérimental** : 500–600 nm (visible, bien caractérisé, loin de NIR pour contraste)
+2. **Rendement quantique de fluorescence (Φ_f)** : > 0.1 (molécule fluorescente robuste)
+3. **Données SOC** : Si disponibles, constants de couplage S1↔T1 (rare mais idéal)
+4. **Accessibilité** : Article récent (< 5 ans), données complètes et reproductibles
+
+**Sources recommandées** :
+- *European Journal of Organic Chemistry* (BODIPY design)
+- *Journal of Medicinal Chemistry* (BODIPY théranostique)
+- *Photochemistry and Photobiology Science* (propriétés photophysiques)
+- *Journal of Physical Chemistry A* (SOC, états excités)
+
+**Exemple concret de référence** :
+- **Molécule** : BODIPY méso-phényle (ou BODIPY-Ph)
+- **λ_max exp.** : ~505 nm (DMSO)
+- **Φ_f exp.** : ~0.8 (DMSO)
+- **Justification** : Structure simple, données complètes, loin de NIR (bon contraste avec prototypes)
+
+### 8.2 Procédure de benchmarking
+
+1. **Sélectionner 1 BODIPY de référence** de la littérature avec données expérimentales publiées (λ_max, Φ_f, idéalement SOC)
 
 2. **Reproduire ce BODIPY** avec la même géométrie de calcul :
-   - Optimiser sa géométrie (DFT)
-   - Calculer son λ_max (ADC(2))
+   - Optimiser sa géométrie (DFT B3LYP-D3/def2-SVP, CPCM eau)
+   - Calculer son λ_max (ADC(2)/def2-TZVP, CPCM eau)
    - Comparer avec les valeurs expérimentales
 
 3. **Évaluer l'erreur** :
    - MAE (Mean Absolute Error) en eV ou nm
-   - Si MAE < 0.1 eV (≈ 10 nm à 700 nm) → **méthode validée**
+   - **Critère de validation** : MAE < 0.1 eV (≈ 10 nm à 700 nm) → **méthode validée**
+   - Si MAE > 0.1 eV : Investiguer (base insuffisante? Solvant? Géométrie?)
 
-4. **Appliquer les mêmes calculs aux 3 prototypes** en toute confiance
+4. **Appliquer les mêmes calculs aux 2 prototypes** en toute confiance
 
-### Exemple de tableau de benchmarking
+### 8.3 Exemple de tableau de benchmarking
 
-| Molécule | λ_max exp. (nm) | λ_max calc. (nm) | Erreur (nm) | Remarques |
-| :--- | :--- | :--- | :--- | :--- |
-| BODIPY-ref (litté) | 505 | 510 | +5 | Bon accord ✓ |
-| Proto-A (BODIPY) | — | 620 | — | À tester expérimentalement |
-| Proto-B (I-BODIPY) | — | 680 | — | Redshift observé |
-| Proto-C (TPP-I-BODIPY) | — | 710 | — | Redshift fort, NIR idéal |
+| Molécule | λ_max exp. (nm) | λ_max calc. (nm) | Erreur (nm) | Φ_f exp. | Remarques |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| BODIPY-Ph (référence) | 505 | 510 | +5 | 0.80 | Bon accord ✓ Méthode validée |
+| Iodo-BODIPY (PDT) | — | 680–720 | — | — | Redshift attendu par atome lourd |
+| TPP–Iodo–BODIPY (théranostique) | — | 690–730 | — | — | Effet TPP+ modéré sur λ_max |
 
 ---
 
@@ -745,10 +848,11 @@ L'une des étapes critiques est de valider que nos calculs donnent « **le bon r
 
 1. **Synthèse bibliographique** (2-3 pages) : État de l'art sur les BODIPY et PDT/PTT
 2. **Fichiers de calcul** : tous les `.gbw`, `.out`, `.xyz` archivés
-3. **Tableaux de résultats** : λ_max, E_{ad}, ΔE_{ST}, SOC, charges atomiques pour les 3 prototypes
+3. **Tableaux de résultats** : λ_max, E_{ad}, ΔE_{ST}, SOC, charges atomiques pour les 3 molécules (référence + 2 prototypes)
 4. **Figures** : spectres d'absorption, cartes MEP, structures optimisées
 5. **Rapport de stage** : 30-50 pages
    - Sections : Intro, État de l'art, Théorie/Méthodes, Résultats, Discussion, Conclusion
+   - Résultats : Benchmarking (référence), propriétés des 2 prototypes, grille Go/No-Go, scoring final
    - Discussion doit relier les résultats computationnels aux défis cliniques (hypoxie, TME, sélectivité)
    - Perspectives : nanomédecine, stratégies futures (PDT Type I, activation sensible au pH, etc.)
 6. **Présentation orale** : 15-20 diapositives + 15 min de présentation
@@ -757,7 +861,7 @@ L'une des étapes critiques est de valider que nos calculs donnent « **le bon r
 
 ## 10. Compétences acquises
 
-- **Chimie quantique appliquée** : Maîtrise de DFT, ADC(2), OO-DFT/ΔDFT, calculs SOC (NEVPT2)
+- **Chimie quantique appliquée** : Maîtrise de DFT, ADC(2), OO-DFT/ΔDFT, calculs SOC perturbatifs (ΔDFT+SOC)
 - **Analyse théorique** : Comprendre λ_max, énergies adiabatiques, ΔE_{ST}, constantes de couplage
 - **Calcul haute performance** : Utilisation d'ORCA 6.1 en environnement Linux, gestion de Slurm
 - **Analyse de données** : Post-traitement avec Multiwfn, création de graphiques comparatifs
@@ -779,5 +883,70 @@ L'une des étapes critiques est de valider que nos calculs donnent « **le bon r
 
 ---
 
+## 12. Impact scientifique et valorisation
+
+### Potentiel de publication
+
+Le projet peut déboucher sur :
+
+*   **Article méthodologique** : "ΔDFT vs TD-DFT for BODIPY derivatives: a benchmark study" (J. Chem. Theory Comput. ou Phys. Chem. Chem. Phys.)
+    
+*   **Article de design** : "In silico design of NIR-absorbing BODIPY for TNBC theranostics" (Eur. J. Med. Chem. ou J. Photochem. Photobiol. B)
+    
+
+### Débouchés pour l'étudiant
+
+*   **Thèse CIFRE** en chimie médicinale computationnelle
+    
+*   **Poste dans l'industrie** (sanofi, Servier) en design de médicaments
+    
+*   **Expertise rare** : Maîtrise des méthodes ΔDFT et SOC est peu enseignée en Master.
+
+---
+
 **Document rédigé pour le stage de Master 2 – UY1 Montpellier, 2025**
-**Dernière mise à jour : 13 novembre 2025**
+---
+
+## 13. Recommandations pour l'étudiant : maximiser vos chances de succès
+
+### Stratégie générale
+
+1. **Semaine 2 : Grille Go/No-Go = votre boussole**
+   - Ne négociez pas cette étape avec votre encadrant
+   - C'est votre **référence objective** pour toutes les décisions ultérieures
+   - Documentez les pondérations et justifiez-les
+
+2. **Semaine 3 : Test comparatif def2-SVP vs def2-TZVP**
+   - Lancez ADC(2) sur la **référence BODIPY** avec les deux bases en parallèle
+   - Comparez MAE par rapport aux données expérimentales
+   - **Décision** : Choisissez la base qui minimise MAE avec le moins de CPU
+   - Cela peut économiser **9h mur** sur le projet
+
+3. **Semaine 7 : Pré-test des guesses S₁**
+   - Générez 3 guesses (HOMO→LUMO, HOMO−1→LUMO, HOMO→LUMO+1)
+   - Ne vous arrêtez pas au premier qui converge
+   - **Sélectionnez celui qui converge à la plus basse énergie**
+
+4. **Semaine 9 : Activation du Plan B sans culpabilité**
+   - Si après 5 tentatives S₁ échoue, **activez le Plan B immédiatement**
+   - TD-DFT reste publiable si justifié (manque de ressources, complexité système)
+   - Mieux vaut une analyse complète (T₁ + SOC) que des données incomplètes
+
+5. **Tout au long du stage : Archivage systématique**
+   - Créez une **convention de nommage** pour les fichiers (ex: `S1_protoA_attempt3_opt.gbw`)
+   - Archivez **tous les `.gbw` et `.out`** avec version
+   - Cela facilite le **troubleshooting** et la **rédaction** (traçabilité)
+
+### Gestion des risques
+
+| Risque | Symptôme | Action |
+| :--- | :--- | :--- |
+| **S₁ ne converge pas** | Énergie oscille ou augmente | Escalade checklist (section 5) → Plan B après 5 tentatives |
+| **ADC(2) manque de RAM** | Erreur "out of memory" | Réduire à def2-SVP ou lancer sur nœud avec plus de RAM |
+| **File d'attente HPC saturée** | Attente > 24h | Lancer batch de nuit ou réduire nprocs (8 → 4) |
+| **Référence BODIPY introuvable** | Pas de données λ_max publiées | Utiliser un BODIPY similaire de la littérature (ex: BODIPY-Ph) |
+| **Temps total dépasse 14 semaines** | Retard cumulatif | Réduire à 1 prototype (garder TPP-Iodo-BODIPY) + référence |
+
+---
+
+**Dernière mise à jour : 15 novembre 2025 (révision complète: 3 molécules = 1 référence + 2 prototypes, SOC = ΔDFT+SOC, buffer S1 +200–300%, grille Go/No-Go en semaine 2, audit HPC pré-stage, jeu de test pré-rempli, milestone convergence S1 semaine 7, Plan B TD-DFT, test comparatif def2-SVP vs def2-TZVP semaine 3, critères ciblage quantitatifs, encadré NEVPT2, recommandations étudiant, gestion risques)**

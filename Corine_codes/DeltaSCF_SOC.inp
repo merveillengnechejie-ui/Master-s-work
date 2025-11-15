@@ -1,4 +1,4 @@
-! wB97X-D3BJ def2-SVP ZORA RIJCOSX AutoAux
+! UKS PBE0 D3BJ def2-SVP ZORA RIJCOSX AutoAux TightSCF
 ! CPCM(Water)
 
 %pal
@@ -9,18 +9,26 @@ end
   epsilon 80.0
 end
 
-# Pragmatic Delta-SCF SOC workflow (screening):
-# 1) Optimize S1 and T1 geometries using ΔUKS/ΔROKS (S1: S1_water_opt.gbw/S1_water_opt.xyz, T1: T1_water_opt.gbw/T1_water_opt.xyz)
-# 2) Run a TD-DFT SOC single-point on the relaxed S1 geometry to estimate coupling trends.
-# Note: this is an approximation but drastically cheaper than CASSCF/NEVPT2.
-
-%tddft
-  nstates 6
-  ntrips 6
-  dosoc true
+%scf
+  HFTyp UKS
+  SCF_ALGORITHM DIIS_TRAH
+  MaxIter 500
+  ConvForce 1e-6
 end
 
-* xyzfile 0 1 S1_water_opt.xyz
+# ΔDFT+SOC perturbatif (recommandé) :
+# Workflow :
+# 1) Optimiser S1 et T1 avec ΔUKS/ΔROKS (S1: S1_water_opt.gbw/S1_water_opt.xyz, T1: T1_water_opt.gbw/T1_water_opt.xyz)
+# 2) Lancer ΔDFT+SOC sur la géométrie S0 pour estimer les constantes de couplage
+# 3) Avantages : 10× plus rapide que NEVPT2, cohérent avec la chaîne ΔDFT
+# 4) Temps estimé : 30–60 min par molécule
 
-# Output: SOC estimates (use comparatively across prototypes). For final candidates,
-# consider running multi-reference SOC (NEVPT2) if resources allow.
+%tddft
+  dosoc true    # Active le SOC perturbatif sur la base des états ΔDFT/UKS
+end
+
+* xyzfile 0 1 S0_water_opt.xyz
+
+# Output: Spin-Orbit Coupling elements (chercher "Spin-Orbit Coupling Matrix")
+# Valeurs typiques : 1–10 cm⁻¹ (sans atome lourd), 50–200 cm⁻¹ (avec I)
+# Note: Pour validation ponctuelle, réserver FIC-NEVPT2/CASSCF si ressources disponibles

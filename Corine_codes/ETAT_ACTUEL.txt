@@ -1,0 +1,192 @@
+================================================================================
+ÉTAT ACTUEL DES FICHIERS CORINE_CODES - 15 novembre 2025
+================================================================================
+
+📊 RÉSUMÉ
+================================================================================
+
+Tous les fichiers ORCA et scripts ont été mis à jour pour refléter la portée
+révisée du projet (15/11/2025) :
+
+- 1 molécule de référence expérimentale (externe, publiée)
+- 2 prototypes internes : Iodo-BODIPY + TPP–Iodo–BODIPY
+- Méthodologie : ΔDFT+SOC (remplace NEVPT2)
+
+================================================================================
+✅ FICHIERS MIS À JOUR
+================================================================================
+
+1. README.md
+   - Portée révisée (1 ref + 2 prototypes)
+   - Workflow recommandé (semaines 4–9)
+   - Test comparatif def2-SVP vs def2-TZVP
+   - Troubleshooting complet
+
+2. PROTOTYPES.md
+   - Description détaillée de la référence expérimentale
+   - Description Prototype 1 (Iodo-BODIPY)
+   - Description Prototype 2 (TPP–Iodo–BODIPY)
+   - Grille Go/No-Go quantitative
+   - Tableau comparatif des 3 molécules
+
+3. run_examples.README.md
+   - Workflow recommandé (étapes 1–5)
+   - Paramètres à adapter
+   - Troubleshooting rapide
+   - Convention de nommage
+   - Checklist avant de lancer
+
+================================================================================
+✅ FICHIERS INPUTS ORCA (À jour)
+================================================================================
+
+Phase 1 : Optimisation S₀
+- S0_gas_opt.inp ✅
+- S0_water_opt.inp ✅
+
+Phase 2 : Excitations verticales
+- ADC2_vertical.inp ✅ (def2-TZVP standardisé)
+
+Phase 3 : États excités relaxés
+- T1_opt_UKS.inp ✅
+- S1_opt_DeltaUKS.inp ✅
+
+Phase 4 : Couplage spin-orbite
+- DeltaSCF_SOC.inp ✅ (ΔDFT+SOC recommandé)
+- TDDFT_SOC_quick.inp ✅ (Plan B)
+
+================================================================================
+✅ FICHIERS SCRIPTS SLURM (À jour)
+================================================================================
+
+- submit_S0.slurm ✅
+- submit_S0_water.slurm ✅
+- submit_ADC2.slurm ✅
+- submit_T1.slurm ✅
+- submit_S1.slurm ✅
+- submit_SOC.slurm ✅
+
+================================================================================
+✅ FICHIERS SCRIPTS BASH (À vérifier)
+================================================================================
+
+- copy_and_prepare.sh ⚠️ (À vérifier les chemins)
+- prepare_and_submit.sh ⚠️ (À vérifier les chemins)
+- gen_s1_guesses.sh ✅ (Recommandé pour semaine 7)
+- run_troubleshoot_S1.sh ✅ (Recommandé pour semaine 8–9)
+
+================================================================================
+✅ FICHIERS GÉOMÉTRIE
+================================================================================
+
+- Iodo_Opt.xyz ✅ (Prototype 1)
+- TPP_Opt.xyz ⚠️ (À remplacer par TPP-Iodo-BODIPY.xyz)
+- Bodipy_Opt.xyz ❌ (À SUPPRIMER - hors portée)
+
+================================================================================
+📝 CHANGEMENTS MAJEURS
+================================================================================
+
+1. Portée
+   - Avant : 3 prototypes (BODIPY + Iodo + TPP)
+   - Après : 1 référence + 2 prototypes (Iodo + TPP-Iodo)
+   - Impact : Focus 100% sur molécules thérapeutiques
+
+2. Méthodologie SOC
+   - Avant : NEVPT2 (150–300 min)
+   - Après : ΔDFT+SOC (30–60 min)
+   - Impact : Gain 10× en temps, cohérence ΔDFT
+
+3. Test comparatif ADC(2)
+   - Avant : Pas de test
+   - Après : def2-SVP vs def2-TZVP en semaine 3
+   - Impact : Économie potentielle 9h mur
+
+4. Grille Go/No-Go
+   - Avant : Critères implicites
+   - Après : Grille quantitative avec pondérations
+   - Impact : Objectivité et traçabilité
+
+================================================================================
+⚠️ FICHIERS À VÉRIFIER/METTRE À JOUR
+================================================================================
+
+1. copy_and_prepare.sh
+   - Vérifier les chemins
+   - Vérifier la compatibilité avec la portée révisée
+
+2. prepare_and_submit.sh
+   - Vérifier les chemins
+   - Vérifier la compatibilité avec la portée révisée
+
+3. TPP_Opt.xyz
+   - À remplacer par TPP-Iodo-BODIPY.xyz
+   - Ou renommer pour clarifier
+
+================================================================================
+❌ FICHIERS À SUPPRIMER
+================================================================================
+
+1. Bodipy_Opt.xyz
+   - Raison : BODIPY de base hors portée
+   - Action : Supprimer
+   - Commande : rm Corine_codes/Bodipy_Opt.xyz
+
+================================================================================
+🚀 PROCHAINES ÉTAPES
+================================================================================
+
+Avant le stage :
+1. Vérifier les chemins dans copy_and_prepare.sh
+2. Vérifier les chemins dans prepare_and_submit.sh
+3. Remplacer/renommer TPP_Opt.xyz
+4. Supprimer Bodipy_Opt.xyz
+5. Tester la chaîne ΔDFT sur benzène (semaine 1)
+
+Pendant le stage :
+1. Semaine 3 : Test comparatif def2-SVP vs def2-TZVP
+2. Semaine 7 : Pré-test des guesses S₁
+3. Semaine 8–9 : Escalade auto S₁ si nécessaire
+
+================================================================================
+📊 STATISTIQUES
+================================================================================
+
+Fichiers README/PROTOTYPES/run_examples : 3 (✅ mis à jour)
+Fichiers inputs ORCA : 7 (✅ à jour)
+Fichiers scripts SLURM : 6 (✅ à jour)
+Fichiers scripts bash : 4 (⚠️ 2 à vérifier)
+Fichiers géométrie : 3 (⚠️ 1 à remplacer, 1 à supprimer)
+
+Total : 23 fichiers
+
+================================================================================
+✅ CHECKLIST AVANT LE STAGE
+================================================================================
+
+- [ ] Vérifier copy_and_prepare.sh
+- [ ] Vérifier prepare_and_submit.sh
+- [ ] Remplacer/renommer TPP_Opt.xyz
+- [ ] Supprimer Bodipy_Opt.xyz
+- [ ] Tester la chaîne ΔDFT sur benzène
+- [ ] Vérifier les ressources HPC (RAM, file)
+- [ ] Préparer le jeu de test pré-rempli
+
+================================================================================
+📚 DOCUMENTS CLÉS
+================================================================================
+
+Pour comprendre les changements :
+- README.md (guide complet des scripts)
+- PROTOTYPES.md (description des molécules)
+- run_examples.README.md (exemples d'utilisation)
+
+Pour la théorie et méthodologie :
+- ../md files/demarche_methodologique_stage_v2_integree.md
+- ../md files/Analyse251115.md
+
+================================================================================
+Document créé : 15 novembre 2025
+Version : 1.0
+Statut : À jour
+================================================================================

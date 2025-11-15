@@ -1,4 +1,4 @@
-! Opt UKS PBE0 D3BJ def2-SVP TightSCF TIGHTOPT SlowConv
+! Opt UKS B3LYP D3BJ def2-SVP TightSCF TIGHTOPT SlowConv
 ! CPCM(Water)
 
 %pal
@@ -14,8 +14,8 @@ end
   SCF_ALGORITHM DIIS_TRAH
   MaxIter 500
   ConvForce 1e-6
-  LevelShift 0.2
-  DampPercentage 40
+  LevelShift 0.2      # Shift (perturbation mineure des orbitales)
+  DampPercentage 40   # Amortissement du cycle SCF
 end
 
 %geom
@@ -23,12 +23,18 @@ end
   Trust 0.3
 end
 
-# Use a pre-generated excited guess if available (example):
-# %moinp "S0_water_opt.gbw"
+# Stratégie de convergence robuste pour les états excités
+# Utiliser un guess excité pré-généré si disponible :
+%moinp "S0_water_opt.gbw"
 
 * xyzfile 0 1 S0_water_opt.xyz
 
 # Notes:
-# - This is a ΔSCF-style workflow using UKS to target an excited state.
-# - If you prefer ΔROKS, change HFTyp to ROKS (check ORCA manual for syntax).
-# - Convergence can be difficult; consult troubleshooting strategies in the guide.
+# - ΔSCF-style workflow utilisant UKS pour cibler un état excité
+# - Étape CRITIQUE : risque d'effondrement vers S₀
+# - Temps estimé : 120–180 min par molécule (peut nécessiter 3–5 tentatives)
+# - IMPORTANT (Semaine 7) : Utiliser gen_s1_guesses.sh pour tester 3 guesses différents
+#   (HOMO→LUMO, HOMO−1→LUMO, HOMO→LUMO+1)
+# - Si convergence difficile : voir section 5 du document principal pour escalade
+# - Buffer temporel : +200–300% (3–5 tentatives par molécule)
+# - Plan B : Si après 5 tentatives S₁ échoue, utiliser TD-DFT (ωB97X-D)

@@ -1,0 +1,230 @@
+================================================================================
+FICHIERS DE CALCULS MIS À JOUR - 15 novembre 2025
+================================================================================
+
+📊 RÉSUMÉ
+================================================================================
+
+Tous les fichiers d'input ORCA et scripts ont été mis à jour pour refléter
+la portée révisée du projet (15/11/2025).
+
+Changements majeurs :
+- Portée : 1 référence + 2 prototypes (vs 3 prototypes avant)
+- SOC : ΔDFT+SOC (vs NEVPT2 avant) - gain 10×
+- ADC(2) : def2-TZVP standardisé + test comparatif def2-SVP vs def2-TZVP
+- S₁ : Buffer +200–300% (3–5 tentatives) + scripts d'automatisation
+
+================================================================================
+✅ FICHIERS INPUTS ORCA MIS À JOUR
+================================================================================
+
+1. ADC2_vertical.inp
+   ✅ Changements :
+   - Base : def2-SVP → def2-TZVP (standardisé pour précision)
+   - Commentaires : Ajout du test comparatif def2-SVP vs def2-TZVP (semaine 3)
+   - Temps estimé : 240–360 min (4–6 h) par molécule
+   - Décision : Si écart < 5 nm → def2-SVP; si > 10 nm → def2-TZVP
+
+2. DeltaSCF_SOC.inp
+   ✅ Changements majeurs :
+   - Méthode : TD-DFT → ΔDFT+SOC (UKS/PBE0 + ZORA + dosoc)
+   - Fonctionnelle : wB97X-D3BJ → PBE0 D3BJ
+   - Géométrie : S1_water_opt.xyz → S0_water_opt.xyz
+   - Temps estimé : 30–60 min par molécule (10× plus rapide que NEVPT2)
+   - Avantages : Cohérence avec chaîne ΔDFT, coût réduit
+
+3. S1_opt_DeltaUKS.inp
+   ✅ Changements :
+   - Fonctionnelle : PBE0 → B3LYP (cohérence avec T₁)
+   - Commentaires : Ajout des stratégies de convergence
+   - Temps estimé : 120–180 min par molécule (3–5 tentatives)
+   - Semaine 7 : Utiliser gen_s1_guesses.sh pour tester 3 guesses
+   - Plan B : TD-DFT si après 5 tentatives S₁ échoue
+
+================================================================================
+✅ FICHIERS INPUTS ORCA INCHANGÉS (À jour)
+================================================================================
+
+1. S0_gas_opt.inp
+   - Optimisation S₀ en phase gaz
+   - Temps estimé : 30–60 min
+
+2. S0_water_opt.inp
+   - Optimisation S₀ en solution (CPCM eau)
+   - Temps estimé : 45–90 min
+
+3. T1_opt_UKS.inp
+   - Optimisation T₁ (état triplet)
+   - Temps estimé : 60–120 min
+   - Robuste, généralement bon succès
+
+4. TDDFT_SOC_quick.inp
+   - TD-DFT SOC (Plan B si ΔSCF S₁ échoue)
+   - Temps estimé : 30–60 min
+   - Fallback rapide pour excitations verticales
+
+================================================================================
+✅ FICHIERS SCRIPTS SLURM (À jour)
+================================================================================
+
+Tous les fichiers SLURM sont à jour et prêts à l'emploi :
+
+- submit_S0.slurm (S₀ gaz)
+- submit_S0_water.slurm (S₀ eau)
+- submit_ADC2.slurm (ADC(2))
+- submit_T1.slurm (T₁)
+- submit_S1.slurm (S₁)
+- submit_SOC.slurm (SOC)
+
+Utilisation :
+```bash
+sbatch submit_S0.slurm
+sbatch submit_S0_water.slurm
+sbatch submit_ADC2.slurm  # Batch de nuit recommandé
+sbatch submit_T1.slurm
+sbatch submit_S1.slurm
+sbatch submit_SOC.slurm
+```
+
+================================================================================
+✅ FICHIERS SCRIPTS BASH (À jour)
+================================================================================
+
+1. gen_s1_guesses.sh
+   - Génère 3 guesses différents pour S₁
+   - Utilisation (Semaine 7) :
+     ./gen_s1_guesses.sh -t S1_opt_DeltaUKS.inp -x S0_water_opt.xyz -g S0_water_opt.gbw -n 8
+
+2. run_troubleshoot_S1.sh
+   - Escalade automatique pour S₁ difficile
+   - Utilisation (Semaine 8–9) :
+     ./run_troubleshoot_S1.sh -i S1_opt_DeltaUKS.inp -x S0_water_opt.xyz -g S0_water_opt.gbw -n 8
+
+3. copy_and_prepare.sh
+   - Copier et préparer fichiers
+   - À vérifier les chemins
+
+4. prepare_and_submit.sh
+   - Préparer et soumettre jobs
+   - À vérifier les chemins
+
+================================================================================
+📊 CHANGEMENTS DÉTAILLÉS PAR FICHIER
+================================================================================
+
+ADC2_vertical.inp
+- Ligne 1 : def2-SVP → def2-TZVP
+- Lignes 9–11 : Commentaires ajoutés
+- Lignes 16–20 : Notes sur le test comparatif
+
+DeltaSCF_SOC.inp
+- Ligne 1 : wB97X-D3BJ → UKS PBE0 D3BJ (+ ZORA RIJCOSX)
+- Lignes 8–12 : Bloc %scf ajouté
+- Lignes 14–20 : Commentaires révisés
+- Lignes 22–24 : %tddft avec dosoc true
+- Ligne 26 : S1_water_opt.xyz → S0_water_opt.xyz
+- Lignes 28–30 : Notes sur SOC
+
+S1_opt_DeltaUKS.inp
+- Ligne 1 : PBE0 → B3LYP
+- Lignes 14–15 : Commentaires sur convergence
+- Ligne 18 : %moinp "S0_water_opt.gbw" décommentée
+- Lignes 22–30 : Notes révisées avec stratégies
+
+================================================================================
+🚀 WORKFLOW RECOMMANDÉ
+================================================================================
+
+Semaine 3 : Test comparatif ADC(2)
+```bash
+# Créer deux versions
+cp ADC2_vertical.inp ADC2_vertical_SVP.inp
+cp ADC2_vertical.inp ADC2_vertical_TZVP.inp
+
+# Modifier les bases
+# ADC2_vertical_SVP.inp : ! RI-ADC(2) def2-SVP AutoAux FrozenCore
+# ADC2_vertical_TZVP.inp : ! RI-ADC(2) def2-TZVP AutoAux FrozenCore
+
+# Lancer en parallèle
+sbatch submit_ADC2.slurm  # SVP
+sbatch submit_ADC2.slurm  # TZVP
+
+# Comparer et décider
+```
+
+Semaine 7 : Pré-test S₁
+```bash
+./gen_s1_guesses.sh -t S1_opt_DeltaUKS.inp -x S0_water_opt.xyz -g S0_water_opt.gbw -n 8
+```
+
+Semaine 8–9 : Optimisation S₁
+```bash
+sbatch submit_S1.slurm
+
+# Si convergence difficile
+./run_troubleshoot_S1.sh -i S1_opt_DeltaUKS.inp -x S0_water_opt.xyz -g S0_water_opt.gbw -n 8
+```
+
+Semaine 9–10 : SOC
+```bash
+sbatch submit_SOC.slurm
+```
+
+================================================================================
+✅ CHECKLIST AVANT DE LANCER
+================================================================================
+
+- [ ] Vérifier que les fichiers .xyz sont présents
+- [ ] Vérifier que les fichiers .inp ont les bonnes coordonnées
+- [ ] Vérifier que nprocs correspond aux ressources disponibles
+- [ ] Vérifier que la base est correcte (def2-SVP ou def2-TZVP)
+- [ ] Vérifier que les scripts SLURM ont les bons chemins
+- [ ] Vérifier que l'espace disque est suffisant (≥ 100 Go)
+- [ ] Vérifier que la RAM est suffisante (≥ 32–64 Go pour ADC(2))
+- [ ] Tester la chaîne ΔDFT sur benzène (semaine 1)
+
+================================================================================
+📚 DOCUMENTS CLÉS
+================================================================================
+
+Pour comprendre les changements :
+- README.md (guide complet des scripts)
+- PROTOTYPES.md (description des molécules)
+- run_examples.README.md (exemples d'utilisation)
+
+Pour la théorie et méthodologie :
+- ../md files/demarche_methodologique_stage_v2_integree.md
+- ../md files/Analyse251115.md
+
+================================================================================
+📊 STATISTIQUES
+================================================================================
+
+Fichiers inputs ORCA : 7
+- Mis à jour : 3 (ADC2, DeltaSCF_SOC, S1_opt)
+- Inchangés : 4 (S0_gas, S0_water, T1, TDDFT_SOC_quick)
+
+Fichiers scripts SLURM : 6 (tous à jour)
+
+Fichiers scripts bash : 4 (2 à vérifier les chemins)
+
+Fichiers géométrie : 3
+- À utiliser : 2 (Iodo_Opt.xyz, TPP_Opt.xyz)
+- À supprimer : 1 (Bodipy_Opt.xyz)
+
+================================================================================
+🎯 RÉSULTAT FINAL
+================================================================================
+
+✅ Tous les fichiers de calculs sont à jour
+✅ Méthodologie ΔDFT+SOC intégrée
+✅ Test comparatif ADC(2) documenté
+✅ Stratégies de convergence S₁ intégrées
+✅ Scripts d'automatisation prêts
+✅ Prêt pour le stage Master 2
+
+================================================================================
+Document créé : 15 novembre 2025
+Version : 1.0
+Statut : À jour
+================================================================================

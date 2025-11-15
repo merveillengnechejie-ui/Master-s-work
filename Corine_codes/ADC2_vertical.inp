@@ -1,4 +1,4 @@
-! RI-ADC(2) def2-SVP AutoAux FrozenCore
+! RI-ADC(2) def2-TZVP AutoAux FrozenCore
 ! CPCM(Water)
 
 %pal
@@ -10,9 +10,9 @@ end
 end
 
 %adc
-  n_exc_states 10
-  do_triplets true
-  DoNTOs true
+  n_exc_states 10        # Calcul 10 états singulets
+  do_triplets true       # Aussi calculer 10 états triplets
+  DoNTOs true           # Calculer les Natural Transition Orbitals (analyse)
 end
 
 * xyzfile 0 1 S0_water_opt.xyz
@@ -20,3 +20,8 @@ end
 # Notes:
 # - Use the S0 optimized geometry in water (S0_water_opt.xyz)
 # - Output will contain vertical excitation energies and NTOs
+# - Base standardisée : def2-TZVP (pour précision sur λ_max)
+# - Temps estimé : 240–360 min (4–6 h) par molécule
+# - IMPORTANT (Semaine 3) : Tester def2-SVP vs def2-TZVP sur la réf��rence
+#   pour décider de la base à utiliser pour tous les calculs
+#   Décision : Si écart < 5 nm → garder def2-SVP; si > 10 nm → garder def2-TZVP

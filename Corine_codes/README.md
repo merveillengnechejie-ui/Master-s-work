@@ -1,93 +1,283 @@
-Corine_codes — Templates ORCA 6.1
+# Corine_codes : Scripts et Inputs ORCA pour le Projet BODIPY
 
-But
-----
+## 📋 Vue d'ensemble
 
-Fournir des templates ORCA 6.1 prêts à l'usage pour le workflow décrit dans
-`demarche_methodologique_stage_v2_integree.md`.
+Ce dossier contient tous les **scripts SLURM**, **inputs ORCA 6.1**, et **fichiers de géométrie** nécessaires pour le projet de Master 2 sur l'optimisation computationnelle de nanoparticules BODIPY pour une thérapie combinée PDT/PTT.
 
-Contenu principal
------------------
+**Portée révisée (15/11/2025)** :
+- **1 molécule de référence expérimentale** (externe, publiée) pour benchmarking
+- **2 prototypes internes** : Iodo-BODIPY (PDT) + TPP–Iodo–BODIPY (théranostique)
+- **Méthodologie** : ΔDFT+SOC (remplace NEVPT2)
+- **Durée** : 14 semaines
 
-- `S0_gas_opt.inp`           : Optimisation S0 en phase gaz (B3LYP-D3BJ/def2-SVP)
-- `S0_water_opt.inp`         : Optimisation S0 en solution (CPCM Water)
-- `ADC2_vertical.inp`        : RI-ADC(2) calcul des excitations verticales
-- `T1_opt_UKS.inp`           : Optimisation triplet T1 (ΔUKS / UKS)
-- `S1_opt_DeltaUKS.inp`      : Optimisation S1 par ΔUKS (entry pour ΔSCF)
-- `NEVPT2_SOC.inp`           : Calcul SOC via FIC-NEVPT2 (exemple)
-- `TDDFT_SOC_quick.inp`      : Calcul SOC rapide via TD-DFT (dosoc)
-- `run_examples.README.md`   : Instructions d'utilisation rapide et remarques
+---
 
-Fichiers XYZ prototypes
------------------------
+## 📁 Structure des fichiers
 
-Le dossier contient désormais trois fichiers de coordonnées au format `.xyz`
-utilisés comme prototypes/exemples dans les workflows :
+### 1. Inputs ORCA 6.1 (Phase par phase)
 
-- `Bodipy_Opt.xyz` : coordonnées optimisées du prototype BODIPY.
-- `Iodo_Opt.xyz`  : coordonnées optimisées du prototype iodé.
-- `TPP_Opt.xyz`   : coordonnées optimisées du prototype TPP-BODIPY.
+#### Phase 1 : Optimisation S₀ (État fondamental)
 
-Ces fichiers peuvent être insérés directement dans un input ORCA ou référencés
-via la directive `* xyzfile` :
+| Fichier | Objectif | Temps estimé | Notes |
+| :--- | :--- | :--- | :--- |
+| `S0_gas_opt.inp` | Optimisation S₀ en phase gaz | 30–60 min | Étape de reconnaissance rapide |
+| `S0_water_opt.inp` | Optimisation S₀ en solution (CPCM eau) | 45–90 min | Point de départ pour tous les calculs |
 
-    * xyzfile 0 1 Bodipy_Opt.xyz
+**Utilisation** :
+```bash
+# Lancer S0 gaz
+orca S0_gas_opt.inp > S0_gas_opt.out &
 
-Remarques importantes
----------------------
+# Lancer S0 eau (après S0 gaz)
+orca S0_water_opt.inp > S0_water_opt.out &
+```
 
-1) Remplacez les placeholders `[COORDINATES]` ou utilisez la directive ci-dessus
-   pour charger un fichier `.xyz`.
-2) Ajustez `nprocs` dans les sections `%pal` selon vos ressources HPC.
-3) Les champs `%casscf` (nel/norb) doivent être adaptés au système avant NEVPT2.
-4) Ces templates sont des points de départ. Vérifiez chaque input avant
-   exécution en production.
+#### Phase 2 : Excitations verticales (ADC(2))
 
-Utilisation rapide des scripts fournis
-------------------------------------
+| Fichier | Objectif | Temps estimé | Notes |
+| :--- | :--- | :--- | :--- |
+| `ADC2_vertical.inp` | Calcul λ_max (absorption verticale) | 240–360 min (4–6 h) | **Standardisé def2-TZVP** pour précision |
 
-- `copy_and_prepare.sh` : copie un fichier `.xyz` et un template `.inp` dans un
-  répertoire de travail prêt à l'exécution. Exemple :
+**Utilisation** :
+```bash
+# Lancer ADC(2) en batch de nuit (recommandé)
+sbatch submit_ADC2.slurm
+```
 
-    ./copy_and_prepare.sh Bodipy_Opt.xyz S0_gas_opt.inp
+**⚠️ Important** : En semaine 3, tester **def2-SVP vs def2-TZVP** sur la molécule de référence pour décider de la base à utiliser pour tous les calculs. Cela peut économiser **9h mur** sur le projet.
 
-  (le script peut accepter d'autres options — ouvrir le script pour détails)
+#### Phase 3 : États excités relaxés (T₁ et S₁)
 
-- `prepare_and_submit.sh` : prépare l'input final et soumet le job via un
-  script `submit_*.slurm`. Exemple :
+| Fichier | Objectif | Temps estimé | Notes |
+| :--- | :--- | :--- | :--- |
+| `T1_opt_UKS.inp` | Optimisation T₁ (état triplet) | 60–120 min | Robuste, généralement bon |
+| `S1_opt_DeltaUKS.inp` | Optimisation S₁ (état singulet excité) | 120–180 min | **Étape critique** : prévoir 3–5 tentatives |
 
-    ./prepare_and_submit.sh Bodipy_Opt.xyz submit_S0.slurm
+**Utilisation** :
+```bash
+# Lancer T1 (robuste)
+sbatch submit_T1.slurm
 
-  Vérifiez la charge (`charge`) et la multiplicité (`multiplicity`) avant
-  soumission.
+# Lancer S1 (avec pré-test des guesses)
+./gen_s1_guesses.sh -t S1_opt_DeltaUKS.inp -x S0_water_opt.xyz -g S0_water_opt.gbw -n 8
+sbatch submit_S1.slurm
+```
 
-Notes et prochaines étapes
--------------------------
+#### Phase 4 : Couplage spin-orbite (SOC)
 
-- Si vous voulez que les scripts parcourent automatiquement tous les fichiers
-  `.xyz` (exécution par lot), je peux proposer une version modifiée.
-- Licence: usage académique
-Corine_codes — Templates ORCA 6.1
+| Fichier | Objectif | Temps estimé | Notes |
+| :--- | :--- | :--- | :--- |
+| `DeltaSCF_SOC.inp` | **ΔDFT+SOC** (recommandé) | 30–60 min | Cohérent avec ΔDFT, 10× plus rapide que NEVPT2 |
+| `TDDFT_SOC_quick.inp` | TD-DFT SOC (Plan B) | 30–60 min | À utiliser si ΔSCF S₁ échoue |
 
-But: fournir des templates ORCA 6.1 prêts à l'usage pour le workflow décrit dans
-`demarche_methodologique_stage_v2_integree.md`.
+**Utilisation** :
+```bash
+# Lancer ΔDFT+SOC (standard)
+sbatch submit_SOC.slurm
 
-Contenu
-- S0_gas_opt.inp           : Optimisation S0 en phase gaz (B3LYP-D3BJ/def2-SVP)
-- S0_water_opt.inp         : Optimisation S0 en solution (CPCM Water)
-- ADC2_vertical.inp        : RI-ADC(2) calcul des excitations verticales
-- T1_opt_UKS.inp           : Optimisation triplet T1 (ΔUKS / UKS)
-- S1_opt_DeltaUKS.inp      : Optimisation S1 par ΔUKS (entry pour ΔSCF)
-- NEVPT2_SOC.inp           : Calcul SOC via FIC-NEVPT2 (exemple)
-- TDDFT_SOC_quick.inp      : Calcul SOC rapide via TD-DFT (dosoc)
-- run_examples.README.md   : Instructions d'utilisation rapide et remarques
+# Ou TD-DFT SOC (Plan B)
+orca TDDFT_SOC_quick.inp > TDDFT_SOC_quick.out &
+```
 
-REMARQUES IMPORTANTES
-1) Remplacez les placeholders [COORDINATES] ou utilisez `* xyzfile 0 1 S0_water_opt.xyz`
-   pour charger un fichier .xyz.
-2) Ajustez `nprocs` dans les sections %pal selon vos ressources HPC.
-3) Les champs %casscf (nel/norb) doivent être adaptés au système avant NEVPT2.
-4) Ces templates sont destinés à être des points de départ. Vérifiez chaque input
-   avant exécution en production.
+---
 
-Licence: usage académique
+### 2. Scripts SLURM (Soumission de jobs)
+
+| Fichier | Utilité | Temps de file | Notes |
+| :--- | :--- | :--- | :--- |
+| `submit_S0.slurm` | Soumettre S₀ gaz | < 1h | Rapide |
+| `submit_S0_water.slurm` | Soumettre S₀ eau | < 2h | Rapide |
+| `submit_ADC2.slurm` | Soumettre ADC(2) | 4–6h | **Batch de nuit recommandé** |
+| `submit_T1.slurm` | Soumettre T₁ | 1–2h | Robuste |
+| `submit_S1.slurm` | Soumettre S₁ | 2–3h | **Peut nécessiter plusieurs tentatives** |
+| `submit_SOC.slurm` | Soumettre SOC | 1h | Rapide |
+
+**Utilisation générale** :
+```bash
+# Soumettre un job
+sbatch submit_S0.slurm
+
+# Vérifier l'état des jobs
+squeue -u $USER
+
+# Annuler un job
+scancel <job_id>
+```
+
+---
+
+### 3. Scripts Bash (Automatisation)
+
+| Fichier | Utilité | Statut |
+| :--- | :--- | :--- |
+| `copy_and_prepare.sh` | Copier et préparer fichiers | À vérifier |
+| `prepare_and_submit.sh` | Préparer et soumettre jobs | À vérifier |
+| `gen_s1_guesses.sh` | Générer 3 guesses pour S₁ | ✅ Recommandé |
+| `run_troubleshoot_S1.sh` | Escalade auto pour S₁ | ✅ Recommandé |
+
+**Utilisation** :
+```bash
+# Pré-test des guesses S₁ (semaine 7)
+./gen_s1_guesses.sh -t S1_opt_DeltaUKS.inp -x S0_water_opt.xyz -g S0_water_opt.gbw -n 8
+
+# Escalade auto si S₁ ne converge pas
+./run_troubleshoot_S1.sh -i S1_opt_DeltaUKS.inp -x S0_water_opt.xyz -g S0_water_opt.gbw -n 8
+```
+
+---
+
+### 4. Fichiers de Géométrie (Molécules)
+
+| Fichier | Molécule | Statut | Action |
+| :--- | :--- | :--- | :--- |
+| `Iodo_Opt.xyz` | Iodo-BODIPY (Prototype 1) | ✅ | À utiliser |
+| `TPP_Opt.xyz` | TPP-BODIPY | ⚠️ | À remplacer par TPP-Iodo-BODIPY |
+| `Bodipy_Opt.xyz` | BODIPY de base | ❌ | À supprimer (hors portée) |
+
+**Note** : La molécule de référence expérimentale doit être construite en semaine 2 (voir section 8.1 du document principal).
+
+---
+
+## 🚀 Workflow Recommandé
+
+### Semaine 1 : Validation de la chaîne
+
+```bash
+# 1. Tester S0 gaz sur benzène (molécule test)
+orca S0_gas_opt.inp > S0_gas_opt.out
+
+# 2. Vérifier convergence
+grep "FINAL SINGLE POINT ENERGY" S0_gas_opt.out
+```
+
+### Semaine 3 : Test comparatif def2-SVP vs def2-TZVP
+
+```bash
+# 1. Créer deux versions d'ADC2_vertical.inp
+cp ADC2_vertical.inp ADC2_vertical_SVP.inp
+cp ADC2_vertical.inp ADC2_vertical_TZVP.inp
+
+# 2. Modifier les bases dans les fichiers
+# ADC2_vertical_SVP.inp : ! RI-ADC(2) def2-SVP AutoAux FrozenCore
+# ADC2_vertical_TZVP.inp : ! RI-ADC(2) def2-TZVP AutoAux FrozenCore
+
+# 3. Lancer en parallèle (batch de nuit)
+sbatch submit_ADC2.slurm  # SVP
+sbatch submit_ADC2.slurm  # TZVP
+
+# 4. Comparer λ_max calculé vs expérimental
+# Décision : Si écart < 5 nm → garder def2-SVP; si > 10 nm → garder def2-TZVP
+```
+
+### Semaines 4–6 : Calculs S₀ et ADC(2)
+
+```bash
+# 1. Lancer S0 pour les 3 molécules (référence + 2 prototypes)
+sbatch submit_S0.slurm
+sbatch submit_S0_water.slurm
+
+# 2. Lancer ADC(2) en batch de nuit
+sbatch submit_ADC2.slurm
+
+# 3. Extraire λ_max
+grep "Excitation energy" ADC2_vertical.out | head -1
+```
+
+### Semaines 7–9 : Calculs T₁, S₁, SOC
+
+```bash
+# 1. Lancer T₁ (robuste)
+sbatch submit_T1.slurm
+
+# 2. Pré-test des guesses S₁ (semaine 7)
+./gen_s1_guesses.sh -t S1_opt_DeltaUKS.inp -x S0_water_opt.xyz -g S0_water_opt.gbw -n 8
+
+# 3. Lancer S₁ (semaine 8–9)
+sbatch submit_S1.slurm
+
+# 4. Si S₁ ne converge pas après 5 tentatives
+./run_troubleshoot_S1.sh -i S1_opt_DeltaUKS.inp -x S0_water_opt.xyz -g S0_water_opt.gbw -n 8
+
+# 5. Lancer SOC (après S₁ convergé)
+sbatch submit_SOC.slurm
+```
+
+---
+
+## ⚠️ Troubleshooting
+
+### Problème : ADC(2) manque de RAM
+
+**Symptôme** : Erreur "out of memory"
+
+**Solutions** :
+1. Réduire à def2-SVP (moins de fonctions de base)
+2. Lancer sur nœud avec plus de RAM (> 64 Go)
+3. Réduire nprocs (8 → 4)
+
+### Problème : S₁ ne converge pas
+
+**Symptôme** : Énergie oscille ou augmente
+
+**Solutions** (voir section 5 du document principal) :
+1. Augmenter amortissement SCF (`DampPercentage 60`)
+2. Utiliser `DIIS_TRAH` avec `TRAH_MaxDim 20`
+3. Réduire pas géométrique (`MaxStep 0.1`)
+4. Générer 3 guesses différents (HOMO→LUMO, HOMO−1→LUMO, HOMO→LUMO+1)
+5. Utiliser `./run_troubleshoot_S1.sh` pour escalade auto
+
+**Plan B** : Si après 5 tentatives S₁ échoue, utiliser `TDDFT_SOC_quick.inp` pour excitations verticales diagnostiques.
+
+### Problème : File d'attente HPC saturée
+
+**Symptôme** : Attente > 24h
+
+**Solutions** :
+1. Lancer batch de nuit (moins de charge)
+2. Réduire nprocs (8 → 4) pour accès plus rapide
+3. Utiliser nœuds dédiés si disponibles
+
+---
+
+## 📊 Archivage et Nommage des Fichiers
+
+### Convention de nommage recommandée
+
+```
+<phase>_<molécule>_<tentative>_<base>.<ext>
+
+Exemples :
+- S1_protoA_attempt1_SVP.gbw
+- S1_protoA_attempt2_TZVP.gbw
+- ADC2_ref_def2TZVP.out
+- SOC_protoB_DELTADFT.out
+```
+
+### Archivage systématique
+
+```bash
+# Créer dossier archive
+mkdir -p results/archive_v1
+
+# Archiver tous les .gbw et .out
+cp *.gbw results/archive_v1/
+cp *.out results/archive_v1/
+
+# Garder les fichiers de géométrie optimisée
+cp *.xyz results/
+```
+
+---
+
+## 📚 Références
+
+- **Document principal** : `demarche_methodologique_stage_v2_integree.md`
+- **Analyse critique** : `Analyse251115.md`
+- **Guide pratique** : `Guide_Pratique_ORCA_Scripts_Troubleshooting.md`
+- **ORCA 6.1 Manual** : https://www.orcasoftware.de/
+
+---
+
+**Dernière mise à jour** : 15 novembre 2025
+**Version** : 2.0 (révisée)
+**Statut** : À jour
