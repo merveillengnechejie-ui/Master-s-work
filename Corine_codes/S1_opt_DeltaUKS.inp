@@ -12,29 +12,47 @@ end
 %scf
   HFTyp UKS
   SCF_ALGORITHM DIIS_TRAH
+  TRAH_MaxDim 25      # Augmenter la dimension pour convergence robuste
   MaxIter 500
   ConvForce 1e-6
-  LevelShift 0.2      # Shift (perturbation mineure des orbitales)
-  DampPercentage 40   # Amortissement du cycle SCF
+
+  # Stratégies de convergence avancées pour états excités
+  LevelShift 0.2      # Shift initial (augmenter à 0.5 si convergence difficile)
+  DampPercentage 40   # Amortissement initial (augmenter à 60-70 si nécessaire)
+
+  # Options avancées pour stabiliser convergence
+  MaxCore 8000        # Mémoire pour calculs complexes
 end
 
 %geom
-  MaxStep 0.2
-  Trust 0.3
+  MaxStep 0.2         # Réduire à 0.1 si convergence problématique
+  Trust 0.3           # Réduire à 0.15 si besoin
+  TolE 1e-6           # Critère d'énergie plus strict
 end
 
-# Stratégie de convergence robuste pour les états excités
-# Utiliser un guess excité pré-généré si disponible :
+# ATTENTION : Pour une convergence réussie de S₁, effectuer les étapes préalables :
+# 1. Analyser nature de l'état excité via ADC(2) + NTOs pour identifier type d'excitation (π→π*, n→π*, CT)
+# 2. Générer plusieurs guess électroniques avec gen_s1_guesses.sh (HOMO→LUMO, HOMO-1→LUMO, HOMO→LUMO+1)
+# 3. Utiliser la méthode IMOM (Initial Maximum Overlap Method) pour choisir le guess optimal
+# 4. Adapter les algorithmes selon type d'excitation : π→π*: B3LYP/PBE0, n→π*: ΔROKS, CT: ωB97M-V + ptSS-PCM
+
 %moinp "S0_water_opt.gbw"
 
 * xyzfile 0 1 S0_water_opt.xyz
 
+# Protocole avancé de convergence S₁ (ΔSCF):
+# - Nature d'excitation : identifier type (π→π*, n→π*, CT) via ADC(2) + NTOs
+# - Guess électroniques : tester HOMO→LUMO, HOMO-1→LUMO, HOMO→LUMO+1 via IMOM
+# - Algorithmes adaptés : π→π* (ΔUKS), n→π* (ΔROKS), CT (ωB97M-V + ptSS-PCM)
+# - Stratégies de convergence : LevelShift, DampPercentage, TRAH_MaxDim
+# - Critères validation : Énergie stable <10⁻⁶ Hartree, forces <seuil, pas de freq imaginaire parasite, S² conservé
+
 # Notes:
 # - ΔSCF-style workflow utilisant UKS pour cibler un état excité
-# - Étape CRITIQUE : risque d'effondrement vers S₀
-# - Temps estimé : 120–180 min par molécule (peut nécessiter 3–5 tentatives)
-# - IMPORTANT (Semaine 7) : Utiliser gen_s1_guesses.sh pour tester 3 guesses différents
-#   (HOMO→LUMO, HOMO−1→LUMO, HOMO→LUMO+1)
-# - Si convergence difficile : voir section 5 du document principal pour escalade
-# - Buffer temporel : +200–300% (3–5 tentatives par molécule)
-# - Plan B : Si après 5 tentatives S₁ échoue, utiliser TD-DFT (ωB97X-D)
+# - Étape CRITIQUE : risque d'effondrement vers S₀, nécessite stratégies de convergence avancées
+# - Temps estimé : 120–180 min par molécule (peut nécessiter 3–5 tentatives avec buffer +200–300%)
+# - IMPORTANT (Semaine 7) : Utiliser ./gen_s1_guesses.sh pour tester 3 configurations électroniques
+#   (HOMO→LUMO, HOMO−1→LUMO, HOMO→LUMO+1) et utiliser ./run_troubleshoot_S1.sh pour escalade automatique
+# - Si convergence toujours difficile après 5 tentatives : utiliser Plan B (TD-DFT ωB97X-D)
+# - Buffer temporel recommandé : +200–300% (3–5 tentatives par molécule)
+# - Critères de validation : Énergie stable, forces < seuil, pas de fréquences imaginaires parasites

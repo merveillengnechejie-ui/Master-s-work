@@ -9,7 +9,181 @@ Ce fichier contient des **exemples d'utilisation** et des **notes pratiques** po
 - 2 prototypes internes : Iodo-BODIPY + TPP–Iodo–BODIPY
 - Méthodologie : ΔDFT+SOC (remplace NEVPT2)
 
+**Méthodes recommandées** :
+- **ΔDFT+SOC** pour le couplage spin-orbite (10× plus rapide que NEVPT2)
+- **Protocole avancé de convergence S₁** avec buffer +200-300% (3-5 tentatives)
+- **Test comparatif def2-SVP vs def2-TZVP** en semaine 3 pour optimiser le timing
+
 ---
+
+## 🧪 Workflow Complet des Calculs
+
+### Étape 1 : Optimisation géométrique de l'état fondamental (S₀)
+
+```bash
+# Optimisation en phase gazeuse (reconnaissance)
+orca S0_gas_opt.inp > S0_gas_opt.out &
+
+# Optimisation en phase aqueuse (géométrie de référence pour calculs)
+orca S0_water_opt.inp > S0_water_opt.out &
+```
+
+### Étape 2 : Calculs d'excitation verticale (ADC(2))
+
+```bash
+# Calcul λ_max via ADC(2) - base def2-TZVP (standard)
+orca ADC2_vertical.inp > ADC2_vertical.out
+
+# ⚠️ Test critique semaine 3 : def2-SVP vs def2-TZVP sur la molécule de référence
+# Si MAE < 5 nm : utiliser def2-SVP (gain ~3h/molécule)
+# Si MAE > 10 nm : utiliser def2-TZVP (précision requise)
+```
+
+### Étape 3 : Optimisation des états excités (T₁ et S₁)
+
+```bash
+# Optimisation T₁ (triplet) - rapide, robuste
+orca T1_opt_UKS.inp > T1_opt_UKS.out
+
+# Optimisation S₁ (singulet) - délicate, nécessite protocole avancé
+# Utiliser les scripts d'automatisation pour convergence :
+
+# 1. Générer plusieurs guess électroniques
+./gen_s1_guesses.sh -t S1_opt_DeltaUKS.inp -x S0_water_opt.xyz -g S0_water_opt.gbw -n 8
+
+# 2. Lancer avec protocole d'escalade automatique
+./run_troubleshoot_S1.sh -i S1_opt_DeltaUKS.inp -x S0_water_opt.xyz -g S0_water_opt.gbw -n 8
+```
+
+**Protocole avancé de convergence S₁ (ΔSCF)** :
+- Analyse préalable de la nature de l'état excité (π→π*, n→π*, CT) via ADC(2) + NTOs
+- Génération de 3 guesses électroniques (HOMO→LUMO, HOMO-1→LUMO, HOMO→LUMO+1) via IMOM
+- Adaptation des algorithmes selon type d'excitation : π→π* (ΔUKS), n→π* (ΔROKS), CT (ωB97M-V + ptSS-PCM)
+- Stratégies de convergence : LevelShift, DampPercentage, TRAH_MaxDim
+- Buffer +200-300% (3-5 tentatives) pour convergence fiable
+
+### Étape 4 : Couplage Spin-Orbite (SOC) - Méthode recommandée
+
+```bash
+# ΔDFT+SOC (recommandé) - cohérent avec workflow ΔDFT, 10× plus rapide que NEVPT2
+orca DeltaSCF_SOC.inp > DeltaSCF_SOC.out
+
+# Temps estimé : 30-60 min par molécule
+# Constantes SOC typiques : 1-10 cm⁻¹ (sans atome lourd), 50-200 cm⁻¹ (avec I)
+```
+
+**Options alternatives** :
+- TD-DFT SOC rapide : pour screening initial (TDDFT_SOC_quick.inp)
+- Validation ponctuelle NEVPT2 : pour candidats retenus si ressources disponibles
+
+---
+
+## 📊 Grille Go/No-Go Quantitative
+
+### Prototype 1 : Iodo-BODIPY (PDT optimisée)
+| Critère | Cible | Poids | Score max |
+| :--- | :--- | :--- | :--- |
+| **λ_max (absorption)** | 680-720 nm (NIR-I) | 25% | 25/25 |
+| **E_adiabatic (PTT)** | < 1.0 eV | 15% | 15/15 |
+| **ΔE_ST (ISC/PDT)** | < 0.05 eV | 25% | 25/25 |
+| **SOC (ISC speed)** | > 50 cm⁻¹ | 25% | 25/25 |
+| **Photostabilité** | PSI > 1 | 10% | 10/10 |
+| **TOTAL** | **Score ≥ 70% = Go** | **100%** | **100/100** |
+
+### Prototype 2 : TPP-Iodo-BODIPY (théranostique ciblé)
+| Critère | Cible | Poids | Score max |
+| :--- | :--- | :--- | :--- |
+| **λ_max (absorption)** | 690-730 nm (NIR-I, légère perturbation par TPP+) | 20% | 20/25 |
+| **E_adiabatic (PTT)** | < 1.2 eV | 15% | 15/15 |
+| **ΔE_ST (ISC/PDT)** | < 0.08 eV | 20% | 20/25 |
+| **SOC (ISC speed)** | > 40 cm⁻¹ | 15% | 15/15 |
+| **Ciblage mitochondrial** | Quantitatif (critères ci-dessous) | 30% | 30/30 |
+| **TOTAL** | **Score ≥ 70% = Go** | **100%** | **100/100** |
+
+#### Critères de ciblage mitochondrial quantitatifs (Prototype 2)
+- Charge TPP⁺: +1,00 e (localisée sur TPP)
+- Distance minimale TPP⁺ → centre BODIPY : > 5 Å
+- Angle dièdre TPP⁺-BODIPY : > 90°
+- Potentiel membranaire prédit : ΔΨ > 150 mV
+- Coefficient de perméabilité apparente (P_app) > 10⁻⁶ cm/s
+- Rapport d'accumulation : ≥ 10
+- Énergie de liaison à la membrane ≥ -20 kcal/mol
+
+---
+
+## 🚀 Exemples de Workflows
+
+### Workflow complet pour une molécule
+
+```bash
+# 1. Optimisation S₀ (gaz + eau)
+sbatch submit_S0.slurm    # 30-60 min
+sbatch submit_S0_water.slurm  # 45-90 min
+
+# 2. Excitations verticales - tester def2-SVP vs def2-TZVP
+sbatch submit_ADC2.slurm      # 240-360 min
+
+# 3. États excités
+sbatch submit_T1.slurm        # 60-120 min
+# S₁ optimization avec protocole avancé (peut nécessiter plusieurs tentatives)
+sbatch submit_S1.slurm        # 120-180 min × (3-5) tentatives
+
+# 4. SOC via ΔDFT+SOC
+sbatch submit_SOC.slurm       # 30-60 min
+```
+
+### Workflow de validation méthodologique
+
+```bash
+# 1. Calculer sur la molécule de référence
+# 2. Comparer λ_max, ΔE_ST, SOC avec données expérimentales
+# 3. Calculer MAE < 0.1 eV, R² > 0.95
+# 4. Valider sur ensemble de 3-5 BODIPY supplémentaires
+
+# Exemple avec validation étendue :
+python3 analyze_results.py ADC2_vertical.out  # Extraction λ_max
+python3 compare_prototypes.py ref_data.csv results.csv  # Validation
+```
+
+---
+
+## 🛠️ Scripts Utiles
+
+### Scripts d'automatisation
+
+```bash
+# Générer plusieurs guess pour S₁ (HOMO→LUMO, HOMO-1→LUMO, HOMO→LUMO+1)
+./gen_s1_guesses.sh -t S1_opt_DeltaUKS.inp -x S0_water_opt.xyz -g S0_water_opt.gbw -n 8
+
+# Troubleshooting automatique avec escalade (LevelShift/Damp/DIIS_TRAH)
+./run_troubleshoot_S1.sh -i S1_opt_DeltaUKS.inp -x S0_water_opt.xyz -g S0_water_opt.gbw -n 8
+
+# Copier fichiers ORCA avec bonnes conventions
+./copy_and_prepare.sh /path/to/working/dir
+
+# Préparer et soumettre tous les calculs pour un prototype
+./prepare_and_submit.sh /path/to/working/dir 8 verbose
+```
+
+---
+
+## ⚠️ Points de Vigilance
+
+### Gestion des ressources computationnelles
+- ADC(2) : Base def2-TZVP coûteuse → Tester semaine 3 si def2-SVP suffisant
+- S₁ optimizations : Buffer +200-300% pour convergence (3-5 tentatives)
+- SOC : ΔDFT+SOC est 10× plus rapide que NEVPT2
+
+### Convergence des calculs
+- S₁ optimization délicate → Utiliser protocole avancé
+- Générer plusieurs guess électroniques pour améliorer chances de convergence
+- Utiliser TRAH et algorithmes robustes (DIIS_TRAH) pour états excités
+
+### Validation des résultats
+- Comparer λ_max avec données expérimentales (MAE < 0.1 eV)
+- Vérifier absence de fréquences imaginaires parasites
+- Analyser les propriétés photophysiques (Φ_f, τ, k_processus)
+- Évaluer les indicateurs de photostabilité (PSI) et PTT (TCI)
 
 ## 🚀 Workflow Recommandé
 

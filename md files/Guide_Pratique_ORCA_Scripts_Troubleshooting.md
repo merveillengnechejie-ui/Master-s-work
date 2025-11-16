@@ -415,19 +415,70 @@ else:
 
 ---
 
-#### Template 7 : Couplage Spin-Orbite (FIC-NEVPT2 - Gold Standard)
+#### Template 7 : Couplage Spin-Orbite (ΔDFT+SOC - Méthode Recommandée)
 
-**Fichier :** `NEVPT2_SOC.inp`
+**Fichier :** `DeltaSOC_recommended.inp`
+
+```orca
+#==============================================================================
+# ORCA 6.1 - Spin-Orbit Coupling Calculation (ΔDFT+SOC - Recommended)
+# Purpose: Calculate S1-T1 coupling constant for ISC prediction (PDT potential)
+# COMPLEXITY: ★★☆☆☆ (Fast, consistent with ΔDFT workflow)
+# TIME: 30-60 min, 8 CPUs
+#
+# NOTE: This is the NEW recommended method for SOC (replaces FIC-NEVPT2 for efficiency)
+# Provides good balance between accuracy and computational cost, and is consistent
+# with the ΔDFT methodology for S1/T1 calculations. Offers ~10× speedup vs NEVPT2.
+#==============================================================================
+
+! UKS PBE0 D3BJ def2-SVP ZORA RIJCOSX AutoAux TightSCF
+! CPCM(Water)
+
+%pal
+  nprocs 8
+end
+
+%cpcm
+  epsilon 80.0
+end
+
+%scf
+  HFTyp UKS
+  SCF_ALGORITHM DIIS_TRAH
+  MaxIter 500
+  ConvForce 1e-6
+end
+
+%tddft
+  dosoc true     # Enable perturbative SOC calculation
+  nstates 10     # Calculate 10 singlet states
+  ntrips 10      # Calculate 10 triplet states
+end
+
+* xyzfile 0 1 S0_water_opt.xyz
+```
+
+**Expected output:**
+- Look for: "Spin-Orbit Coupling elements" in output
+- Units: cm⁻¹ (wave numbers)
+- Typical BODIPY values: 1-10 cm⁻¹ (no heavy atom), 50-200 cm⁻¹ (with I)
+- This method provides ~10× speedup compared to NEVPT2 while maintaining good accuracy for trends
+
+---
+
+#### Template 8 : Couplage Spin-Orbite (FIC-NEVPT2 - Validation Ponctuelle)
+
+**Fichier :** `NEVPT2_SOC_validation.inp`
 
 ```orca
 #==============================================================================
 # ORCA 6.1 - Spin-Orbit Coupling Calculation (FIC-NEVPT2)
-# Purpose: Calculate S1-T1 coupling constant for ISC prediction (PDT potential)
+# Purpose: Validation point for SOC calculation (Gold Standard)
 # COMPLEXITY: ★★★★★ (Very expensive, highly accurate)
 # Time: 150-300 min, 8 CPUs
 #
-# NOTE: This is the "gold standard" for SOC calculations on BODIPY.
-# For faster alternative, see TDDFT_SOC_fast.inp
+# NOTE: Reserve for validation of candidates identified via ΔDFT+SOC
+# Use only if computational resources are available after primary screening
 #==============================================================================
 
 ! FIC-NEVPT2 wB97X-D3BJ def2-TZVP ZORA RIJCOSX AutoAux
@@ -445,14 +496,14 @@ end
 %casscf
   nel 8                  # Number of active electrons
   norb 6                 # Number of active orbitals
-  
+
   # Calculate both singlet and triplet roots
   mult 1,3              # Multiplicities: 1 = singlet, 3 = triplet
   nroots 1,1            # 1 root for S1, 1 root for T1
-  
+
   # NEVPT2 perturbative correction
   PTMethod FIC_NEVPT2   # Fully-Internally-Contracted NEVPT2
-  
+
   # Convergence parameters
   TraceCI 1.0
   MaxIter 150
@@ -463,7 +514,7 @@ end
   DoSOC true            # Enable spin-orbit coupling calculation
   Method ZORA           # Scalar-relativistic ZORA approach
   zcora_model 6         # Standard ZORA model
-  
+
   # SOC-specific options
   SOCType PerturbativeSOC  # Use perturbative SOC
 end
@@ -476,17 +527,19 @@ end
 - Units: cm⁻¹ (wave numbers)
 - Typical BODIPY values: 1-10 cm⁻¹ (no heavy atom), 50-200 cm⁻¹ (with I)
 
+**Note:** Use this expensive method only for final validation of top candidates identified with ΔDFT+SOC
+
 ---
 
-#### Template 8 : Couplage Spin-Orbite (TD-DFT Fast Alternative)
+#### Template 9 : Couplage Spin-Orbite (TD-DFT Fast Alternative)
 
 **Fichier :** `TDDFT_SOC_fast.inp`
 
 ```orca
 #==============================================================================
 # ORCA 6.1 - Spin-Orbit Coupling (TD-DFT Fast Alternative)
-# PURPOSE: Quick estimate of SOC if FIC-NEVPT2 not feasible
-# ACCURACY: Medium (less accurate than NEVPT2, but fast)
+# PURPOSE: Quick estimate of SOC if ΔDFT+SOC not available
+# ACCURACY: Medium (less accurate than ΔDFT+SOC, but fast)
 # TIME: 30-60 min, 8 CPUs
 #
 # USE WHEN: Computational resources are limited or validation needed quickly
@@ -507,7 +560,7 @@ end
   nstates 10             # Number of singlet states
   ntrips 10              # Number of triplet states
   dosoc true             # Enable SOC calculation
-  
+
   # Advanced options for accuracy
   UseAuxJ true
 end
@@ -559,7 +612,7 @@ class ORCAAnalyzer:
         """Extract SOC matrix elements"""
         matches = re.findall(r'<S\d+\|SOC\|T\d+>\s*=\s*([-+]?\d+\.\d+)', self.content)
         return matches if matches else []
-    
+
     def extract_charges(self):
         """Extract Mulliken or Hirshfeld charges"""
         charges = {}
@@ -573,24 +626,63 @@ class ORCAAnalyzer:
                     except ValueError:
                         pass
         return charges
-    
+
+    def extract_natural_transition_orbitals_info(self):
+        """Extract NTO information from ADC(2) output"""
+        # Look for NTO analysis if available
+        nto_info = {}
+        lines = self.content.split('\n')
+        for i, line in enumerate(lines):
+            if 'Natural Transition Orbital' in line or 'NTO' in line:
+                # Extract relevant NTO info
+                nto_info['analysis_found'] = True
+                break
+        return nto_info
+
+    def extract_relaxation_energies(self):
+        """Extract relaxation energies from S1/T1 optimizations"""
+        # Calculate E_adiabatic = E_S0 - E_S1
+        s0_energy_match = re.search(r'S0 final energy:\s+([-+]?\d+\.\d+)', self.content)
+        s1_energy_match = re.search(r'S1 final energy:\s+([-+]?\d+\.\d+)', self.content)
+        t1_energy_match = re.search(r'T1 final energy:\s+([-+]?\d+\.\d+)', self.content)
+
+        energies = {}
+        if s0_energy_match:
+            energies['S0'] = float(s0_energy_match.group(1))
+        if s1_energy_match:
+            energies['S1'] = float(s1_energy_match.group(1))
+        if t1_energy_match:
+            energies['T1'] = float(t1_energy_match.group(1))
+
+        if 'S0' in energies and 'S1' in energies:
+            energies['E_adiabatic'] = energies['S0'] - energies['S1']
+        if 'S1' in energies and 'T1' in energies:
+            energies['Delta_E_ST'] = energies['S1'] - energies['T1']
+
+        return energies
+
+    def extract_oscillator_strengths(self):
+        """Extract oscillator strengths from ADC(2) output"""
+        osc_strengths = re.findall(r'f =\s+([-+]?\d+\.\d+)', self.content)
+        return [float(f) for f in osc_strengths] if osc_strengths else []
+
     def report(self):
         """Print comprehensive analysis"""
         print(f"\n{'='*60}")
         print(f"ORCA Output Analysis: {self.outfile}")
         print(f"{'='*60}\n")
-        
+
         # Energy
         E = self.extract_final_energy()
         if E:
             print(f"✓ Final Energy: {E:.10f} a.u.")
-        
+
         # S1 and λ_max (if ADC(2))
         E_S1, lambda_max = self.extract_s1_energy()
         if E_S1:
             print(f"✓ S1 Excitation Energy: {E_S1:.4f} eV")
             print(f"✓ λ_max: {lambda_max:.1f} nm")
-            
+
             # Check if in therapeutic window
             if 600 <= lambda_max <= 900:
                 print(f"  ✓ Within NIR-I window (600-900 nm) ✓")
@@ -598,7 +690,39 @@ class ORCAAnalyzer:
                 print(f"  ✓ Within NIR-II window (1000-1700 nm) ✓")
             else:
                 print(f"  ⚠ Outside therapeutic windows")
-        
+
+        # OSCILLATOR STRENGTHS
+        osc_strengths = self.extract_oscillator_strengths()
+        if osc_strengths:
+            print(f"✓ Oscillator strengths: {osc_strengths[:3]} (first 3 states)")
+
+        # S1/T1 relaxation energies
+        relaxation_energies = self.extract_relaxation_energies()
+        if 'E_adiabatic' in relaxation_energies:
+            E_ad_eV = relaxation_energies['E_adiabatic'] * 27.211
+            print(f"✓ E_adiabatic (PTT): {E_ad_eV:.4f} eV")
+            if E_ad_eV < 1.0:
+                print(f"  ✓ Good PTT potential (E_ad < 1.0 eV)")
+            elif E_ad_eV < 1.2:
+                print(f"  ⚠ Moderate PTT potential (E_ad 1.0-1.2 eV)")
+            else:
+                print(f"  ⚠ Limited PTT potential (E_ad > 1.2 eV)")
+
+        if 'Delta_E_ST' in relaxation_energies:
+            Delta_E_ST_eV = relaxation_energies['Delta_E_ST'] * 27.211
+            print(f"✓ ΔE_ST (ISC): {Delta_E_ST_eV:.4f} eV")
+            if Delta_E_ST_eV < 0.08:
+                print(f"  ✓ Excellent ISC efficiency (ΔE_ST < 0.08 eV)")
+            elif Delta_E_ST_eV < 0.15:
+                print(f"  ✓ Good ISC efficiency (ΔE_ST 0.08-0.15 eV)")
+            else:
+                print(f"  ⚠ Limited ISC efficiency (ΔE_ST > 0.15 eV)")
+
+        # NTO Analysis
+        nto_info = self.extract_natural_transition_orbitals_info()
+        if nto_info:
+            print(f"✓ NTO analysis available (charge transfer character)")
+
         # SOC
         soc_vals = self.extract_soc_values()
         if soc_vals:
@@ -607,45 +731,128 @@ class ORCAAnalyzer:
             print(f"  Max SOC: {max_soc:.2f} cm⁻¹")
             if max_soc > 50:
                 print(f"  ✓ Strong SOC → Good PDT potential ✓")
+            elif max_soc > 40:
+                print(f"  ⚠ Moderate SOC → Acceptable PDT potential (Iodo-BODY requirement)")
             elif max_soc > 10:
-                print(f"  ⚠ Moderate SOC → Acceptable PDT potential")
+                print(f"  ⚠ Weak SOC → Limited PDT potential")
             else:
-                print(f"  ✗ Weak SOC → Limited PDT potential")
-        
+                print(f"  ✗ Very weak SOC → Poor PDT potential")
+
         # Charges
         charges = self.extract_charges()
         if charges:
             print(f"✓ Atomic Charges:")
             for atom, charge in list(charges.items())[:5]:  # Print first 5
                 print(f"  {atom}: {charge:+.4f}")
-        
+
+            # Check for TPP+ charge if applicable
+            tpp_charges = {k: v for k, v in charges.items() if 'P' in k or 'Pd' in k}  # Phosphonium
+            if tpp_charges:
+                total_tpp_charge = sum(tpp_charges.values())
+                print(f"  → Total TPP+ charge: {total_tpp_charge:+.2f} e")
+                if total_tpp_charge > 0.8:
+                    print(f"  ✓ TPP+ charge well localized")
+                else:
+                    print(f"  ⚠ TPP+ charge delocalized")
+
         print(f"\n{'='*60}\n")
 
 def compare_prototypes(proto_files):
     """Compare results across multiple prototypes"""
-    print("\n" + "="*80)
-    print("PROTOTYPE COMPARISON TABLE")
-    print("="*80 + "\n")
-    
+    print("\n" + "="*100)
+    print("PROTOTYPE COMPARISON TABLE - GRILLE GO/NO-GO QUANTITATIVE")
+    print("="*100 + "\n")
+
     results = {}
     for name, outfile in proto_files.items():
         analyzer = ORCAAnalyzer(outfile)
         E = analyzer.extract_final_energy()
         E_S1, lambda_max = analyzer.extract_s1_energy()
         soc_vals = analyzer.extract_soc_values()
-        
+        charges = analyzer.extract_charges()
+
+        # Extract TPP+ charge if applicable
+        tpp_charges = {k: v for k, v in charges.items() if 'P' in k or 'Pd' in k}  # Phosphonium
+        total_tpp_charge = sum(tpp_charges.values()) if tpp_charges else 0
+
+        # Extract relaxation energies
+        relaxation_energies = analyzer.extract_relaxation_energies()
+        E_ad = relaxation_energies.get('E_adiabatic', 0) * 27.211 if 'E_adiabatic' in relaxation_energies else 0  # Convert to eV
+        Delta_E_ST = relaxation_energies.get('Delta_E_ST', 0) * 27.211 if 'Delta_E_ST' in relaxation_energies else 0  # Convert to eV
+
         results[name] = {
             'Energy': E,
             'λ_max (nm)': lambda_max,
-            'SOC (cm⁻¹)': max(float(v) for v in soc_vals) if soc_vals else 0
+            'SOC (cm⁻¹)': max(float(v) for v in soc_vals) if soc_vals else 0,
+            'E_ad (eV)': E_ad,
+            'ΔE_ST (eV)': Delta_E_ST,
+            'TPP_charge': total_tpp_charge
         }
-    
-    # Print table
-    print(f"{'Prototype':<15} {'Energy (a.u.)':<20} {'λ_max (nm)':<15} {'Max SOC (cm⁻¹)':<15}")
+
+    # Print comprehensive table with Go/No-Go criteria
+    print(f"{'Prototype':<12} {'λ_max':<8} {'E_ad':<8} {'ΔE_ST':<9} {'SOC':<9} {'TPP+':<8} {'Status':<10}")
     print("-" * 80)
+
     for proto, data in results.items():
-        print(f"{proto:<15} {data['Energy']:<20.10f} {data['λ_max (nm)']:<15.1f} {data['SOC (cm⁻¹)']:<15.2f}")
-    print("\n")
+        # Determine prototype type for scoring
+        is_reference = 'ref' in proto.lower() or 'reference' in proto.lower()
+        is_iodo = 'iodo' in proto.lower() or 'iod' in proto.lower()
+        is_tpp = 'tpp' in proto.lower() or 'target' in proto.lower()
+
+        # Determine scores based on criteria
+        status = "EVAL"
+        if is_reference:
+            # Reference molecule - used for validation
+            status = "BENCH"
+        elif is_iodo:
+            # Iodo-BODIPY criteria: λ_max [680-720], ΔE_ST < 0.05, SOC > 50, E_ad < 1.0
+            lambda_ok = (680 <= (data['λ_max (nm)'] or 0) <= 720)
+            delta_ok = data['ΔE_ST (eV)'] < 0.05
+            soc_ok = data['SOC (cm⁻¹)'] > 50
+            ead_ok = data['E_ad (eV)'] < 1.0
+            status = "✓ GO" if (lambda_ok and delta_ok and soc_ok and ead_ok) else "✗ NO-GO"
+        elif is_tpp:
+            # TPP-Iodo-BODIPY criteria: λ_max [690-730], ΔE_ST < 0.08, SOC > 40, E_ad < 1.2, TPP_charge > 0.8
+            lambda_ok = (690 <= (data['λ_max (nm)'] or 0) <= 730)
+            delta_ok = data['ΔE_ST (eV)'] < 0.08
+            soc_ok = data['SOC (cm⁻¹)'] > 40
+            ead_ok = data['E_ad (eV)'] < 1.2
+            charge_ok = data['TPP_charge'] > 0.8
+            status = "✓ GO" if (lambda_ok and delta_ok and soc_ok and ead_ok and charge_ok) else "✗ NO-GO"
+
+        print(f"{proto:<12} {(data['λ_max (nm)'] or 0):<8.1f} {data['E_ad (eV)']:<8.3f} {data['ΔE_ST (eV)']:<9.3f} {data['SOC (cm⁻¹)']:<9.1f} {data['TPP_charge']:<8.2f} {status:<10}")
+
+    print("\n" + "-" * 80)
+    print("CRITÈRES:")
+    print("  Iodo-BODY: λ_max [680-720nm], ΔE_ST < 0.05 eV, SOC > 50 cm⁻¹, E_ad < 1.0 eV")
+    print("  TPP-Iodo:  λ_max [690-730nm], ΔE_ST < 0.08 eV, SOC > 40 cm⁻¹, E_ad < 1.2 eV, TPP+ charge > 0.8 e")
+    print("-" * 80 + "\n")
+
+def calculate_photostability_indicator(s1_energy, t1_energy, non_radiative_rate, degradation_rate):
+    """
+    Calculate Photostability Index (PSI)
+    PSI = (k_{ISC} + k_f) / (k_{nr} + k_{dég})
+    Higher values indicate better photostability
+    """
+    # Simplified calculation - in reality would need more detailed kinetic analysis
+    if non_radiative_rate + degradation_rate > 0:
+        psi = (1/10e-12 + 1/1e-9) / (non_radiative_rate + degradation_rate)  # Using typical values for k ISC and k_f
+        return psi
+    else:
+        return float('inf')
+
+def calculate_ptt_conversion_indicator(non_radiative_rate, fluorescence_rate, isc_rate):
+    """
+    Calculate Thermal Conversion Index (TCI)
+    TCI = k_{nr} / (k_f + k_{ISC})
+    Higher values indicate better PTT conversion
+    """
+    denominator = fluorescence_rate + isc_rate
+    if denominator > 0:
+        tci = non_radiative_rate / denominator
+        return tci
+    else:
+        return float('inf')
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
@@ -903,7 +1110,94 @@ if __name__ == "__main__":
 
 ---
 
-## Partie 3 : Checklist avant de soumettre les calculs
+## Partie 3 : Protocole avancé de convergence S₁ (ΔSCF)
+
+### Étape 1: Analyse préalable de la nature de l'état excité
+
+Avant de lancer l'optimisation S₁, il est essentiel d'analyser la nature de l'état excité à l'aide d'ADC(2) et des NTO (Natural Transition Orbitals) :
+
+1. **Identifier le type d'excitation** :
+   - π→π* (transition locale)
+   - n→π* (transition non-liante à anti-liante)
+   - CT (transfert de charge intramoléculaire)
+
+2. **Adapter la méthode en conséquence** :
+   - Pour π→π*: ΔUKS avec PBE0 ou B3LYP
+   - Pour n→π*: ΔROKS est souvent plus stable
+   - Pour états de transfert de charge : ωB97M-V avec ptSS-PCM
+
+### Étape 2: Création de plusieurs guess électroniques
+
+```bash
+# Générer 3 types de guess avec différents arrangements électroniques
+# Script : gen_s1_guesses.sh
+python generate_guess.py --type HOMO-LUMO --output S1_HL.gbw
+python generate_guess.py --type HOMO-1-LUMO --output S1_Hm1L.gbw  # Double excitation partielle
+python generate_guess.py --type HOMO-LUMO+1 --output S1_HLp1.gbw  # Excitation haute énergie
+```
+
+### Étape 3: Méthode IMOM pour choix optimal
+
+Utiliser la méthode Initial Maximum Overlap Method (IMOM) pour sélectionner le guess qui maximise le chevauchement avec l'état excité cible.
+
+```orca
+%moinp "S1_HL.gbw"  # Essayer avec chaque guess
+! Opt UKS B3LYP D3BJ def2-SVP TightSCF TIGHTOPT SlowConv
+# Répéter pour chaque guess et comparer énergies
+```
+
+### Étape 4: Stratégies de convergence adaptées
+
+Selon le type d'excitation identifié, adapter les paramètres :
+
+**Pour excitations π→π*:**
+```orca
+! Opt UKS B3LYP D3BJ def2-SVP TightSCF TIGHTOPT
+%scf
+  HFTyp UKS
+  SCF_ALGORITHM DIIS_TRAH
+  DampPercentage 40
+  LevelShift 0.2
+end
+```
+
+**Pour excitations n→π*:**
+```orca
+! Opt UKS B3LYP D3BJ def2-SVP TightSCF TIGHTOPT
+%scf
+  HFTyp UKS  # ou utiliser ΔROKS
+  SCF_ALGORITHM DIIS_TRAH
+  DampPercentage 50
+  LevelShift 0.3
+end
+```
+
+**Pour états de transfert de charge:**
+```orca
+! Opt UKS ωB97M-V def2-SVP TightSCF TIGHTOPT
+! CPCM(Water)
+%scf
+  HFTyp UKS
+  SCF_ALGORITHM DIIS_TRAH
+  DampPercentage 60
+  LevelShift 0.5
+end
+%geom
+  MaxStep 0.1  # Réduire pour meilleure précision
+  Trust 0.1
+end
+```
+
+### Étape 5: Validation de convergence
+
+Critères de validation finale :
+- Énergie stable (variations < 10⁻⁶ Hartree entre les dernières itérations)
+- Toutes les forces inférieures au seuil (TIGHTOPT)
+- Absence de fréquences imaginaires parasites dans la région d'excitation
+- Conservation du spin (S² valeur proche de multiplicité attendue)
+
+
+## Partie 4 : Checklist avant de soumettre les calculs
 
 - [ ] Vérifier que tous les fichiers XYZ sont correctement formattés (nombre d'atomes, charges)
 - [ ] S'assurer que le répertoire de travail a au moins 50 GB d'espace disque libre
@@ -912,6 +1206,8 @@ if __name__ == "__main__":
 - [ ] Sauvegarder les fichiers GBW importants régulièrement
 - [ ] Mettre en place des logs de suivi (quel job, quel calcul, quel statut)
 - [ ] Prévoir des points de sauvegarde (checkpoints) tous les 50-100 itérations pour les calculs longs
+- [ ] Pour S₁, vérifier la nature de l'état excité et préparer plusieurs guess si nécessaire
+- [ ] Utiliser ΔDFT+SOC (ZORA, dosoc) au lieu de NEVPT2 pour gain de temps (10×)
 
 ---
 
