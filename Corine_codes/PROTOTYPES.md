@@ -11,7 +11,7 @@ Ce document décrit les **3 molécules** du projet révisé (15/11/2025) :
 ## 🔬 Molécule 1 : Référence Expérimentale (Externe)
 
 ### Rôle
-Valider la **chaîne de calcul ΔDFT+SOC** en reproduisant une molécule dont les propriétés sont **déjà publiées**.
+Valider la **chaîne de calcul ΔDFT+SOC** en reproduisant une molécule dont les propriétés sont **déjà publiées**. **Cette molécule est utilisée UNIQUEMENT à des fins de validation/benchmarking, PAS pour l'évaluation finale des propriétés photophysiques.**
 
 ### Critères de sélection
 
@@ -21,7 +21,6 @@ Valider la **chaîne de calcul ΔDFT+SOC** en reproduisant une molécule dont le
 | **Rendement quantique Φ_f** | 2 | > 0.1 (molécule fluorescente robuste) |
 | **Données SOC** | 3 | Si disponibles, constants S1↔T1 (rare mais idéal) |
 | **Accessibilité** | 4 | Article récent (< 5 ans), données complètes |
-| **Structures cristallines** | 5 | Disponibilité pour validation géométrique |
 
 ### Exemple concret recommandé
 
@@ -29,10 +28,9 @@ Valider la **chaîne de calcul ΔDFT+SOC** en reproduisant une molécule dont le
 
 | Propriété | Valeur | Source |
 | :--- | :--- | :--- |
-| **λ_max exp.** | ~505 nm | DMSO |
-| **Φ_f exp.** | ~0.8 | DMSO |
-| **SOC exp.** | ~50 cm⁻¹ | Si disponible |
-| **Structure cristalline** | Disponible | Pour validation géométrique |
+| **λ_max exp.** | ~505 nm | DMSO (ou milieu biologique pertinent) |
+| **Φ_f exp.** | ~0.8 | DMSO (ou milieu biologique pertinent) |
+| **Structure** | Simple (pas de substituants complexes) | Facile à modéliser |
 | **Justification** | Loin de NIR (bon contraste avec prototypes) | Permet validation claire |
 
 ### Sources recommandées
@@ -42,185 +40,17 @@ Valider la **chaîne de calcul ΔDFT+SOC** en reproduisant une molécule dont le
 - *Photochemistry and Photobiology Science* (propriétés photophysiques)
 - *Journal of Physical Chemistry A* (SOC, états excités)
 
-### Procédure de benchmarking
+### Procédure de benchmarking (Référence seulement)
 
-#### Étape 1 : Comparaison avec la géométrie cristalline
-- Calculer les écarts RMSD (Root Mean Square Deviation) entre les structures
-- Analyser les différences dans les angles dièdres critiques affectant l'absorption
-
-#### Étape 2 : Analyse de l'espace conformationnel
-- Effectuer des recherches conformationnelles pour s'assurer que la structure choisie correspond à un minimum énergétique global
-- Vérifier que la structure cristalline est proche du minimum global calculé
-
-#### Étape 3 : Validation de la reproductibilité
-- Comparer plusieurs structures de référence publiées dans la littérature
-- Identifier les tendances systématiques dans les propriétés calculées
-
-#### Étape 4 : Critères géométriques de validation
-- Fréquences normales : absence de fréquences imaginaires pour la structure optimisée
-- Énergie relative : la structure cristalline doit être proche du minimum global (ΔE < 0.05 eV)
-- Paramètres géométriques : longueurs et angles de liaison cohérents avec la structure de référence
-
-#### Étape 5 : Critères de précision
-- MAE (Mean Absolute Error) < 0.1 eV pour λ_max
-- RMSE (Root Mean Square Error) < 0.15 eV
-- Coefficient de corrélation (R²) > 0.95
-- Ensemble de validation : au moins 3-5 BODIPY supplémentaires pour validation étendue
-
----
-
-## 🔬 Prototype 1 : Iodo-BODIPY (PDT optimisée)
-
-### Objectif
-Optimiser le **potentiel PDT** via l'**effet d'atome lourd** (I) pour améliorer la **transition inter-système** (ISC) et l'**efficacité de génération d'oxygène singulet**.
-
-### Structure
-- BODIPY de base avec **atome d'iode** en position 5
-- Conservation des propriétés photophysiques principales
-- **Redshift** modéré (680–720 nm) dans la **fenêtre NIR-I**
-
-### Critères d'évaluation quantitatifs (Grille Go/No-Go)
-
-| Critère | Cible | Poids | Score max | Méthode calcul |
-| :--- | :--- | :--- | :--- | :--- |
-| **λ_max (absorption)** | 680-720 nm (NIR-I) | 25% | 25/25 | ADC(2)/def2-TZVP |
-| **E_adiabatic (PTT)** | < 1.0 eV | 15% | 15/15 | ΔE_S0-S1 (ΔUKS/ΔROKS) |
-| **ΔE_ST (ISC/PDT)** | < 0.05 eV | 25% | 25/25 | ΔE_S1-T1 (ΔUKS/ΔROKS) |
-| **SOC (ISC speed)** | > 50 cm⁻¹ | 25% | 25/25 | ΔDFT+SOC (ZORA, dosoc) |
-| **Photostabilité** | PSI > 1 | 10% | 10/10 | Calculs k_processus |
-
-### Analyse des propriétés photophysiques
-
-#### Rendements quantiques
-- **Φ_f** (fluorescence) : rapport entre photons émis et photons absorbés
-- **Φ_p** (phosphorescence) : pour les états triplet
-- **Φ_Δ** (génération d'oxygène singulet) : critère central pour la PDT efficace
-
-#### Temps de vie des états excités
-- **τ_f** (fluorescence) : mesuré ou calculé à partir de Φ_f et taux de relaxation radiative
-- **τ_S1 et τ_T1** : déterminent les compétitions radiatives vs non radiatives
-
-#### Taux de processus photophysiques
-- **k_f** (fluorescence)
-- **k_{ISC}** (conversion inter-système)
-- **k_{EC}** (conversion énergie)
-- **k_{nr}** (désexcitation non radiative)
-
-#### Indices de performance
-- **PSI (Photostabilité)** : PSI = (k_{ISC} + k_f) / (k_{nr} + k_{dég})
-- **TCI (Conversion Thermique)** : TCI = k_{nr} / (k_f + k_{ISC})
-
-### Validation ciblage mitochondrial
-- Non applicable pour ce prototype
-- **Objectif principal** : PDT optimisée via ISC améliorée
-
----
-
-## 🔬 Prototype 2 : TPP–Iodo–BODIPY (théranostique ciblé)
-
-### Objectif
-Combinaison de **PDT optimisée** (via Iodo-BODIPY) et **ciblage mitochondrial** (via groupe cationique lipophile TPP⁺) pour une **thérapie combinée** efficace.
-
-### Structure
-- Iodo-BODIPY avec **groupement triarylphosphonium (TPP⁺)** en position 1
-- Fonctionnalisation pour **ciblage mitochondrial cationique**
-- Maintien des propriétés photophysiques optimisées du Iodo-BODIPY
-
-### Critères d'évaluation quantitatifs (Grille Go/No-Go)
-
-| Critère | Cible | Poids | Score max | Méthode calcul |
-| :--- | :--- | :--- | :--- | :--- |
-| **λ_max (absorption)** | 690-730 nm (NIR-I, légère perturbation par TPP+) | 20% | 20/25 | ADC(2)/def2-TZVP |
-| **E_adiabatic (PTT)** | < 1.2 eV | 15% | 15/15 | ΔE_S0-S1 (ΔUKS/ΔROKS) |
-| **ΔE_ST (ISC/PDT)** | < 0.08 eV | 20% | 20/25 | ΔE_S1-T1 (ΔUKS/ΔROKS) |
-| **SOC (ISC speed)** | > 40 cm⁻¹ | 15% | 15/15 | ΔDFT+SOC (ZORA, dosoc) |
-| **Ciblage mitochondrial** | Quantitatif (voir ci-dessous) | 30% | 30/30 | MEP + affinité membranaire |
-
-### Critères de ciblage mitochondrial quantitatifs
-
-#### Charges et localisation
-- **Charge totale du groupe TPP⁺** : Doit être ≥ +1 (idéalement +1 à +2)
-- **Localisation** : La charge doit être concentrée sur le groupe TPP⁺, pas diffuse
-- **Charge TPP⁺** : +1,00 e (localisée sur TPP⁺, analysée par Hirshfeld)
-- **Accessibilité** : Vérifier visuellement que le groupe est exposé en surface
-
-#### Paramètres géométriques critiques
-- **Distance minimale TPP⁺ → centre BODIPY** : > 5 Å (exposition maximale)
-- **OU Angle dièdre TPP⁺-BODIPY** : > 90° (orientation perpendiculaire)
-- **Visualisation MEP** : groupe TPP⁺ doit être en surface (pas enfoui)
-
-#### Paramètres biologiques de ciblage
-- **Potentiel membranaire prédit** : ΔΨ > 150 mV pour accumulation efficace
-- **Coefficient de perméabilité apparente (P_app)** : P_app > 10⁻⁶ cm/s pour pénétration cellulaire
-- **Rapport d'accumulation** : [TPP-BODIPY]_mito/[TPP-BODIPY]_cyto ≥ 10 pour ciblage sélectif
-- **Énergie de liaison à la membrane** : ≥ -20 kcal/mol pour ancrage stable
-
-### Analyse des propriétés photophysiques
-
-#### Rendements quantiques
-- **Φ_f** (fluorescence) : conservation de l'intensité fluorescente
-- **Φ_Δ** (génération d'oxygène singulet) : maintien de l'efficacité PDT
-- Comparaison avec Iodo-BODIPY pour évaluer l'impact du groupe TPP⁺
-
-#### Indicateurs de performance
-- **PSI (Photostabilité)** : Doit rester > 1 pour une excellente stabilité
-- **TCI (Conversion Thermique)** : TCI > 3 indique un bon convertisseur photothermique
-- **Indice de conversion photothermique (TCI)** : TCI = k_{nr} / (k_f + k_{ISC})
-
-### Modélisation des interactions moléculaires
-- **Calculs d'affinité moléculaire** : estimation des énergies de liaison entre le groupe TPP⁺ et les composants de la membrane mitochondriale
-- **Analyse de la distribution spatiale du cation lipophile** : évaluation de l'orientation du groupe TPP⁺ par rapport au plan de la membrane
-- **Modélisation des interactions avec la membrane mitochondriale** : construction de modèles de bicouche lipidique (ex. : DOPC/DOPG 4:1) pour simuler la membrane mitochondriale interne
-
----
-
-## 📊 Grille Go/No-Go Quantitative (Critères de Décision)
-
-### Méthodologie d'évaluation
-Chaque prototype est évalué selon une **grille Go/No-Go quantitative** avec **critères pondérés** :
-
-| Prototype | Score requis | Statut |
-| :--- | :--- | :--- |
-| Iodo-BODIPY | ≥ 70% | Go/No-Go |
-| TPP-Iodo-BODIPY | ≥ 70% | Go/No-Go |
-| Référence | Benchmark | N/A |
-
-### Pondération des critères
-- **λ_max** : 20-25% (selon prototype)
-- **E_adiabatic** : 15% (constante)
-- **ΔE_ST** : 20-25% (selon prototype)
-- **SOC** : 15-25% (selon prototype)
-- **Ciblage** : 30% (TPP-Iodo-BODIPY seulement)
-
-### Processus de décision
-1. **Calcul des scores individuels** pour chaque critère
-2. **Application des pondérations** pour chaque prototype
-3. **Calcul du score total** pour chaque prototype
-4. **Comparaison avec seuil 70%** pour décision Go/No-Go
-5. **Sélection du candidat optimal** basé sur le score total
-6. **Analyse comparative** des 3 molécules pour validation
-
----
-
-## 🧠 Validation méthodologique étendue
-
-### Ensemble de validation
-- **Validation sur un ensemble de 3-5 BODIPY** supplémentaires de la littérature avec propriétés photophysiques complètes
-- **Comparaison λ_max, ΔE_ST, et SOC** (si disponibles) avec des valeurs expérimentales
-- **Calcul des statistiques** : MAE, RMSE, coefficient de corrélation (R²)
-
-### Sensibilité aux paramètres
-- **Évaluation de la sensibilité des résultats aux choix de fonctionnelles** (PBE0, B3LYP, ωB97M-V)
-- **Évaluation de la sensibilité aux modèles de solvatation** (CPCM vs SMD vs COSMO)
-- **Évaluation de la sensibilité aux tailles de base** (def2-SVP vs def2-TZVP)
-
-1. **Construire la géométrie** (Avogadro/IQmol)
-2. **Optimiser S₀** (B3LYP-D3/def2-SVP, CPCM eau)
-3. **Calculer λ_max** (ADC(2)/def2-TZVP, CPCM eau)
+1. **Construire la géométrie de la molécule de référence** (Avogadro/IQmol)
+2. **Optimiser S₀** pour la molécule de référence (B3LYP-D3/def2-SVP, SMD mixed pour environnement biologique complexe)
+3. **Calculer λ_max** pour la molécule de référence (ADC(2)/def2-TZVP, SMD mixed pour environnement biologique complexe)
 4. **Comparer avec expérience** :
    - **Critère de validation** : MAE < 0.1 eV (≈ 10 nm à 700 nm)
    - Si MAE > 0.1 eV : Investiguer (base? solvant? géométrie?)
-5. **Valider la chaîne** avant d'attaquer les prototypes
+5. **Notes sur le milieu biologique** : Les calculs sont effectués dans un environnement biologique complexe (SMD mixed) pour une meilleure corrélation avec les conditions physiologiques
+6. **Valider la chaîne** avant d'attaquer les prototypes
+7. **IMPORTANT** : La molécule de référence est UTILISÉE UNIQUEMENT pour la validation de la méthode, PAS pour les calculs finaux d'évaluation des prototypes
 
 ### Fichiers associés
 
@@ -462,6 +292,28 @@ Décision :
 - Appliquer la grille Go/No-Go à chaque prototype
 - Calculer le score final
 - Identifier le prototype le plus prometteur (score ≥ 70%)
+
+---
+
+### ⚠️ Clarification Importante sur les Calculs
+
+**Molécule de référence** :
+- Utilisée UNIQUEMENT pour la validation de la méthode (benchmarking)
+- Ne fait PAS l'objet d'une évaluation complète des propriétés photophysiques
+- Ne participe PAS à la grille Go/No-Go finale
+
+**Prototypes (Iodo-BODIPY et TPP-Iodo-BODIPY)** :
+- Sont les SEULES molécules soumises à la chaîne de calcul complète
+- Seules ces deux molécules subissent les calculs S₀, T₁, S₁, ADC(2), et SOC
+- Seules ces deux molécules sont évaluées via la grille Go/No-Go
+
+**Calculs effectués sur les prototypes** :
+- Optimisation S₀ (état fondamental)
+- Optimisation T₁ (état triplet)
+- Optimisation S₁ (état singulet excité)
+- Calculs ADC(2) pour λ_max
+- Calculs SOC (couplage spin-orbite)
+- Évaluation finale via grille Go/No-Go
 
 ---
 

@@ -49,7 +49,7 @@ L'objectif de ce stage est de mener une **mission de conception *in silico*** po
 
 Pour concevoir une molécule *in silico*, nous utilisons une approche en cascade, combinant plusieurs niveaux de théorie :
 
-1. **Géométries de référence** : DFT classique (B3LYP-D3/def2-SVP en phase gaz et CPCM(eau))
+1. **Géométries de référence** : DFT classique (B3LYP-D3/def2-SVP en phase gaz et SMD mixed pour environnement biologique complexe)
 2. **Énergies d'excitation verticales** : ADC(2)/def2-TZVP pour améliorer la précision sur λ_max
 3. **États excités relaxés** : **ΔUKSou ΔROKS** pour les énergies adiabatiques (PTT)
 4. **Écarts singlet-triplet** : **ΔUKSet ΔROKS** pour ΔE_{ST} (crucial pour la PDT/ISC)
@@ -72,68 +72,11 @@ Les BODIPYs présentent un « **caractère légèrement couche ouverte** » (*mi
 
 **Résultat :** Précision chimique (erreur absolue moyenne < 0,05 eV) pour ΔE_{ST}, contre des erreurs > 0.3 eV avec la TD-DFT.
 
-### 2.3 Analyse des propriétés photophysiques
-
-Pour évaluer pleinement le potentiel théranostique des molécules conçues, une analyse complète des propriétés photophysiques est essentielle :
-
-**Rendements quantiques :**
-- Rendement quantique de fluorescence (Φ_f) : rapport entre photons émis et photons absorbés
-- Rendement quantique de phosphorescence (Φ_p) : pour les états triplet
-- Rendement quantique de génération d'oxygène singulet (Φ_Δ) : critère central pour la PDT efficace
-
-**Temps de vie des états excités :**
-- Temps de vie des états S₁ et T₁ : déterminent les compétitions radiatives vs non radiatives
-- Temps de vie de fluorescence (τ_f) : mesuré ou calculé à partir de Φ_f et taux de relaxation radiative
-
-**Taux de processus photophysiques :**
-- Constantes de vitesse de fluorescence (k_f)
-- Constantes de vitesse de conversion inter-système (k_{ISC})
-- Constantes de vitesse de conversion énergie (k_{EC})
-- Constantes de vitesse de désexcitation non radiative (k_{nr})
-
-**Coefficients d'extinction moléculaire :**
-- ε à λ_max : détermine l'efficacité d'absorption d'énergie lumineuse
-- Valeurs critiques dans la fenêtre NIR-I (600-900 nm) pour la pénétration tissulaire
-
-**Paramètres de photostabilité :**
-- Taux de photodégradation prévue
-- Stabilité face aux cycles d'excitation-radiation
-- Formation potentielle de produits de dégradation photochimiques
-
-Ces propriétés peuvent être calculées à partir des résultats des calculs DFT/ΔDFT via :
-- Les forces d'oscillateur pour k_f et Φ_f
-- Les constantes SOC et modèles de Landau-Zener pour k_{ISC}
-- Les énergies d'excitation et les rapports de Franck-Condon pour τ_f
-- Les potentiels d'énergie de désexcitation pour k_{nr}
-
-### 2.4 Recommandations pratiques et choix de frameworks (synthèse de benchmarking)
+### 2.3 Recommandations pratiques et choix de frameworks (synthèse de benchmarking)
 
 Note sur ptSS-PCM (non-équilibre) pour états excités
 - Pour ΔDFT (S1/T1), utiliser un schéma état-spécifique (ptSS-PCM) lorsque la relaxation de solvant impacte l’émission/ΔE_ST.
 - Impact: coût légèrement accru et convergence parfois plus délicate; bénéfice: meilleure cohérence solution.
-
-### Modèles de solvatation avancés pour les environnements biologiques
-
-Pour simuler plus fidèlement les conditions physiologiques, plusieurs approches de solvatation peuvent être envisagées :
-
-1. **Modèles de solvatation implicite améliorés** :
-   - Comparer CPCM, SMD et COSMO pour évaluer la sensibilité au modèle de solvant
-   - CPCM est recommandé pour l'eau, mais SMD peut offrir une meilleure description des solvants biologiques complexes
-   - Pour des milieux plus spécifiques (membranes, mitochondries), le modèle SMD est souvent plus adapté
-
-2. **Solvatation explicite sélective** :
-   - Ajouter explicitement des molécules d'eau dans les zones critiques (proche du chromophore, site d'interaction)
-   - Typiquement 2-6 molécules d'eau positionnées stratégiquement autour des sites d'intérêt
-   - Permet de capturer les interactions H-bond spécifiques et les effets de solvatation locale
-
-3. **Solvatation multi-niveaux (QM/MM)** :
-   - Pour des études très précises, coupler le centre actif (QM) avec un environnement moléculaire (MM)
-   - Applicable pour modéliser l'interaction avec des biomolécules ou des membranes cellulaires
-   - Coût computationnel élevé mais précision améliorée pour les environnements biologiques
-
-4. **Effets de pH et d'ionicité** :
-   - Pour des études avancées, simuler des conditions de pH différentes (pH 7.4 physiologique vs pH 6.5-7.2 tumoral)
-   - Inclure des effets d'ionicité (Na⁺, Cl⁻, K⁺) dans le modèle de solvatation si pertinent
 
 Sur la base des analyses comparatives récentes et des remarques issues de l'audit interne, les choix méthodologiques recommandés pour obtenir la meilleure robustesse/précision pratique sont :
 
@@ -185,18 +128,19 @@ end
 
 **Temps de calcul estimé :** 30-60 min (selon la taille de la molécule : 30-50 atomes)
 
-#### Input ORCA 6.1 : Optimisation S₀ en solution (CPCM, eau)
+#### Input ORCA 6.1 : Optimisation S₀ en milieu biologique complexe (SMD mixed)
 
 ```orca
 ! Opt RKS B3LYP D3BJ def2-SVP TightSCF TIGHTOPT
-! CPCM(Water)
+! CPCM
+! SMD
 
 %pal
   nprocs 8
 end
 
 %cpcm
-  epsilon 80.0  # Constante diélectrique de l'eau
+  SMDSolvent "mixed"  # pour environnement biologique complexe
 end
 
 %scf
@@ -231,14 +175,15 @@ Calculer l'énergie d'absorption (S₀ → S₁) sur la géométrie figée de S�
 
 ```orca
 ! RI-ADC(2) def2-TZVP AutoAux FrozenCore
-! CPCM(Water)
+! CPCM
+! SMD
 
 %pal
   nprocs 8
 end
 
 %cpcm
-  epsilon 80.0
+  SMDSolvent "mixed"  # pour environnement biologique complexe
 end
 
 %adc
@@ -275,14 +220,15 @@ Le calcul du triplet est une étape fondamentale pour évaluer l'efficacité de 
 
 ```orca
 ! Opt UKS B3LYP D3BJ def2-SVP TightSCF TIGHTOPT
-! CPCM(Water)
+! CPCM
+! SMD
 
 %pal
   nprocs 8
 end
 
 %cpcm
-  epsilon 80.0
+  SMDSolvent "mixed"  # pour environnement biologique complexe
 end
 
 %scf
@@ -316,14 +262,15 @@ C'est l'étape la plus délicate. L'approche **ΔSCF** (Delta-SCF) cible explici
 
 ```orca
 ! Opt UKS B3LYP D3BJ def2-SVP TightSCF TIGHTOPT SlowConv
-! CPCM(Water)
+! CPCM
+! SMD
 
 %pal
   nprocs 8
 end
 
 %cpcm
-  epsilon 80.0
+  SMDSolvent "mixed"  # pour environnement biologique complexe
 end
 
 %scf
@@ -331,7 +278,7 @@ end
   SCF_ALGORITHM DIIS_TRAH
   MaxIter 500
   ConvForce 1e-6
-  
+
   # Stratégie de convergence robuste pour les états excités
   LevelShift 0.2      # Shift (perturbation mineure des orbitales)
   DampPercentage 40   # Amortissement du cycle SCF
@@ -367,30 +314,6 @@ $$\Delta E_{\text{ST}} = E_{\text{S}_1}(\text{géom S}_1) - E_{\text{T}_1}(\text
 - **Grand ΔE_{ST}** (> 0.1 eV) → Transition ISC plus lente (problématique pour la PDT)
 - **Petit ΔE_{ST}** (< 0.1 eV) → Transition ISC efficace (excellent pour la PDT)
 
-### Optimisation du potentiel PTT
-
-Pour maximiser l'efficacité photothermique, plusieurs paramètres doivent être optimisés :
-
-**Critères énergétiques pour une conversion photothermique efficace :**
-- Énergie adiabatique faible (E_ad < 0.8 eV) pour une conversion rapide en chaleur
-- Différence d'énergie entre S₁ et S₀ significative mais non excessive (0.5-2.0 eV)
-- Temps de vie de l'état S₁ suffisamment long pour permettre la conversion non radiative (> 10 ps)
-
-**Analyse des modes de désexcitation non radiative :**
-- Calcul des surfaces d'énergie potentielle couplées (S₁/T₁)
-- Identification des intersections coniques (conical intersections) entre S₁ et S₀
-- Évaluation des voies de conversion énergie via les gradients couplés (non-adiabatic coupling)
-
-**Paramètres moléculaires favorisant la conversion photothermique :**
-- Présence de modes vibrationnels à basse énergie favorisant le couplage S₁→S₀
-- Densité d'états électroniques appropriée pour une conversion énergétique efficace
-- Faible émission fluorescente (k_f faible) par rapport aux processus non radiatifs (k_{nr})
-
-**Indice de conversion photothermique (TCI) :**
-- TCI = k_{nr} / (k_f + k_{ISC})
-- Une molécule avec TCI > 3 est considérée comme un bon convertisseur photothermique
-- Comparer TCI entre les différents prototypes pour évaluer leur potentiel PTT
-
 ---
 
 ### Phase 4 : Couplage spin-orbite (SOC) et potentiel PDT
@@ -403,14 +326,15 @@ Remplacement NEVPT2 → ΔDFT+SOC perturbatif. Ce choix privilégie la cohérenc
 
 ```orca
 ! UKS PBE0 D3BJ def2-SVP ZORA RIJCOSX AutoAux TightSCF
-! CPCM(Water)
+! CPCM
+! SMD
 
 %pal
   nprocs 8
 end
 
 %cpcm
-  epsilon 80.0
+  SMDSolvent "mixed"  # pour environnement biologique complexe
 end
 
 %scf
@@ -494,35 +418,6 @@ multiwfn S0_water_opt.out
 - **Localisation** : La charge doit être concentrée sur le groupe TPP, pas diffuse
 - **Accessibilité** : Vérifier visuellement que le groupe est exposé en surface
 
-### Études des interactions moléculaires pour le ciblage mitochondrial
-
-Pour évaluer quantitativement le potentiel de ciblage mitochondrial du TPP-BODIPY, des analyses supplémentaires sont requises :
-
-**Calculs d'affinité moléculaire :**
-- Estimation des énergies de liaison entre le groupe TPP⁺ et les composants de la membrane mitochondriale
-- Calcul des énergies de transfert ionique à travers la membrane (ΔG_transfert)
-- Analyse des contributions électrostatiques et van der Waals aux interactions
-
-**Analyse de la distribution spatiale du cation lipophile :**
-- Évaluation de l'orientation du groupe TPP⁺ par rapport au plan de la membrane
-- Calcul des distances caractéristiques entre le phosphonium et les atomes de phosphore des phospholipides
-- Analyse des angles dièdres critiques pour l'ancrage membranaire optimal
-
-**Modélisation des interactions avec la membrane mitochondriale :**
-- Construction de modèles de bicouche lipidique (ex. : DOPC/DOPG 4:1) pour simuler la membrane mitochondriale interne
-- Calcul des énergies d'insertion et d'adsorption du TPP-BODIPY dans le modèle de membrane
-- Analyse des préférences d'orientation du complexe dans le champ de potentiel transmembranaire
-
-**Études de dynamique moléculaire (optionnelles) :**
-- Simulation de docking moléculaire avec des protéines de transport mitochondriales
-- Analyse de la stabilité du complexe dans un environnement membranaire
-- Évaluation des temps caractéristiques d'accumulation mitochondriale
-
-**Paramètres de ciblage quantitatifs :**
-- Potentiel membranaire prédit : ΔΨ > 150 mV pour accumulation efficace
-- Coefficient de perméabilité apparente (P_app) > 10⁻⁶ cm/s pour pénétration cellulaire
-- Rapport d'accumulation : [TPP-BODIPY]_mito/[TPP-BODIPY]_cyto ≥ 10 pour ciblage sélectif
-
 ---
 
 ## 4. Tableau synthétique et estimation des temps de calcul
@@ -534,11 +429,11 @@ Le tableau suivant synthétise les temps de calcul (*Wall Time*, temps réel) po
 | Phase | Méthode & Niveau de Théorie | Propriété Calculée | Complexité (Échelle) | Temps Estimé (8 cœurs) | GPU (optionnel) | Remarques |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | **Phase 1a : S₀ optim. (gaz)** | B3LYP-D3/def2-SVP | Géométrie S₀ | DFT (Économique) | 30–60 min | 10–15 min | Étape de reconnaissance rapide |
-| **Phase 1b : S₀ optim. (eau)** | B3LYP-D3/def2-SVP + CPCM | Géométrie S₀ en solution | DFT (Économique) | **45–90 min** | 15–25 min | Point de départ pour tous les calculs |
+| **Phase 1b : S₀ optim. (milieu biologique)** | B3LYP-D3/def2-SVP + SMD mixed | Géométrie S₀ dans environnement biologique complexe | DFT (Économique) | **45–90 min** | 15–25 min | Point de départ pour tous les calculs |
 | **Phase 2 : Absorption verticale** | RI-ADC(2)/def2-TZVP | Énergie d'excitation verticale ($\lambda_{\max}$) | WFT (Coût Élevé) | **240–360 min** | 60–120 min | Standardisé pour la précision sur λ_max |
-| **Phase 3a : T₁ relaxé** | **ΔUKS B3LYP**/def2-SVP + CPCM | Optimisation géométrie $T_1$ | ΔDFT (Efficace) | **60–120 min** | 20–35 min | Robuste, généralement bon ; crucial pour ΔE_{ST} |
-| **Phase 3b : S₁ relaxé (ΔSCF)** | **ΔUKS B3LYP**/def2-SVP + CPCM | Optimisation géométrie $S_1$ | ΔDFT (Difficile) | **120–180 min** | 40–60 min | Étape délicate, convergence exigeante, tentatives multiples |
-| **Phase 4 : SOC (recommandé)** | **ΔDFT+SOC** (UKS/PBE0, ZORA, dosoc) | Constantes de couplage spin-orbite (ISC) | ΔDFT (Économique) | **30–60 min** | 10–20 min | Suffisant pour le criblage; cohérent avec ΔDFT |
+| **Phase 3a : T₁ relaxé** | **ΔUKS B3LYP**/def2-SVP + SMD mixed | Optimisation géométrie $T_1$ dans environnement biologique complexe | ΔDFT (Efficace) | **60–120 min** | 20–35 min | Robuste, généralement bon ; crucial pour ΔE_{ST} |
+| **Phase 3b : S₁ relaxé (ΔSCF)** | **ΔUKS B3LYP**/def2-SVP + SMD mixed | Optimisation géométrie $S_1$ dans environnement biologique complexe | ΔDFT (Difficile) | **120–180 min** | 40–60 min | Étape délicate, convergence exigeante, tentatives multiples |
+| **Phase 4 : SOC (recommandé)** | **ΔDFT+SOC** (UKS/PBE0, ZORA, dosoc) + SMD mixed | Constantes de couplage spin-orbite dans environnement biologique complexe | ΔDFT (Économique) | **30–60 min** | 10–20 min | Suffisant pour le criblage; cohérent avec ΔDFT |
 | (Validation ponctuelle) | FIC-NEVPT2/CASSCF | Point de contrôle méthodologique | MR-WFT (Très Coûteux) | **150–300 min** | 50–100 min | Facultatif si ressources disponibles |
 | **Phase 5 : Post-traitement** | Multiwfn (ESP, charges atomiques) | Potentiel Électrostatique (MEP), charges | Post-SCF (Très Rapide) | **5–15 min** | N/A | Analyse locale, très rapide |
 
@@ -686,7 +581,7 @@ Checklist ΔSCF (ordre d’escalade pratique):
 - Réduire: `MaxStep 0.1`, `Trust 0.15`
 3) Base et solvant
 - Passer à def2-TZVP si nécessaire pour plus de flexibilité
-- Utiliser CPCM(eau) cohérent avec l’expérience; pour états excités envisager ptSS-PCM (non-équilibre)
+- Utiliser SMD mixed pour environnement biologique complexe; pour états excités envisager ptSS-PCM (non-équilibre)
 4) Guesses variés pour S1
 - Tester HOMO→LUMO, HOMO−1→LUMO, HOMO→LUMO+1 (MOM/IMOM)
 - Relancer avec `%moinp` depuis S0 ou tentative précédente
@@ -737,120 +632,9 @@ Encadré “Mode d’emploi rapide”
    - Utiliser un script Python pour modifier les occupations HOMO/LUMO dans le fichier `.gbw`
    - Puis relancer l'optimisation avec `%moinp "modified.gbw"`
 
-### Protocole avancé de convergence S₁ (recommandations supplémentaires)
-
-**Analyse préalable de la nature de l'état excité :**
-- Avant le calcul S₁, effectuer une analyse des Orbitales de Transition Naturelle (NTO) via ADC(2) pour caractériser le type d'excitation (π→π*, n→π*, CT)
-- Pour les états de transfert de charge (CT), les calculs ΔSCF sont particulièrement délicats
-
-**Stratégies de guess multiples :**
-- Calculer plusieurs configurations électroniques alternatives :
-  - HOMO→LUMO (configuration classique)
-  - HOMO-1→LUMO (double excitation partielle)
-  - HOMO→LUMO+1 (excitation de plus haute énergie)
-- Utiliser l'approche Initial Maximum Overlap Method (IMOM) pour le choix du guess optimal
-
-**Adaptation des algorithmes selon la nature de l'excitation :**
-- Pour les excitations π→π* : ΔUKS avec PBE0 ou B3LYP
-- Pour les excitations n→π* : ΔROKS est souvent plus stable
-- Pour les états de transfert de charge : utiliser ωB97M-V avec ptSS-PCM
-
-**Stratégie de relaxation progressive :**
-- Phase 1 : Optimisation avec base def2-SVP pour rapidité
-- Phase 2 : Affinement avec def2-TZVP sur la géométrie obtenue
-- Phase 3 : Calcul final de solvatation avec CPCM ou ptSS-PCM
-
-**Critères de validation de convergence :**
-- Énergie stable (variations < 10⁻⁶ Hartree entre les dernières itérations)
-- Toutes les forces inférieures au seuil (TIGHTOPT)
-- Absence de fréquences imaginaires parasites dans la région d'excitation
-- Conservation du spin (S² valeur proche de multiplicité attendue)
-
 ---
 
 ## 6. Contexte et défis à surmonter : au-delà de la molécule idéale
-
-### Défi 1 : Hypoxie tumorale
-
-La plupart des tumeurs solides sont mal oxygénées (hypoxiques). La PDT classique (Type II) dépend de l'oxygène.
-
-## 7. Évaluation de la photostabilité : un critère essentiel pour les applications biologiques
-
-La photostabilité est un paramètre critique pour les agents photosensibilisateurs destinés aux applications PDT/PTT, car une dégradation rapide sous illumination réduit leur efficacité thérapeutique.
-
-### Indicateurs de photostabilité
-
-**Énergie de dissociation photochimique :**
-- Calculer les barrières énergétiques pour les réactions de dégradation photomoléculaire
-- Analyser les chemins réactionnels possibles sous excitation lumineuse
-- Identifier les sites les plus réactifs de la molécule pouvant subir une photodégradation
-
-**Taux de désexcitation non radiative :**
-- Évaluer les constantes de vitesse des processus non radiatifs (k_{nr})
-- Analyser les voies de désexcitation compétitives avec les processus souhaités (PDT/PTT)
-- Comparer les taux de désexcitation entre différents états excités
-
-**Analyse des états triplet dangereux :**
-- Certains états triplet peuvent conduire à la formation de radicaux ou de produits de dégradation
-- Évaluer la stabilité des états triplet vis-à-vis des réactions chimiques
-- Analyser la probabilité de conversion vers des états réactifs
-
-### Méthodes de calcul de la photostabilité
-
-**Calcul des barrières de décomposition :**
-- Optimiser les structures de produits de dégradation potentiels
-- Calculer les énergies d'activation pour les réactions photomoléculaires
-- Évaluer les constantes de vitesse de dégradation (k_{dég})
-
-**Analyse des surfaces d'énergie potentielle :**
-- Rechercher des intersections coniques entre S₀ et S₁ (ou T₁) pour évaluer les voies de désexcitation non radiative
-- Identifier les coordonnées de réaction menant à la dégradation photomoléculaire
-- Cartographier les paysages énergétiques autour des minima et des barrières
-
-**Modèles de vieillissement photochimique :**
-- Simuler des cycles répétés d'excitation-désexcitation
-- Évaluer l'accumulation d'espèces photodégradées
-- Prédire la demi-vie photochimique sous irradiation continue
-
-### Critères de sélection pour la photostabilité
-
-**Indice de photostabilité (PSI) :**
-- PSI = (k_{ISC} + k_f) / (k_{nr} + k_{dég})
-- Une molécule stable a PSI > 1, indiquant que les voies souhaitées prédominent
-- Comparer PSI entre les différents prototypes pour évaluer leur stabilité relative
-
-**Tolérance aux conditions biologiques :**
-- Évaluer la stabilité en présence de biomolécules (protéines, lipides)
-- Analyser les effets de matrice biologique sur la photostabilité
-- Comparer la photostabilité en milieu biologique vs en solution simple
-
-### Critères de toxicité prédictive
-
-**Évaluation des sites réactifs :**
-- Identification des centres électrophiles potentiels (carbones α, β-insaturés, halogènes)
-- Analyse de la réactivité électrophile via les potentiels chimiques et les indices de Fukui
-- Cartographie des surfaces moléculaires pour identifier les sites de liaison aux protéines
-
-**Prédiction des interactions biologiques non spécifiques :**
-- Calcul des paramètres de lipophilie (logP, logD) pour évaluer la distribution tissulaire
-- Analyse des interactions hydrophobes et π-π avec les résidus protéiques
-- Évaluation du potentiel de liaison aux protéines sériques non spécifiques
-
-**Analyse des propriétés ADME (Absorption, Distribution, Metabolism, Excretion) :**
-- Calcul des paramètres de perméabilité membranaire (topologie moléculaire, surface polaire)
-- Prédiction des interactions avec les transporteurs membranaires
-- Estimation des voies de métabolisation potentielles via les sites réactifs
-
-**Évaluation du potentiel génotoxique :**
-- Identification des fonctions chimiques capables de lier l'ADN (époxydes, halogènes actifs)
-- Analyse des analogies structurelles avec des composés connus pour leur génotoxicité
-- Calcul des énergies d'interaction avec les bases nucléiques (docking virtuel simplifié)
-
-Ces analyses permettront de sélectionner les molécules qui maintiennent leur efficacité sur la durée d'une séance de PDT/PTT sans subir de dégradation significative.
-
----
-
-## 8. Contexte et défis à surmonter : au-delà de la molécule idéale
 
 ### Défi 1 : Hypoxie tumorale
 
@@ -974,12 +758,7 @@ NIR-I (600-900 nm) est une condition essentielle, mais NIR-II (1000-1700 nm) off
   - Distance minimale TPP⁺ → centre BODIPY : > 5 Å (exposition maximale)
   - OU Angle dièdre TPP⁺-BODIPY : > 90° (orientation perpendiculaire)
   - Visualisation MEP : groupe TPP⁺ doit être en surface (pas enfoui)
-- **Critères de ciblage mitochondrial quantitatifs** :
-  - Potentiel membranaire prédit : ΔΨ > 150 mV pour accumulation efficace
-  - Coefficient de perméabilité apparente (P_app) > 10⁻⁶ cm/s pour pénétration cellulaire
-  - Rapport d'accumulation : [TPP-BODIPY]_mito/[TPP-BODIPY]_cyto ≥ 10 pour ciblage sélectif
-  - Énergie de liaison à la membrane ≥ -20 kcal/mol pour ancrage stable
-- **Pondération** : λ_max 20%, ΔE_ST 20%, SOC 15%, E_ad 15%, ciblage 30% (inclus critères quantitatifs)
+- **Pondération** : λ_max 25%, ΔE_ST 25%, SOC 20%, E_ad 15%, ciblage 15%
 
 **Décision finale** : Sélectionner la molécule satisfaisant le plus de critères (score ≥ 70% = Go, < 70% = No-Go).
 
@@ -1031,7 +810,6 @@ L'une des étapes critiques est de valider que nos calculs donnent « **le bon r
 2. **Rendement quantique de fluorescence (Φ_f)** : > 0.1 (molécule fluorescente robuste)
 3. **Données SOC** : Si disponibles, constants de couplage S1↔T1 (rare mais idéal)
 4. **Accessibilité** : Article récent (< 5 ans), données complètes et reproductibles
-5. **Disponibilité de structures cristallines** : pour validation de la géométrie calculée
 
 **Sources recommandées** :
 - *European Journal of Organic Chemistry* (BODIPY design)
@@ -1045,37 +823,13 @@ L'une des étapes critiques est de valider que nos calculs donnent « **le bon r
 - **Φ_f exp.** : ~0.8 (DMSO)
 - **Justification** : Structure simple, données complètes, loin de NIR (bon contraste avec prototypes)
 
-### Protocole d'optimisation des structures de référence
-
-Lors de la sélection d'une structure de référence expérimentale, plusieurs aspects doivent être pris en compte :
-
-**Comparaison avec les structures cristallines :**
-- Si une structure cristalline est disponible, comparer la géométrie optimisée *in silico* avec la structure expérimentale
-- Calculer les écarts RMSD (Root Mean Square Deviation) entre les structures
-- Analyser les différences dans les angles dièdres critiques affectant l'absorption
-
-**Analyse de l'espace conformationnel :**
-- Effectuer des recherches conformationnelles pour s'assurer que la structure choisie correspond à un minimum énergétique global
-- Utiliser des méthodes comme la mécanique moléculaire (GFN2-xTB) ou les algorithmes génétiques pour explorer l'espace conformationnel
-- Vérifier que la structure expérimentale est proche du minimum global calculé
-
-**Validation de la reproductibilité :**
-- Comparer plusieurs structures de référence publiées dans la littérature
-- Identifier les tendances systématiques dans les propriétés calculées
-- Sélectionner la structure qui permet la meilleure reproductibilité des propriétés expérimentales
-
-**Critères géométriques de validation :**
-- Fréquences normales : absence de fréquences imaginaires pour la structure optimisée
-- Énergie relative : la structure cristalline doit être proche du minimum global (ΔE < 0.05 eV)
-- Paramètres géométriques : longueurs et angles de liaison cohérents avec la structure de référence
-
 ### 8.2 Procédure de benchmarking
 
 1. **Sélectionner 1 BODIPY de référence** de la littérature avec données expérimentales publiées (λ_max, Φ_f, idéalement SOC)
 
 2. **Reproduire ce BODIPY** avec la même géométrie de calcul :
-   - Optimiser sa géométrie (DFT B3LYP-D3/def2-SVP, CPCM eau)
-   - Calculer son λ_max (ADC(2)/def2-TZVP, CPCM eau)
+   - Optimiser sa géométrie (DFT B3LYP-D3/def2-SVP, SMD mixed pour environnement biologique complexe)
+   - Calculer son λ_max (ADC(2)/def2-TZVP, SMD mixed pour environnement biologique complexe)
    - Comparer avec les valeurs expérimentales
 
 3. **Évaluer l'erreur** :
@@ -1085,31 +839,7 @@ Lors de la sélection d'une structure de référence expérimentale, plusieurs a
 
 4. **Appliquer les mêmes calculs aux 2 prototypes** en toute confiance
 
-### 8.3 Validation méthodologique étendue
-
-Pour renforcer la fiabilité des méthodes ΔDFT/ΔROKS et ΔUKS, une validation comparative plus approfondie est recommandée :
-
-1. **Validation sur un ensemble de BODIPY** :
-   - Étendre la validation à 3-5 BODIPY supplémentaires de la littérature avec propriétés photophysiques complètes
-   - Comparer λ_max, ΔE_ST, et SOC (si disponibles) avec des valeurs expérimentales
-   - Calculer les statistiques : MAE, RMSE, coefficient de corrélation (R²)
-
-2. **Validation croisée avec méthodes alternatives** :
-   - Pour les propriétés critiques (ΔE_ST, SOC), comparer les résultats ΔDFT avec TD-DFT sur un sous-ensemble
-   - Évaluer la cohérence des tendances entre les méthodes
-   - Identifier les systèmes où les différences sont significatives
-
-3. **Sensibilité aux paramètres** :
-   - Évaluer la sensibilité des résultats aux choix de fonctionnelles (PBE0, B3LYP, ωB97M-V)
-   - Évaluer la sensibilité aux modèles de solvatation (CPCM vs SMD vs COSMO)
-   - Évaluer la sensibilité aux tailles de base (def2-SVP vs def2-TZVP)
-
-4. **Critères de validation quantitative** :
-   - λ_max : MAE < 0.1 eV (10 nm) et R² > 0.95
-   - ΔE_ST : MAE < 0.05 eV et R² > 0.90
-   - SOC : Tendance qualitative correcte (ordre de grandeur)
-
-### 8.4 Exemple de tableau de benchmarking
+### 8.3 Exemple de tableau de benchmarking
 
 | Molécule | λ_max exp. (nm) | λ_max calc. (nm) | Erreur (nm) | Φ_f exp. | Remarques |
 | :--- | :--- | :--- | :--- | :--- | :--- |

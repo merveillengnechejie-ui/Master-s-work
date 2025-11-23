@@ -1,12 +1,13 @@
 ! wB97X-D3BJ def2-SVP ZORA RIJCOSX AutoAux
-! CPCM(Water)
+! CPCM
+! SMD
 
 %pal
   nprocs 8
 end
 
 %cpcm
-  epsilon 80.0
+  SMDSolvent "mixed"  # for more complex biological media
 end
 
 %tddft

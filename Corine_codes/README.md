@@ -5,8 +5,8 @@
 Ce dossier contient tous les **scripts SLURM**, **inputs ORCA 6.1**, et **fichiers de géométrie** nécessaires pour le projet de Master 2 sur l'optimisation computationnelle de nanoparticules BODIPY pour une thérapie combinée PDT/PTT.
 
 **Portée révisée (15/11/2025)** :
-- **1 molécule de référence expérimentale** (externe, publiée) pour benchmarking
-- **2 prototypes internes** : Iodo-BODIPY (PDT) + TPP–Iodo–BODIPY (théranostique)
+- **1 molécule de référence expérimentale** (externe, publiée) pour benchmarking uniquement (pas d'évaluation finale)
+- **2 prototypes internes** : Iodo-BODIPY (PDT) + TPP–Iodo–BODIPY (théranostique) - objets des calculs complets
 - **Méthodologie** : ΔDFT+SOC (remplace NEVPT2)
 - **Durée** : 14 semaines
 
@@ -21,7 +21,7 @@ Ce dossier contient tous les **scripts SLURM**, **inputs ORCA 6.1**, et **fichie
 | Fichier | Objectif | Temps estimé | Notes |
 | :--- | :--- | :--- | :--- |
 | `S0_gas_opt.inp` | Optimisation S₀ en phase gaz | 30–60 min | Étape de reconnaissance rapide |
-| `S0_water_opt.inp` | Optimisation S₀ en solution (CPCM eau) | 45–90 min | Point de départ pour tous les calculs |
+| `S0_water_opt.inp` | Optimisation S₀ en milieu biologique complexe (SMD mixed) | 45–90 min | Point de départ pour tous les calculs |
 
 **Utilisation** :
 ```bash
@@ -44,7 +44,7 @@ orca S0_water_opt.inp > S0_water_opt.out &
 sbatch submit_ADC2.slurm
 ```
 
-**⚠️ Important** : En semaine 3, tester **def2-SVP vs def2-TZVP** sur la molécule de référence pour décider de la base à utiliser pour tous les calculs. Cela peut économiser **9h mur** sur le projet.
+**⚠️ Important** : En semaine 3, tester **def2-SVP vs def2-TZVP** sur la molécule de référence pour décider de la base à utiliser pour tous les calculs. Cela peut économiser **9h mur** sur le projet. Tous les calculs seront effectués dans un milieu biologique complexe (SMD mixed).
 
 #### Phase 3 : États excités relaxés (T₁ et S₁)
 
@@ -172,11 +172,11 @@ sbatch submit_ADC2.slurm  # TZVP
 ### Semaines 4–6 : Calculs S₀ et ADC(2)
 
 ```bash
-# 1. Lancer S0 pour les 3 molécules (référence + 2 prototypes)
+# 1. Lancer S0 pour les 2 prototypes (Iodo-BODIPY et TPP-Iodo-BODIPY) dans milieu biologique complexe
 sbatch submit_S0.slurm
-sbatch submit_S0_water.slurm
+sbatch submit_S0_water.slurm  # Utilise SMD mixed pour environnement biologique réaliste
 
-# 2. Lancer ADC(2) en batch de nuit
+# 2. Lancer ADC(2) pour les 2 prototypes (λ_max pour évaluation)
 sbatch submit_ADC2.slurm
 
 # 3. Extraire λ_max
@@ -186,19 +186,19 @@ grep "Excitation energy" ADC2_vertical.out | head -1
 ### Semaines 7–9 : Calculs T₁, S₁, SOC
 
 ```bash
-# 1. Lancer T₁ (robuste)
+# 1. Lancer T₁ pour les 2 prototypes seulement (Iodo-BODIPY et TPP-Iodo-BODIPY) - calculs complets
 sbatch submit_T1.slurm
 
-# 2. Pré-test des guesses S₁ (semaine 7)
+# 2. Pré-test des guesses S₁ pour les 2 prototypes (semaine 7)
 ./gen_s1_guesses.sh -t S1_opt_DeltaUKS.inp -x S0_water_opt.xyz -g S0_water_opt.gbw -n 8
 
-# 3. Lancer S₁ (semaine 8–9)
+# 3. Lancer S₁ pour les 2 prototypes (semaine 8–9)
 sbatch submit_S1.slurm
 
-# 4. Si S₁ ne converge pas après 5 tentatives
+# 4. Si S₁ ne converge pas après 5 tentatives pour les prototypes
 ./run_troubleshoot_S1.sh -i S1_opt_DeltaUKS.inp -x S0_water_opt.xyz -g S0_water_opt.gbw -n 8
 
-# 5. Lancer SOC (après S₁ convergé)
+# 5. Lancer SOC pour les 2 prototypes (après S₁ convergé)
 sbatch submit_SOC.slurm
 ```
 
