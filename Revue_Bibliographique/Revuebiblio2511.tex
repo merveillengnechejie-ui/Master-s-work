@@ -1,0 +1,78 @@
+\documentclass[11pt]{report}
+\makeatletter\def\input@path{
+{./Figures/}{./Files/}
+}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{xcolor}  
+\usepackage[french]{babel}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{ragged2e}
+\usepackage{siunitx}
+\usepackage{tabularx} 
+\usepackage{caption}
+              % pour \SI{}, \celsius, etc.
+\sisetup{detect-all}
+\usepackage[version=4]{mhchem}     % pour \ce{^1O2}, \ce{O2}
+              % pour \toprule, \midrule, \bottomrule
+             % pour tabularx
+\usepackage{float}                 % pour [H]
+
+              % si tu utilises \textcolor{}
+
+\usepackage{geometry}
+% CHANGEMENT IMPORTANT : Utiliser backend=bibtex au lieu de biber
+\usepackage[backend=bibtex, style=numeric, citestyle=numeric, sorting=none]{biblatex}
+\addbibresource{PDT_PTT.bib}  % Votre fichier .bib
+\usepackage[
+    colorlinks=true,      % Active les liens colorés
+    linkcolor=black,      % Couleur des liens internes (sections, etc.)
+    citecolor=blue,       % Couleur des citations (vos références)
+    urlcolor=blue,        % Couleur des URLs
+    filecolor=blue        % Couleur des liens fichiers
+]{hyperref}
+
+\geometry{
+ a4paper,
+ total={170mm,257mm},
+ left=20mm,
+ top=20mm,
+}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{1ex plus 0.5ex minus 0.2ex}
+
+\newcommand{\suggestedfigure}[1]{\noindent \textbf{Suggestion de Figure :} \textit{#1}}
+\title{\Large{Stage de Master} \\ Element de la revue bibliographique \\ \textit{\small Rapport de Laboratoire}}
+
+
+
+
+\author{Corine KENGNE} 
+%\address{Department of Physics \\ Faculty of Science, University of Yaounde 1}
+\begin{document}
+\maketitle
+%\input{testgrok}
+\input{TBNC}
+
+\input{PDT_PTT}
+
+\input{BODIPY}
+
+\input{Methode_Computationnelles}
+
+\input{Fenetretherapeutique}
+
+% AFFICHAGE DES RÉFÉRENCES
+\newpage
+
+\printbibliography[title={Références bibliographiques}]
+\clearpage
+
+\end{document}

@@ -1,0 +1,205 @@
+\chapter{Cancer du sein triple négatif}
+
+%TODO qjouter une introduction avec annonce du plan
+\section*{Introduction}
+
+Le \textbf{cancer du sein triple négatif (TNBC)} constitue un défi thérapeutique majeur en raison de son agressivité, de sa chimiorésistance et de l’absence de cibles moléculaires classiques. Ce chapitre présente d’abord les aspects généraux du cancer du sein, avant de se focaliser sur le TNBC : définition moléculaire, épidémiologie, caractéristiques cliniques, vulnérabilités biologiques exploitables et justifications du choix de ce modèle pour le développement d’agents théranostiques combinant thérapie photodynamique (PDT) et photothermique (PTT) à base de nanoparticules de BODIPY.
+
+
+\section{Cancer du sein: aspects généraux}\label{sec:TBNC_g }
+
+Le \textbf{cancer} est une pathologie caractérisée par une prolifération cellulaire anarchique et une capacité à envahir les tissus voisins  \cite{Hanahan2011, Das2023, Ma2025}. 
+
+
+\subsection{ Définition et physiopathologie du cancer du sein}
+
+Le \textbf{cancer du sein } est une pathologie d'une prévalence alarmante à l'échelle mondiale, constituant la maladie la plus fréquemment diagnostiquée chez la femme \cite{Schaefer2025, Liu2025}. En 2022, les statistiques de l'Organisation Mondiale de la Santé (OMS) indiquaient que le cancer du sein avait été diagnostiqué chez \textbf{2,3 millions de femmes} dans le monde, entraînant environ \textbf{670 000 décès} \cite{Ailioaie2025}. Elle représente la première cause de mortalité par cancer chez la femme dans le monde \cite{Ailioaie2025} et sa complexité  réside dans sa nature non maîtrisée de prolifération cellulaire, sa forte tendance aux métastases, et sa résistance aux protocoles thérapeutiques standard \cite{Kumar2025}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.5\linewidth]{sein_tumeur_anatomie.png}
+    \caption{\textcolor{blue}{Représentation schématique d’un sein atteint d’une tumeur maligne}. La tumeur (en rouge) se développe à partir des canaux ou lobules mammaires et peut envahir les tissus adjacents (adapté de \protect\cite{Pinho2024})}
+    \label{fig:sein-tumeur}
+\end{figure}
+
+Le processus de carcinogenèse commence par des mutations qui permettent aux cellules de rompre les régulations normales \cite{Beheshti2022}.La mutation initiale permet aux cellules de se multiplier sans contrôle \cite{Das2023, Marte2004}.
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.5\linewidth]{progression _tumeur.png}
+    \caption{Progression tumorale et stadification clinique (T1 à T4) du cancer du sein selon la taille et l’envahissement locorégional.\textcolor{blue}{ Source : American Cancer Society (adapté)}}
+    \label{fig:cancersein}
+\end{figure}
+
+• \textbf{division incontrôlée} : Le cancer est défini comme une condition impliquant une division et une prolifération cellulaire incontrôlées \cite{Das2023, Marte2004, Lee2024,Hayata2020}.
+
+• \textbf{résistance à la mort cellulaire} : Les néoplasmes sont caractérisés par l'acquisition d'une résistance à la mort cellulaire et par le maintien de la signalisation proliférative \cite{Hanahan2011, Ailioaie2025, Ailioaie2025a}.
+
+• \textbf{formation de tumeur} : Dans un premier temps, les cellules cancéreuses croissent et se multiplient de manière incontrôlable, se répandant dans les tissus environnants pour former un nodule tumoral \cite{Pinho2024} 
+\begin{figure}[htbp]
+    \centering
+    
+        \includegraphics[width=\textwidth]{progression _tumeur.png}
+               \label{fig:image1}
+    
+    \caption{\textcolor{blue}{Formaition et évolution de la tumeur}}
+    \label{fig:combined}
+\end{figure}
+
+Le cancer du sein  est la malignité la plus fréquente chez la femme dans le monde \cite{Schaefer2025}. En raison de sa complexité biologique, il est impératif de le classer en différents sous-types, ce qui guide le pronostic et la stratégie thérapeutique \cite{Ma2025, Go2025}.
+
+\subsection{  Classification des cancers du sein}
+
+La classification du cancer du sein est basée sur des critères combinant l'histopathologie et les caractéristiques moléculaires (ou statut des récepteurs) \cite{Go2025, Paulson2025}.
+
+\begin{itemize}
+    \item La classification histologique est basée sur l'arrangement microscopique, l'architecture et le patron des glandes \cite{Ailioaie2025, Ailioaie2025a}:
+    
+            \begin{figure}[htbp]
+                \centering
+                 \includegraphics[width=0.5\linewidth]{Typesein.png}
+                  \caption{\textcolor{blue}{Schéma anatomique du sein.} localisation des principaux types de cancers mammaires}
+                   \label{fig:classification_moléculaire}
+                    \small Source : \cite{Go2025, Paulson2025}
+            \end{figure}   
+
+ 
+
+ \item  \textbf{La classification moléculaire selon l'expression des récepteurs}: 
+ \begin{table}[h]
+\centering
+\caption{\textcolor{blue}{Classification moléculaire des cancers du sein}}
+{\small
+\begin{tabular}{|>{\RaggedRight}m{4cm}|>{\RaggedRight}m{8cm}|}
+\toprule
+\textbf{Type de cancer du sein} & \textbf{Profil de récepteurs} \\
+\midrule
+Cancer du sein Luminal A & Présence d'expression des récepteurs aux œstrogènes ($ER^+$) et à la progestérone ($PR^+$), mais absence d'expression du récepteur HER2 ($HER2^-$). \\
+\midrule
+Cancer du sein triple négatif & Absence ou faible expression des trois récepteurs : $ER^+$, $PR^+$, $HER2^-$. \\
+\midrule
+Cancer du sein Luminal B & Expression des récepteurs aux œstrogènes ($ER^+$) et/ou à la progestérone ($PR^+$), avec possible expression de HER2 ($HER2^+$) ou forte prolifération  \\
+\midrule
+Ciblage nanotechnologique & Manque de cibles intrinsèques pour la thérapie conventionnelle, développement de stratégies comme l'utilisation de molécules cationiques pour cibler les mitochondries ou de thérapies combinées (PDT/PTT). \\
+\bottomrule
+\end{tabular}}
+ \small Source : \cite{Li2022, Ailioaie2025}
+\end{table}
+
+
+    
+\end{itemize}
+
+\section{ Le cancer du sein triple négatif }
+
+\subsection{Définition et caractérisation moléculaire}
+
+Le \textbf{TNBC (Triple Negative Breast Cancer)} est un sous-type de cancer du sein défini par \textit{l’absence ou la très faible expression des récepteurs aux œstrogènes (ER), à la progestérone (PR) et du récepteur 2 du Facteur de Croissance Épidermique Humain (HER2)} \cite{Li2022, Sun2020,Ma2025,James2024}.
+Il représente environ \textbf{10 à 20\%} des cas de cancer du sein \cite{Syeda2025, Ndongwe2024, Chuang2025,Kumar2025a} ,  ou environ \textbf{10 à 15\%}  des cas invasifs \cite{Ailioaie2025}, et est caractérisé par l'absence ou la faible expression des trois récepteurs majeurs \cite{Ma2025,James2024,Ndongwe2024}:
+
+
+
+
+
+\begin{figure}[htbp]
+    \centering
+    \begin{subfigure}[b]{0.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{TNBC.jpeg}
+       
+        \label{fig:image1}
+    \end{subfigure}
+   %( \hfill
+     %\begin{subfigure}[b]{0.3\textwidth}
+       %  \centering
+         %\includegraphics[width=\textwidth]{absence.png}
+       
+         %\label{fig:image2}
+    % \end{subfigure}
+    \caption{\textcolor{blue}{Schéma comparatif d’une cellule de cancer du sein luminal (gauche) et d’une cellule TNBC (droite).} montrant l’absence des récepteurs ER, PR et HER2 à la surface membranaire}
+    \label{fig:tnbc-cellule}
+\end{figure}
+%Profil Moléculaire du TNBC: Représentation d'une cellule TNBC montrant l'absence des récepteurs ER, PR et HER2
+\subsection{Causes et distinction par rapport à d'autres cancers}
+
+\subsubsection{Causes du TNBC}
+Le développement et la progression du TNBC sont fortement influencés par \cite{Lebedeva2025}:
+
+\textbf{Altérations Épigénétiques :} ces mécanismes comprennent la méthylation de l'ADN, les modifications des histones et le silençage génique médié par l'ARN non-codant (ncRNA)  \cite{Go2025}.
+
+\textbf{Signatures Microbiologiques :} une analyse méta-transcriptomique révèle des signatures microbiennes et transcriptomiques distinctes dans les tumeurs TNBC basées sur l'ascendance raciale. Par exemple, les tumeurs AA présentent une abondance plus élevée de genres bactériens comme Hafnia et Cedecea \cite{Kumar2025a}.
+
+\textbf{Dysrégulation des voies de signalisation :} De nombreuses voies de signalisation sont exprimées de manière aberrante dans le TNBC. Le dysfonctionnement de ces voies, ainsi que l'activité de molécules comme miR-301a-3p qui supprime PTEN (un suppresseur de tumeur) dans les cellules tumorales et le microenvironnement, favorise sa progression  \cite{Lin2025}.
+
+\subsubsection{Distinction par rapport à d'autres cancers}
+Le TNBC se distingue par l'absence de cibles conventionnelles, mais aussi par ses faiblesses exploitables, ce qui en fait un excellent modèle pour la nanomédecine \cite{Ma2025, Chuang2025}:
+
+\textbf{Résistance aux thérapies ciblées :} L'absence des récepteurs ER, PR et HER2 signifie que le TNBC est insensible aux traitements anti-hormonaux et anti-HER2  \cite{Ma2025, Paulson2025}. Ceci est la distinction la plus nette, par exemple, au cancer du sein luminal A (ER+, PR+, HER2-), qui possède une vulnérabilité et une stratégie thérapeutique établies via la voie hormonale \cite{Lebedeva2025}.
+
+\textbf{Dépendance à la chimiothérapie :} Le traitement du TNBC repose traditionnellement sur la chimiothérapie (seule ou combinée avec l'immunothérapie), mais cette approche est souvent compromise par la chimiorésistance et la toxicité systémique de ce dernier car il est l'archétype des cancers chimio-résistants \cite{Ma2025, Gao2024}.
+
+\subsection{Caractéristiques Cliniques et Pronostic}
+Le TNBC est considéré comme le sous-type moléculaire \textbf{le plus agressif} et sa manifestation clinique est souvent liée à des dynamiques tumorales rapides et défavorables \cite{Ailioaie2025, Go2025, Ma2025, Sun2020} :
+
+\textbf{Croissance et invasion :} il est très invasif, avec un taux de croissance plus rapide  \cite{James2024, Oehler2024};
+
+\textbf{Métastases et récidive :} il présente un risque plus élevé de métastases et un taux de récidive élevé ce qui l'associe à un pronostic défavorable  \cite{James2024, Oehler2024};
+
+\textbf{Démographie :} il affecte majoritairement les femmes plus jeunes \cite{Syeda2025, Oehler2024} et montre des disparités raciales, avec une incidence plus élevée chez les femmes d'ascendance africaine (AA) par rapport à celles d'ascendance européenne (EA) \cite{Kumar2025a, Oehler2024}.
+
+\textbf{Déficit de cibles :} l'absence des cibles (récepteurs) rend le TNBC insensible aux thérapies hormonales et aux traitements anti-HER2, qui sont efficaces sur d'autres sous-types (le cancer du sein luminal A) car ces derniers sont souvent utilisés comme biomarqueurs en oncologie mammaire \cite{Ma2025, Kong_2023, Paulson2025}.
+
+\subsection{Le Défi Thérapeutique}
+L'absence de cibles conventionnelles rend le TNBC \textbf{insensible aux thérapies hormonales} et aux traitements ciblés \textbf{anti-HER2} \cite{Ma2025,Kong_2023,Paulson2025}, car ces récepteurs sont couramment utilisés pour la classification et le traitement du cancer du sein, ce qui en fait un défi thérapeutique majeur \cite{Daester2016}.
+Le choix du TNBC est stratégique car il est considéré comme l'archétype des cancers chimio-résistants et est le sous-type moléculaire le plus agressif. L'absence de cibles conventionnelles distingue le TNBC du Cancer du Sein Luminal A (ER+, PR+, HER2-) \cite{Wang2025a, Liu2025}. Cette caractéristique en fait l'\textbf{archétype des cancers chimio-résistants}  \cite{Ma2025, Gao2024}.
+
+\begin{table}[h]
+\centering
+\caption{\textcolor{blue}{Défis Thérapeutiques}}
+\small
+\begin{tabular}{|>{\raggedright\arraybackslash}m{4cm}|>{\raggedright\arraybackslash}m{8cm}|}
+\hline
+\textbf{Caractéristique du TNBC} & \textbf{Conséquence \& Distinction} \\
+\hline
+\textbf{Absence de cibles (ER/PR/HER2)} & Rend le TNBC \textbf{insensible} aux thérapies hormonales et aux thérapies anti-HER2 ciblées, contrairement au cancer du sein luminal A (ER+, PR+, HER2-)  \cite{Ma2025, Paulson2025} \\
+\hline
+\textbf{Chimiorésistance} & Le traitement standard repose sur la chimiothérapie, mais le TNBC est l'archétype des cancers chimio-résistants \cite{Kong_2023, Paulson2025, Lebedeva2025} \\
+\hline
+\textbf{Vulnérabilités exploitables} & Ce cancer est une cible pour les nanothérapies car il sur-exprime certains récepteurs (ex. : Sortilin 1 ou SORT1) et est sensible à la photothérapie, et présente un Microenvironnement Tumoral (TME) hypoxique et acide \cite{Ailioaie2025, Duan2024,Demeule2021} \\
+\hline
+\textbf{Ciblage Nanotechnologique} & Le manque de cibles intrinsèques pour la thérapie conventionnelle pousse au développement de stratégies de ciblage innovantes, comme l'utilisation de molécules cationiques pour cibler les mitochondries, ou de thérapies combinées (PDT/PTT)  \cite{WasifBaig2025, Cui2025}\\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Les Stratégies de Ciblage et Vulnérabilités Biologiques}
+
+\subsubsection{Ciblage Subcellulaire : La Mitochondrie}
+
+Les cellules TNBC, en tant que cancers agressifs, présentent un métabolisme exacerbé:
+
+\textbf{Ciblage Mitochondrial :} En raison de leur croissance effrénée, les cellules TNBC sont hyper-dépendantes de leurs mitochondries, car elles sont au c\oe{}ur du métabolisme énergétique et sont impliquées dans l'induction de l'apoptose  \cite{Ailioaie2025, Lee2024}. Certaines cellules cancéreuses, y compris le TNBC, exploitent le potentiel de membrane mitochondriale négatif pour attirer les molécules chargées positivement (cationiques). Ceci entraînant l'utilisation de groupements cationiques lipophiles comme stratégie d'accumulation des colorants (comme les BODIPY) dans la matrice mitochondriale du TNBC (par exemple, la lignée cellulaire MDA-MB-231)\cite{Ahmad2025, Bongo2025, Badon2023}.
+
+\textbf{Protéine TSPO :} La protéine translocatrice (TSPO), située sur la membrane externe des mitochondries, est considérée comme un biomarqueur tumoral dont l'expression est corrélée à l'agressivité de la tumeur.
+
+\subsubsection{Le Microenvironnement Tumoral (TME) comme Cible}
+Le TME du TNBC est hostile et limite l'efficacité des thérapies classiques. Il est exploité par les nanovecteurs pour une activation sélective \cite{Ailioaie2025}:
+
+\textbf{Hypoxie et Faiblesse en Oxygène :} le TNBC est un modèle où l'hypoxie entrave l'efficacité de la Thérapie Photodynamique (PDT) conventionnelle (Type II). Les stratégies innovantes impliquent des nanoplatformes qui atténuent l'hypoxie en délivrant de l'oxygène \cite{Ailioaie2025, Duan2024}.
+
+\textbf{pH Acide :} le TME est en général légèrement acide (pH 6,5–7,2), cette acidité est due à l'activité glycolytique intense des cellules cancéreuses et elle est une opportunité pour concevoir des nanoparticules qui ne s'activent qu'au site tumoral\cite{Xu2025, Chao2023}.
+
+\textbf{Glutathion (GSH) :} Les concentrations élevées de glutathion dans le TME peuvent dégrader les espèces réactives de l'oxygène (ROS) \cite{Li2025b, Ao2025}. La déplétion du GSH est une stratégie nanotechnologique avérée pour améliorer l'efficacité des photothérapies contre le TNBC \cite{Ao2025}.
+
+\textbf{Cibles de surface spécifiques :} Certains récepteurs sont surexprimés, malgré l'absence d'ER/PR/HER2. Par exemple, le récepteur SORT1 est surexprimé par le TNBC, et peut être ciblé par des conjugués peptide-médicament (PDCs) comme TH1902 \cite{Chuang2025}.
+
+\subsubsection{ Justification du modèle TNBC les Thérapies Combinées}
+Étant donné l'agressivité et la résistance du TNBC, les stratégies thérapeutiques modernes s'orientent vers des approches combinées multimodales pour attaquer le cancer sur plusieurs fronts \cite{Ailioaie2025, Li2025, Kong_2023}.
+La recherche actuelle pour le TNBC se tourne vers des \textbf{nanoparticules (NPs)} et des systèmes d'administration innovants qui capitalisent sur les vulnérabilités identifiées du cancer  \cite{Zhu2024}.
+
+\begin{itemize}
+    \item \textbf{Thérapie Combinée :} La combinaison de la PDT (génération de ROS) et de la PTT (génération de chaleur) dans une seule nanoplateforme est une approche synergique puissante, notamment pour le TNBC  \cite{Ma2021, Ailioaie2025}.
+    \item \textbf{Lutte contre la Thermorésistance :} Des systèmes thermo-répondants basés sur des peptides (ELP) et une hyperthermie douce ($41^{\circ}C$) ont été testés sur des cellules TNBC (MDA-MB-231) pour améliorer l'accumulation des médicaments et inhibir la signalisation Notch, réduisant potentiellement la chimiorésistance et la thermorésistance \cite{Go2025}.
+    \item \textbf{Ferroptose :} Le TNBC est sensible à l'induction de la ferroptose, une forme de mort cellulaire régulée, dépendante du fer et de la peroxydation lipidique \cite{Zhu2024}. Des nanoparticules sont conçues pour interférer avec le métabolisme du fer et du GSH, pouvant être potentialisées par l'approche PTT/PDT \cite{Li2025}.
+\end{itemize}
+\section*{conclusion}
+Le TNBC, par son absence de cibles conventionnelles, son agressivité et ses vulnérabilités métaboliques bien caractérisées, représente un modèle idéal pour développer des agents théranostiques innovants combinant imagerie par fluorescence et thérapie photodynamique/photothermique activée dans la fenêtre NIR-I. La conception de BODIPY modifiés (iodation positions 2,6, substitution 3,5 par donneurs $\pi$, greffage de vecteurs mitochondriaux cationiques) vise précisément à transformer ces faiblesses en opportunités thérapeutiques sélectives \cite{Zhang2022, Wang2025c, Lu2025, Overchuk2023, Li2025}.
