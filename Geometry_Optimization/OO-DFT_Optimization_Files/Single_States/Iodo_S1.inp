@@ -1,0 +1,55 @@
+! Opt RKS B3LYP D3BJ def2-SVP TightSCF TIGHTOPT SlowConv
+! CPCM
+! SMD(Water)
+
+%pal
+  nprocs 4
+end
+
+%cpcm
+  SMDSolvent "Water"  # for more complex biological media
+end
+
+%scf
+  HFTyp UKS
+  CNVDIIS true   # Active l'accélération DIIS (activé par défaut)
+  AutoTRAH true # Active le basculement automatique vers l'algorithme TRAH 
+  MaxIter 500
+  ConvForce 1e-6
+  LevelShift 0.2      # Shift (perturbation mineure des orbitales)
+  CNVDamp true   # Active l'amortissement statique 
+  DampFac 0.7    # Amortissement du cycle SCF (ici pour 70%)
+end
+
+%geom
+  MaxStep 0.2
+  Trust 0.3
+  
+end
+
+# Stratégie de convergence robuste pour les états excités
+# Utiliser un guess excité pré-généré si disponible : %moinp "S0_water_opt.gbw"
+
+* xyz 0 1
+  C          -4.80286961294822      2.86241884521691     -0.09162059387446
+  C          -2.25413447161301      3.07995857318805     -0.04742108302624
+  C           0.29723457589880      2.89597218852895     -0.00306216759662
+  C          -5.61674793025061      1.73072578689259     -0.10413927162744
+  C           1.12588700187278      1.77510888699339      0.01245436117753
+  C           0.29656330350303      0.62814331318577     -0.00095240984928
+  C          -4.77247926271982      0.59478246645374     -0.08729608039602
+  N          -3.49044449911921      0.99259759431406     -0.06511500813329
+  C          -1.03458513860126      2.40510178576333     -0.02578596290247
+  F          -2.24674138552214     -0.73128261047876      1.09843186744586
+  F          -2.21191215466075     -0.73453245063708     -1.18207368371683
+  B          -2.23429925634671      0.06605117070409     -0.04303359160578
+  I          -7.70957827753255      1.66747016424494     -0.13990013620246
+  I           3.21930949469901      1.73940156574811      0.04755623172677
+  C          -3.46475097627155      2.38914762359837     -0.06714806962082
+  N          -0.99054829527993      1.00898700688042     -0.02386215348053
+  H          -5.10458093600341      3.90774621202303     -0.09890650570845
+  H          -2.26134508930089      4.17131555035551     -0.04901696749667
+  H           0.58508244813654      3.94520729680581      0.00109928952321
+  H           0.58792918713730     -0.42130905988642      0.00517029949629
+  H          -5.04992272507737     -0.45844990989480     -0.09059436413235
+*
