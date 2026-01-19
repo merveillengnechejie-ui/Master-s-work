@@ -1,12 +1,13 @@
 ! UKS PBE0 D3BJ def2-SVP ZORA RIJCOSX AutoAux TightSCF
-! CPCM(Water)
+! CPCM
+! SMD
 
 %pal
   nprocs 8
 end
 
 %cpcm
-  epsilon 80.0
+  SMDSolvent "mixed"  # for more complex biological media
 end
 
 %scf
@@ -19,6 +20,7 @@ end
 # ΔDFT+SOC perturbatif (recommandé) :
 # Workflow :
 # 1) Optimiser S1 et T1 avec ΔUKS/ΔROKS (S1: S1_water_opt.gbw/S1_water_opt.xyz, T1: T1_water_opt.gbw/T1_water_opt.xyz)
+#    (optimized in mixed biological media)
 # 2) Lancer ΔDFT+SOC sur la géométrie S0 pour estimer les constantes de couplage
 # 3) Avantages : 10× plus rapide que NEVPT2, cohérent avec la chaîne ΔDFT
 # 4) Temps estimé : 30–60 min par molécule

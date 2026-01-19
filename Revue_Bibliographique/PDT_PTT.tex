@@ -1,0 +1,167 @@
+ \chapter{Thérapie photodynamique (PDT), photothermique (PTT) et synergie PDT/PTT}
+\label{chap:PDT-PTT}
+Les recherches menées sur le traitement du cancer ont connue une évolution rapide réduisant le taux de mortalités et améliorant les conditions de vies de millions de patients. Contrairement aux méthodes
+classiques de traitement telles que la radiothérapie et la chimiothérapie qui ont des effets secondaires et des récidives , certaines approches thérapeutiques innovantes basées sur la lumière et des photosensibilisateurs ont été un véritable domaine de recherche visant à détruire de manière complète les tissus tumoraux.
+
+
+
+\section{Thérapie photodynamique (PDT)}
+
+\subsection{Définition et Principe}
+
+La \textbf{PDT} est une approche thérapeutique \textit{innovante, accessible et non-invasive} qui repose sur l'activation de molécules spécifiques par la lumière \cite{Ferroni2019, Correia2021, Kwiatkowski2018, Sun2019}.
+
+
+C'est un traitement qui utilise la \textbf{lumière}, un \textbf{photosensibilisateur (PS)} et l'\textbf{oxygène moléculaire ($O{_2}$)} pour cibler et éliminer sélectivement les cellules cancéreuses \cite{Sun2019, Bongo2025, Ning2025}. Elle est reconnue pour sa \textbf{grande précision spatio-temporelle} et son \textbf{caractère minimalement invasif} \cite{Ailioaie2025, Lee2024, Ferroni2019}.
+
+
+
+\subsection{Mécanisme d'action}
+Le mécanisme se déroule en plusieurs étapes photophysiques et photochimiques après l'\textbf{administration du PS} :
+\begin{itemize}
+    \item \textbf{ Excitation par la lumière} : Le PS, localisé dans le tissu pathologique, absorbe un photon (généralement dans la fenêtre thérapeutique (600–850 nm)) et passe de son état singulet fondamental ($S{_0}$) à un état singulet excité ($S{_1}$) \cite{Lee2024, Ning2025, Kwiatkowski2018, Hilf_2020}.
+
+    \item \textbf{ Transition Inter-Système (ISC)} : une fois le PS excité, il subit ensuite une transition sans rayonnement vers l'état triplet excité ($T{_1}$) \cite{Kwiatkowski2018, Ning2025, Lee2024}. Ce passage est facilité par l'effet d'atome lourd (si des halogènes sont incorporés au PS) \cite{Bongo2025, Sun2019}.
+    
+     \item \textbf{Production d'espèces réactives de l'oxygène (ROS)} : L'état triplet $T{_1}$ peut réagir via deux mécanismes principaux \cite{Kwiatkowski2018, Lee2024} :
+
+     \begin{itemize}
+         \item \textbf{Réaction de Type II (la plus courante)} : le PS transfère son énergie à l'\textit{oxygène moléculaire de l'environnement (${^3}O{_2}$)}, générant de l'\textbf{oxygène singulet (${^1}O{_2}$)}, qui est la principale espèce cytotoxique \cite{Kwiatkowski2018, DosSantos2019, Ning2025, Lee2024}.
+        
+         \item \textbf {Réaction de Type I }: le PS transfère un \textit {électron ou un atome d'hydrogène à des substrats adjacents}, formant d'autres ROS comme le \textbf{radical hydroxyle (HO)} ou le \textbf{peroxyde d'hydrogène ($H{_2}O{_2}$)} \cite{Kwiatkowski2018, DosSantos2019, Lee2024}.
+        \end{itemize} 
+ 
+    \item \textbf{Mort cellulaire} : les ROS ainsi générées induisent un stress oxydatif qui endommage les membranes, les protéines, les lipides et l'ADN/ARN, entraînant la mort cellulaire par \textbf{apoptose, nécrose ou autophagie} \cite{DosSantos2019, Donohoe2019, Lee2024, Przygoda2023, Hilf_2020}.
+   
+\end{itemize}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.85\linewidth]{Figures/PDT_mecanisme_Jablonski.png}
+    \caption{\textbf{Diagramme de Jablonski illustrant les processus photophysiques de la PDT} : absorption d’un photon, transition inter-système (ISC favorisée par effet atome lourd), réactions de type I (transfert d’électron) et type II (transfert d’énergie vers $\ce{^3}O{_2}$ → $\ce{^1}O{_2}$) \cite{Zhao2024,He2025}.}
+    \label{fig:jablonski-pdt}
+\end{figure}
+
+
+\subsection{Avantages et Inconvénients}
+
+\begin{table}[htbp]
+\centering
+\caption{\textbf{Avantages et limitations de la thérapie photodynamique (PDT) en oncologie}. Ce tableau synthétise les principaux bénéfices thérapeutiques de la PDT ainsi que les défis techniques et biologiques qui limitent son application clinique, selon la littérature récente.}
+\label{tab:avantages_limitations_pdt}
+\begin{tabular}{|p{0.45\textwidth}|p{0.45\textwidth}|}
+\hline
+\textbf{Avantages}  & \textbf{Inconvénients (Limitations)}  \\
+\hline
+Sélectivité spatio-temporelle élevée \cite{ Bongo2025} & Dépendance à l'oxygène : Efficacité compromise dans le microenvironnement tumoral hypoxique (TME) \cite{Ailioaie2025, Denko2008, Kwiatkowski2018, Li2020} \\
+\hline
+Faible toxicité systémique et effets secondaires minimes \cite{Ailioaie2025} & Pénétration limitée de la lumière dans les tissus profonds \cite{Ailioaie2025, Li2020, Kong2022} \\
+\hline
+Faible probabilité de résistance tumorale \cite{Ferroni2019, Kong2022} & Photosensibilité cutanée prolongée due à une clairance lente du PS des tissus sains \cite{Ferreira-Goncalves2021, Park2021, Lee2024}\\
+\hline
+Capacité à stimuler des réponses immunitaires antitumorales \cite{Ailioaie2025, Lee2024, Kong2022} & 
+Problèmes de solubilité et de photostabilité des PS conventionnels \cite{Lee2024, Ailioaie2025}\\
+\hline
+\end{tabular}
+\end{table}
+
+% Note : Assurez-vous d'inclure ces packages dans le préambule :
+% \usepackage{array}
+% \usepackage[table]{xcolor} % optionnel, pour des couleurs
+% \usepackage{cite} % pour la gestion des citations
+
+
+\section{Thérapie photothermique (PTT)}
+
+\subsection{Définition et Principe}
+
+La \textbf{thérapie photothermique (PTT)} est une stratégie thérapeutique \textit{prometteuse, simple et peu invasive} qui utilise la conversion de la lumière en chaleur pour détruire les cellules \cite{Ferroni2019, Zhao2021, Lopes2021}.
+
+Elle implique l'utilisation d'\textit{agents photothermiques (PTAs)} qui absorbent l'énergie lumineuse et la convertissent en énergie thermique, provoquant une hyperthermie (chaleur locale supérieur $\SI{41}{\celsius}$) localisée pour détruire les cellules cancéreuses \cite{Zhao2021, Ferroni2019} par \textbf{dénaturation protéique et rupture membranaire} \cite{Chao2023,Skrodzki2024}. .
+
+
+\subsection{Mécanisme d'action}
+Le mécanisme est basé sur la désactivation non-radiative de l'état excité \cite{Han2021, Sun2019} :
+
+\begin{itemize}
+    \item 
+
+\textbf{ Absorption }: Le PTA absorbe les photons, le faisant passer à un état singulet excité \cite{Han2021}.
+
+    \item \textbf{Conversion Non-Radiative }: au lieu d'émettre de la fluorescence ou de subir un ISC, l'énergie de l'état excité se dissipe sous forme de vibrations moléculaires par relaxation non-radiative en revenant à l'état fondamental \cite{Han2021, Sun2019}. Cette dissipation se traduit par une \textbf{augmentation de la température} dans le PTA et son microenvironnement \cite{Zhao2021}.
+    
+    \item  \textbf{Hyperthermie et destruction cellulaire }: lorsque la température locale dépasse \SI{41}{\celsius}, l'hyperthermie provoque la dénaturation des protéines cellulaires et l'agrégation, conduisant à la destruction des cellules tumorales \cite{Kumari2021, Melamed2015}.
+
+    \begin{itemize}
+        \item  Des températures modérées (\SIrange{41}{47}{\celsius}) induisent \textit{l'apoptose} \cite{Melamed2015, PerezHernandez2018}.
+        \item Des températures élevées (superieur $\SI{55}{\celsius}$) peuvent entraîner la \textit{nécrose} \cite{Melamed2015, PerezHernandez2018}.
+    \end{itemize} 
+
+\end{itemize}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.75\linewidth]{Photothermal.png}
+    \caption{\textcolor{blue}{Schéma de la thérapie photothermique (PTT) appliquée au cancer du sein.} Des nanoparticules multifonctionnelles (ex. AuNPs ou BODIPY iodés) s’accumulent sélectivement dans la tumeur grâce à l’effet EPR et à un éventuel ciblage actif. Sous irradiation NIR ($\SIrange{650}{900}{nm}$), elles convertissent l’énergie lumineuse en chaleur locale (> $\SI{42}{\celsius}$), provoquant une hyperthermie létale et la mort des cellules cancéreuses par nécrose/apoptose. La chaleur générée potentialise également la perfusion tumorale et l’oxygénation, bénéficiant à une éventuelle PDT combinée \cite{Yang2023,He2025,Zhao2024,Chao2023}}
+    \label{fig:ptt-chaleur}
+\end{figure}
+
+Avantages clés :
+\begin{table}[htbp]
+    \centering
+    \caption{Avantages et inconvénients de la thérapie photothermique (PTT) dans le contexte du cancer du sein triple négatif. La combinaison PTT/PDT à base de nanoparticules BODIPY permet de contourner la plupart des limitations listées ici (indépendance à l’oxygène, thermorésistance, délivrance suboptimale) tout en conservant les bénéfices d’une ablation thermique localisée \cite{Kong2022,Chao2023,Zhao2021,Lee2024}.}
+    \label{tab:avantages-inconvenients-PTT}
+    \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}p{6.8cm}>{\centering\arraybackslash}p{6.8cm}}
+        \toprule
+        \textbf{Avantages de la PTT} & \textbf{Inconvénients / Limitations de la PTT} \\
+        \midrule
+        Indépendance complète vis-à-vis de l’oxygène : efficacité préservée dans le microenvironnement hypoxique typique du TNBC \cite{Eskiizmir2017,Kong2022,Lee2024} &
+        Thermorésistance possible via surexpression des protéines de choc thermique (HSP70, HSP90) \cite{Xin2022,Cao2022,Deng2021} \\[8pt]
+        
+        Sélectivité spatio-temporelle élevée et ablation très localisée \cite{Kong2022} &
+        Risque théorique de dissémination tumorale par dilatation vasculaire et augmentation du flux sanguin lors d’un chauffage prolongé ou mal contrôlé \cite{Chao2023} \\[8pt]
+        
+        La chaleur (> \SI{42}{\celsius}) sensibilise les cellules tumorales à la chimiothérapie et à l’immunothérapie \cite{Li2022} &
+        Pénétration limitée de la lumière dans les tissus profonds (nécessite irradiation NIR-I ou NIR-II) \cite{Li2020,Han2021,Kong2022} \\[8pt]
+        
+        Faible incidence de résistance tumorale (comparable à la PDT) \cite{Ferroni2019} &
+        Efficacité de délivrance parfois suboptimale des agents photothermiques (PTA) au site tumoral \cite{Ferroni2019} \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+\section{Synergie PDT/PTT : une stratégie optimale pour le TNBC}
+
+La combinaison des deux modalités photothérapeutiques ( PDT/PTT)) est une stratégie multimodale puissante et hautement souhaitable pour obtenir des effets synergiques ("1+1>2") \cite{Sun2019, Liu2022, Chao2023, Grin2022}  dans une même nanoparticule \cite{Yang2023,Zhao2024,He2025,Chen2024}. La principale motivation de cette combinaison PDT/PTT est que chaque technique compense les \textit{faiblesses de l'autre} \cite{Sun2019, Kong2022, Ailioaie2025} :
+
+\begin{table}[htbp]
+    \centering
+    \caption{Complémentarité PDT/PTT dans le microenvironnement tumoral du TNBC}
+    \label{tab:synergie}
+    \begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X}
+        \toprule
+        \textbf{Limitation} & \textbf{Compensation par l’autre modalité} \\
+        \midrule
+        Hypoxie tumorale (PDT limitée):  Le défi majeur de la PDT (Type II) est l'environnement hypoxique de la tumeur \cite{Ailioaie2025} & PTT indépendante de l’\ce{O2} ce qui renforce l'efficacité de la PDT \cite{Chao2023,Yang2023,Sun2019, Kong2022, Lee2024} \\
+        Thermorésistance : L'approche PTT seule peut échouer si les cellules restantes développent une résistance à la chaleur (HSP, PTT limitée) & La PDT génère des ROS qui tuent ces cellules thermorésistantes, garantissant une ablation tumorale plus complète \cite{Sun2019, Kong2022, Zhao2024} \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+L'intégration de la PDT et de la PTT se fait couramment via des nanoplateformes théranostiques \textit{(par exemple, des nano-photosensibilisateurs à base de BODIPY)} qui combinent les propriétés des deux agents dans un seul système \cite{Sun2019, Ning2025, Liu2022, Li2020}. Ces nanoplates-formes peuvent être activées par une seule irradiation NIR, bénéficiant de la pénétration accrue de ces longueurs d'onde (700 à 1350 nm) \cite{Li2020, Kadkhoda2022}.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.95\linewidth]{SynergiePDT_PTT.png}
+    \caption{Schéma de la synergie PDT/PTT dans une nanoparticule BODIPY iodée ciblant les mitochondries du TNBC : (i) ISC renforcé par iode → forte génération de $\ce{^1O 2}$ (PDT), (ii) relaxation non radiative → hyperthermie (PTT), (iii) la chaleur augmente l’oxygénation locale, potentialisant la PDT, et (iv) mort cellulaire complète (apoptose + nécrose). D’après \cite{He2025,Zhao2024,Chen2024}.}
+    \label{fig:synergie-tnbc}
+\end{figure}
+
+\section*{Conclusion partielle}
+
+La combinaison PDT/PTT dans une nanoparticule BODIPY optimisée représente une stratégie théranostique particulièrement adaptée au TNBC : elle exploite l’hypoxie et l’hyper-dépendance mitochondriale de ce cancer tout en contournant ses résistances grâce à une double action cytotoxique activée par une seule irradiation NIR \cite{Yang2023,He2025,Chen2024,Zhao2024}.
+
+Le succès de cette approche repose sur la conception rationnelle de nanoparticules théranostiques à base de BODIPY (boron-dipyrrométhène). Par iodation en positions 2,6 (effet atome lourd), substitution $\pi$ extenseur en méso et positions 3,5, et greffage de vecteurs mitochondriaux cationiques \cite{Jana2024,He2025,Zhao2024, Chen2024, WasifBaig2025}.
+
+Ainsi, l’optimisation computationnelle et expérimentale de ces nanoparticules BODIPY iodées représente une avancée majeure vers une thérapie combinée PDT/PTT hautement sélective et efficace contre le cancer du sein triple négatif \cite{Yang2023,He2025,Zhao2024,Chen2024,Jana2024,Ailioaie2025}.
+

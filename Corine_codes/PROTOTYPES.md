@@ -11,7 +11,7 @@ Ce document décrit les **3 molécules** du projet révisé (15/11/2025) :
 ## 🔬 Molécule 1 : Référence Expérimentale (Externe)
 
 ### Rôle
-Valider la **chaîne de calcul ΔDFT+SOC** en reproduisant une molécule dont les propriétés sont **déjà publiées**.
+Valider la **chaîne de calcul ΔDFT+SOC** en reproduisant une molécule dont les propriétés sont **déjà publiées**. **Cette molécule est utilisée UNIQUEMENT à des fins de validation/benchmarking, PAS pour l'évaluation finale des propriétés photophysiques.**
 
 ### Critères de sélection
 
@@ -28,8 +28,8 @@ Valider la **chaîne de calcul ΔDFT+SOC** en reproduisant une molécule dont le
 
 | Propriété | Valeur | Source |
 | :--- | :--- | :--- |
-| **λ_max exp.** | ~505 nm | DMSO |
-| **Φ_f exp.** | ~0.8 | DMSO |
+| **λ_max exp.** | ~505 nm | DMSO (ou milieu biologique pertinent) |
+| **Φ_f exp.** | ~0.8 | DMSO (ou milieu biologique pertinent) |
 | **Structure** | Simple (pas de substituants complexes) | Facile à modéliser |
 | **Justification** | Loin de NIR (bon contraste avec prototypes) | Permet validation claire |
 
@@ -40,15 +40,17 @@ Valider la **chaîne de calcul ΔDFT+SOC** en reproduisant une molécule dont le
 - *Photochemistry and Photobiology Science* (propriétés photophysiques)
 - *Journal of Physical Chemistry A* (SOC, états excités)
 
-### Procédure de benchmarking
+### Procédure de benchmarking (Référence seulement)
 
-1. **Construire la géométrie** (Avogadro/IQmol)
-2. **Optimiser S₀** (B3LYP-D3/def2-SVP, CPCM eau)
-3. **Calculer λ_max** (ADC(2)/def2-TZVP, CPCM eau)
+1. **Construire la géométrie de la molécule de référence** (Avogadro/IQmol)
+2. **Optimiser S₀** pour la molécule de référence (B3LYP-D3/def2-SVP, SMD mixed pour environnement biologique complexe)
+3. **Calculer λ_max** pour la molécule de référence (ADC(2)/def2-TZVP, SMD mixed pour environnement biologique complexe)
 4. **Comparer avec expérience** :
    - **Critère de validation** : MAE < 0.1 eV (≈ 10 nm à 700 nm)
    - Si MAE > 0.1 eV : Investiguer (base? solvant? géométrie?)
-5. **Valider la chaîne** avant d'attaquer les prototypes
+5. **Notes sur le milieu biologique** : Les calculs sont effectués dans un environnement biologique complexe (SMD mixed) pour une meilleure corrélation avec les conditions physiologiques
+6. **Valider la chaîne** avant d'attaquer les prototypes
+7. **IMPORTANT** : La molécule de référence est UTILISÉE UNIQUEMENT pour la validation de la méthode, PAS pour les calculs finaux d'évaluation des prototypes
 
 ### Fichiers associés
 
@@ -290,6 +292,28 @@ Décision :
 - Appliquer la grille Go/No-Go à chaque prototype
 - Calculer le score final
 - Identifier le prototype le plus prometteur (score ≥ 70%)
+
+---
+
+### ⚠️ Clarification Importante sur les Calculs
+
+**Molécule de référence** :
+- Utilisée UNIQUEMENT pour la validation de la méthode (benchmarking)
+- Ne fait PAS l'objet d'une évaluation complète des propriétés photophysiques
+- Ne participe PAS à la grille Go/No-Go finale
+
+**Prototypes (Iodo-BODIPY et TPP-Iodo-BODIPY)** :
+- Sont les SEULES molécules soumises à la chaîne de calcul complète
+- Seules ces deux molécules subissent les calculs S₀, T₁, S₁, ADC(2), et SOC
+- Seules ces deux molécules sont évaluées via la grille Go/No-Go
+
+**Calculs effectués sur les prototypes** :
+- Optimisation S₀ (état fondamental)
+- Optimisation T₁ (état triplet)
+- Optimisation S₁ (état singulet excité)
+- Calculs ADC(2) pour λ_max
+- Calculs SOC (couplage spin-orbite)
+- Évaluation finale via grille Go/No-Go
 
 ---
 

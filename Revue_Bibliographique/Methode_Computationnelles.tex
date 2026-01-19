@@ -1,0 +1,74 @@
+\chapter{Méthodes computationnelles}
+
+\section*{Revue Bibliographique Méthodes Computationnelles pour le Design Théranostique Contre le TNBC}
+
+Le cancer du sein triple négatif (TNBC), archétype des cancers chimio-résistants du fait de l’absence des récepteurs ER, PR et HER2 \cite{Li2022,Sun2020,Demeule2021,Li2025e}, nécessite des stratégies thérapeutiques non conventionnelles, notamment les photothérapies combinées PDT/PTT \cite{He2025,Chao2023,Zhao2024}.
+
+La chimie computationnelle, en général, et la théorie de la fonctionnelle de la densité (DFT) en particulier, est aujourd’hui indispensable pour concevoir de manière rationnelle et économique des photosensibilisateurs (PS) de nouvelle génération \cite{Ponte2022,Liu2024}.
+
+\subsection{La Théorie de la Fonctionnelle de la Densité (DFT)}
+
+La DFT constitue la méthode de référence pour l’étude de l’état fondamental (S$_0$) des systèmes moléculaires \cite{Ponte2022}.  
+Elle permet :
+\begin{itemize}
+    \item l’optimisation géométrique précise des BODIPY (B3LYP-D3/def2-SVP ou def2-TZVP couramment utilisés) \cite{Ponte2022,Liu2024};
+    \item le calcul des propriétés électroniques (gap HOMO–LUMO, potentiel d’oxydation/réduction) \cite{Zhao2024};
+    \item la prise en compte de la solvatation biologique via le modèle CPCM(eau) \cite{Ponte2022}.
+\end{itemize}
+
+\subsection{TD-DFT : limites critiques pour les BODIPY}
+
+Bien que largement utilisée, la TD-DFT présente des erreurs systématiques importantes sur les dérivés BODIPY à cause de leur caractère légèrement « open-shell » mild \cite{Ponte2022,Liu2024} :
+\begin{itemize}
+    \item Surestimation de l’énergie S$_1$ et sous-estimation de T$_1$ ;
+    \item Erreur moyenne absolue (MAE) sur $\lambda_{\text{max}}$ souvent comprise entre 0,3 et 0,6~eV ;
+    \item Prédiction très imprécise de l’écart singulet–triplet $\Delta E_{\text{ST}}$ (erreurs fréquemment > 0,5~eV), rendant impossible une évaluation fiable du rendement ISC et donc du potentiel PDT.
+\end{itemize}
+
+
+Ces limitations sont désormais bien documentées dans la littérature BODIPY et aza-BODIPY \cite{He2025,Ponte2022,Liu2024}.
+
+\subsection{Vers la précision chimique : ADC(2) et les méthodes $\Delta$DFT / OO-DFT}
+
+Les méthodes de référence actuelles (2023–2025) pour le design de PS BODIPY sont :
+
+\begin{itemize}
+    \item \textbf{ADC(2)/def2-TZVP ou cc-pVTZ} pour les excitations verticales et la prédiction précise de $\lambda_{\text{max}}$ (erreur typique < 0,1~eV) \cite{Ponte2022}.
+    
+    \item \textbf{$\Delta$SCF / $\Delta$UKS ou $\Delta$ROKS} (souvent avec $\omega$B97X-D4 ou PBE0-D4) pour les énergies adiabatiques des états S$_1$ et T$_1$, ainsi que pour l’écart $\Delta E_{\text{ST}}$ avec une précision chimique (< 0,05~eV) \cite{He2025,Zhao2024,Liu2024}.
+    
+    \item \textbf{FIC-NEVPT2 ou CASSCF/ZORA} pour le calcul des constantes de couplage spin–orbite (SOC) lorsque des atomes lourds (I, Br) sont présents \cite{Ponte2022}.
+\end{itemize}
+
+
+Ces protocoles sont aujourd’hui considérés comme le standard pour le design in silico de BODIPY NIR actifs en PDT/PTT combinée \cite{He2025,Zhao2024}.
+
+\begin{table}[htbp]
+\centering
+\caption{Comparaison des méthodes computationnelles pour le design de BODIPY théranostiques (2022–2025)}
+\begin{tabularx}{\linewidth}{>{\raggedright\arraybackslash}Xccc}
+\toprule
+Méthode & Précision $\lambda_{\text{max}}$ & Précision $\Delta E_{\text{ST}}$ & Coût computationnel \\
+\midrule
+TD-DFT (B3LYP, CAM-B3LYP) & ±0,3–0,6 eV & >0,5 eV (mauvais) & Faible \\
+ADC(2)                   & ±0,1 eV          & –                  & Moyen \\
+ΔSCF/ΔUKS–ΔROKS           & ±0,05 eV         & ±0,05 eV           & Moyen–élevé \\
+FIC-NEVPT2/CASSCF     & –                & SOC précis         & Élevé \\
+\bottomrule
+\end{tabularx}
+\source{\footnotesize Sources : \cite{Ponte2022,Liu2024,He2025,Zhao2024} (et travaux 2024–2025 non encore indexés).}
+\end{table}
+
+\subsection{Conclusion de la revue méthodologique}
+
+Le protocole computationnel le plus robuste et le plus utilisé en 2025 pour la conception rationnelle de nanoparticules BODIPY ciblant le TNBC est donc :
+
+\begin{enumerate}
+    \item Optimisation S$_0$ → B3LYP-D3/def2-TZVP + CPCM(eau)
+    \item Excitations verticales → RI-ADC(2)/def2-TZVP
+    \item États relaxés S$_1$ et T$_1$ → ΔUKS ou ΔROKS (ωB97X-D4 recommandé)
+    \item Couplage spin-orbite → FIC-NEVPT2 ou CASSCF/ZORA
+\end{enumerate}
+
+Ce workflow garantit une précision chimique sur $\lambda_{\text{max}}$, $\Delta E_{\text{ST}}$ et SOC, permettant de sélectionner avec confiance les candidats les meilleurs candidats BODIPY avant synthèse et tests biologiques sur lignées TNBC (MDA-MB-231, HCC1937, etc.).
+

@@ -1,12 +1,13 @@
 ! Opt UKS B3LYP D3BJ def2-SVP TightSCF TIGHTOPT
-! CPCM(Water)
+! CPCM
+! SMD
 
 %pal
   nprocs 8
 end
 
 %cpcm
-  epsilon 80.0
+  SMDSolvent "mixed"  # for more complex biological media
 end
 
 %scf

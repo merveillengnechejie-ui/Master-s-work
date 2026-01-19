@@ -1,12 +1,13 @@
 ! Opt RKS B3LYP D3BJ def2-SVP TightSCF TIGHTOPT
-! CPCM(Water)
+! CPCM
+! SMD
 
 %pal
   nprocs 8
 end
 
 %cpcm
-  epsilon 80.0
+  SMDSolvent "mixed"  # for more complex biological media
 end
 
 %scf
@@ -22,5 +23,5 @@ end
 * xyzfile 0 1 S0_gas_opt.xyz
 
 # Notes:
-# - This performs the S0 optimization in implicit water (CPCM)
+# - This performs the S0 optimization in implicit mixed biological media (SMD)
 # - Provide S0_gas_opt.xyz or modify the xyzfile path as needed

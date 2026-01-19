@@ -49,7 +49,7 @@ L'objectif de ce stage est de mener une **mission de conception *in silico*** po
 
 Pour concevoir une molécule *in silico*, nous utilisons une approche en cascade, combinant plusieurs niveaux de théorie :
 
-1. **Géométries de référence** : DFT classique (B3LYP-D3/def2-SVP en phase gaz et CPCM(eau))
+1. **Géométries de référence** : DFT classique (B3LYP-D3/def2-SVP en phase gaz et SMD mixed pour environnement biologique complexe)
 2. **Énergies d'excitation verticales** : ADC(2)/def2-TZVP pour améliorer la précision sur λ_max
 3. **États excités relaxés** : **ΔUKSou ΔROKS** pour les énergies adiabatiques (PTT)
 4. **Écarts singlet-triplet** : **ΔUKSet ΔROKS** pour ΔE_{ST} (crucial pour la PDT/ISC)
@@ -128,18 +128,19 @@ end
 
 **Temps de calcul estimé :** 30-60 min (selon la taille de la molécule : 30-50 atomes)
 
-#### Input ORCA 6.1 : Optimisation S₀ en solution (CPCM, eau)
+#### Input ORCA 6.1 : Optimisation S₀ en milieu biologique complexe (SMD mixed)
 
 ```orca
 ! Opt RKS B3LYP D3BJ def2-SVP TightSCF TIGHTOPT
-! CPCM(Water)
+! CPCM
+! SMD
 
 %pal
   nprocs 8
 end
 
 %cpcm
-  epsilon 80.0  # Constante diélectrique de l'eau
+  SMDSolvent "mixed"  # pour environnement biologique complexe
 end
 
 %scf
@@ -174,14 +175,15 @@ Calculer l'énergie d'absorption (S₀ → S₁) sur la géométrie figée de S�
 
 ```orca
 ! RI-ADC(2) def2-TZVP AutoAux FrozenCore
-! CPCM(Water)
+! CPCM
+! SMD
 
 %pal
   nprocs 8
 end
 
 %cpcm
-  epsilon 80.0
+  SMDSolvent "mixed"  # pour environnement biologique complexe
 end
 
 %adc
@@ -218,14 +220,15 @@ Le calcul du triplet est une étape fondamentale pour évaluer l'efficacité de 
 
 ```orca
 ! Opt UKS B3LYP D3BJ def2-SVP TightSCF TIGHTOPT
-! CPCM(Water)
+! CPCM
+! SMD
 
 %pal
   nprocs 8
 end
 
 %cpcm
-  epsilon 80.0
+  SMDSolvent "mixed"  # pour environnement biologique complexe
 end
 
 %scf
@@ -259,14 +262,15 @@ C'est l'étape la plus délicate. L'approche **ΔSCF** (Delta-SCF) cible explici
 
 ```orca
 ! Opt UKS B3LYP D3BJ def2-SVP TightSCF TIGHTOPT SlowConv
-! CPCM(Water)
+! CPCM
+! SMD
 
 %pal
   nprocs 8
 end
 
 %cpcm
-  epsilon 80.0
+  SMDSolvent "mixed"  # pour environnement biologique complexe
 end
 
 %scf
@@ -274,7 +278,7 @@ end
   SCF_ALGORITHM DIIS_TRAH
   MaxIter 500
   ConvForce 1e-6
-  
+
   # Stratégie de convergence robuste pour les états excités
   LevelShift 0.2      # Shift (perturbation mineure des orbitales)
   DampPercentage 40   # Amortissement du cycle SCF
@@ -322,14 +326,15 @@ Remplacement NEVPT2 → ΔDFT+SOC perturbatif. Ce choix privilégie la cohérenc
 
 ```orca
 ! UKS PBE0 D3BJ def2-SVP ZORA RIJCOSX AutoAux TightSCF
-! CPCM(Water)
+! CPCM
+! SMD
 
 %pal
   nprocs 8
 end
 
 %cpcm
-  epsilon 80.0
+  SMDSolvent "mixed"  # pour environnement biologique complexe
 end
 
 %scf
@@ -424,11 +429,11 @@ Le tableau suivant synthétise les temps de calcul (*Wall Time*, temps réel) po
 | Phase | Méthode & Niveau de Théorie | Propriété Calculée | Complexité (Échelle) | Temps Estimé (8 cœurs) | GPU (optionnel) | Remarques |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | **Phase 1a : S₀ optim. (gaz)** | B3LYP-D3/def2-SVP | Géométrie S₀ | DFT (Économique) | 30–60 min | 10–15 min | Étape de reconnaissance rapide |
-| **Phase 1b : S₀ optim. (eau)** | B3LYP-D3/def2-SVP + CPCM | Géométrie S₀ en solution | DFT (Économique) | **45–90 min** | 15–25 min | Point de départ pour tous les calculs |
+| **Phase 1b : S₀ optim. (milieu biologique)** | B3LYP-D3/def2-SVP + SMD mixed | Géométrie S₀ dans environnement biologique complexe | DFT (Économique) | **45–90 min** | 15–25 min | Point de départ pour tous les calculs |
 | **Phase 2 : Absorption verticale** | RI-ADC(2)/def2-TZVP | Énergie d'excitation verticale ($\lambda_{\max}$) | WFT (Coût Élevé) | **240–360 min** | 60–120 min | Standardisé pour la précision sur λ_max |
-| **Phase 3a : T₁ relaxé** | **ΔUKS B3LYP**/def2-SVP + CPCM | Optimisation géométrie $T_1$ | ΔDFT (Efficace) | **60–120 min** | 20–35 min | Robuste, généralement bon ; crucial pour ΔE_{ST} |
-| **Phase 3b : S₁ relaxé (ΔSCF)** | **ΔUKS B3LYP**/def2-SVP + CPCM | Optimisation géométrie $S_1$ | ΔDFT (Difficile) | **120–180 min** | 40–60 min | Étape délicate, convergence exigeante, tentatives multiples |
-| **Phase 4 : SOC (recommandé)** | **ΔDFT+SOC** (UKS/PBE0, ZORA, dosoc) | Constantes de couplage spin-orbite (ISC) | ΔDFT (Économique) | **30–60 min** | 10–20 min | Suffisant pour le criblage; cohérent avec ΔDFT |
+| **Phase 3a : T₁ relaxé** | **ΔUKS B3LYP**/def2-SVP + SMD mixed | Optimisation géométrie $T_1$ dans environnement biologique complexe | ΔDFT (Efficace) | **60–120 min** | 20–35 min | Robuste, généralement bon ; crucial pour ΔE_{ST} |
+| **Phase 3b : S₁ relaxé (ΔSCF)** | **ΔUKS B3LYP**/def2-SVP + SMD mixed | Optimisation géométrie $S_1$ dans environnement biologique complexe | ΔDFT (Difficile) | **120–180 min** | 40–60 min | Étape délicate, convergence exigeante, tentatives multiples |
+| **Phase 4 : SOC (recommandé)** | **ΔDFT+SOC** (UKS/PBE0, ZORA, dosoc) + SMD mixed | Constantes de couplage spin-orbite dans environnement biologique complexe | ΔDFT (Économique) | **30–60 min** | 10–20 min | Suffisant pour le criblage; cohérent avec ΔDFT |
 | (Validation ponctuelle) | FIC-NEVPT2/CASSCF | Point de contrôle méthodologique | MR-WFT (Très Coûteux) | **150–300 min** | 50–100 min | Facultatif si ressources disponibles |
 | **Phase 5 : Post-traitement** | Multiwfn (ESP, charges atomiques) | Potentiel Électrostatique (MEP), charges | Post-SCF (Très Rapide) | **5–15 min** | N/A | Analyse locale, très rapide |
 
@@ -576,7 +581,7 @@ Checklist ΔSCF (ordre d’escalade pratique):
 - Réduire: `MaxStep 0.1`, `Trust 0.15`
 3) Base et solvant
 - Passer à def2-TZVP si nécessaire pour plus de flexibilité
-- Utiliser CPCM(eau) cohérent avec l’expérience; pour états excités envisager ptSS-PCM (non-équilibre)
+- Utiliser SMD mixed pour environnement biologique complexe; pour états excités envisager ptSS-PCM (non-équilibre)
 4) Guesses variés pour S1
 - Tester HOMO→LUMO, HOMO−1→LUMO, HOMO→LUMO+1 (MOM/IMOM)
 - Relancer avec `%moinp` depuis S0 ou tentative précédente
@@ -823,8 +828,8 @@ L'une des étapes critiques est de valider que nos calculs donnent « **le bon r
 1. **Sélectionner 1 BODIPY de référence** de la littérature avec données expérimentales publiées (λ_max, Φ_f, idéalement SOC)
 
 2. **Reproduire ce BODIPY** avec la même géométrie de calcul :
-   - Optimiser sa géométrie (DFT B3LYP-D3/def2-SVP, CPCM eau)
-   - Calculer son λ_max (ADC(2)/def2-TZVP, CPCM eau)
+   - Optimiser sa géométrie (DFT B3LYP-D3/def2-SVP, SMD mixed pour environnement biologique complexe)
+   - Calculer son λ_max (ADC(2)/def2-TZVP, SMD mixed pour environnement biologique complexe)
    - Comparer avec les valeurs expérimentales
 
 3. **Évaluer l'erreur** :

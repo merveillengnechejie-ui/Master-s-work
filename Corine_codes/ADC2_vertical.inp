@@ -1,12 +1,13 @@
 ! RI-ADC(2) def2-TZVP AutoAux FrozenCore
-! CPCM(Water)
+! CPCM
+! SMD
 
 %pal
   nprocs 8
 end
 
 %cpcm
-  epsilon 80.0
+  SMDSolvent "mixed"  # for more complex biological media
 end
 
 %adc
@@ -18,7 +19,7 @@ end
 * xyzfile 0 1 S0_water_opt.xyz
 
 # Notes:
-# - Use the S0 optimized geometry in water (S0_water_opt.xyz)
+# - Use the S0 optimized geometry in mixed biological media (S0_water_opt.xyz)
 # - Output will contain vertical excitation energies and NTOs
 # - Base standardisée : def2-TZVP (pour précision sur λ_max)
 # - Temps estimé : 240–360 min (4–6 h) par molécule

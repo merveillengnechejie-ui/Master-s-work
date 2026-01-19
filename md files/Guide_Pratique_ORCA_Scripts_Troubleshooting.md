@@ -8,9 +8,10 @@ Créer un fichier `run_protocol.sh` pour lancer l'ensemble des calculs :
 
 ```bash
 #!/bin/bash
-# Script pour lancer le protocole complet OO-DFT pour les 3 prototypes
+# Script pour lancer le protocole complet OO-DFT pour les 2 prototypes (Iodo-BODIPY et TPP-Iodo-BODIPY)
+# La molécule de référence est utilisée uniquement à des fins de benchmarking
 
-PROTOTYPES=("proto-A" "proto-B" "proto-C")
+PROTOTYPES=("proto-A-Iodo-BODIPY" "proto-B-TPP-Iodo-BODIPY")
 WORKDIR="/path/to/work/directory"
 
 for proto in "${PROTOTYPES[@]}"; do
@@ -30,13 +31,13 @@ for proto in "${PROTOTYPES[@]}"; do
         exit 1
     fi
     
-    # Étape 2 : Optimisation S0 en solution (point de départ principal)
-    echo "Step 2: S0 optimization (CPCM-Water) - MEDIUM"
+    # Étape 2 : Optimisation S0 en milieu biologique complexe (point de départ principal)
+    echo "Step 2: S0 optimization (SMD mixed - biological environment) - MEDIUM"
     orca S0_water_opt.inp > S0_water_opt.out 2>&1
     if [ $? -eq 0 ]; then
-        echo "✓ S0 water phase completed"
+        echo "✓ S0 biological environment phase completed"
     else
-        echo "✗ S0 water phase FAILED"
+        echo "✗ S0 biological environment phase FAILED"
         exit 1
     fi
     
