@@ -37,5 +37,4 @@ Le protocole automatise l'exécution des différentes stratégies de rotation et
 1. **Convergence** : Le calcul doit afficher `SCF CONVERGED`.
 2. **Énergie Minimale** : Parmi les états convergés, celui ayant l'énergie totale la plus basse est retenu comme l'état $S_1$ le plus stable physiquement.
 
----
-*Ce protocole est implémenté via le script `gen_s1_guesses.sh` dans le dossier `OO-DFT`.*
+
