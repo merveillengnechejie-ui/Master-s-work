@@ -23,13 +23,13 @@ mkdir -p molecules/tpp_iodo_bodipy
 
 # 2. Copier les fichiers de géométrie
 cp Iodo_Opt.xyz molecules/iodo_bodipy/
-cp TPP_Opt.xyz molecules/tpp_iodo_bodipy/
+cp TPP_Iodo_BODIPY.xyz molecules/tpp_iodo_bodipy/
 # (La référence doit être construite en semaine 2)
 
 # 3. Copier les templates d'inputs
-cp S0_gas_opt.inp molecules/reference/
-cp S0_water_opt.inp molecules/reference/
-# ... etc pour toutes les phases
+cp Corine_codes/*.inp molecules/reference/
+cp Corine_codes/*.inp molecules/iodo_bodipy/
+cp Corine_codes/*.inp molecules/tpp_iodo_bodipy/
 ```
 
 ### Étape 2 : Optimisation S₀ (Phase 1)
@@ -58,40 +58,29 @@ grep "FINAL SINGLE POINT ENERGY" S0_gas_opt.out
 grep "FINAL SINGLE POINT ENERGY" S0_water_opt.out
 ```
 
-### Étape 3 : Excitations verticales (Phase 2)
+### Étape 3 : Excitations verticales (Phase 2 - TD-DFT)
 
 ```bash
-# ⚠️ IMPORTANT : Test comparatif def2-SVP vs def2-TZVP (Semaine 3)
+# ⚠️ REMPLACE ADC(2) POUR EXÉCUTION LOCALE RAPIDE
 
-# 1. Créer deux versions d'ADC2_vertical.inp
-cp ADC2_vertical.inp ADC2_vertical_SVP.inp
-cp ADC2_vertical.inp ADC2_vertical_TZVP.inp
+# 1. Lancer TD-DFT
+orca TDDFT_vertical.inp > TDDFT_vertical.out &
 
-# 2. Modifier les bases
-# ADC2_vertical_SVP.inp : ! RI-ADC(2) def2-SVP AutoAux FrozenCore
-# ADC2_vertical_TZVP.inp : ! RI-ADC(2) def2-TZVP AutoAux FrozenCore
-
-# 3. Lancer en parallèle (batch de nuit recommandé)
-sbatch submit_ADC2.slurm  # SVP
-sbatch submit_ADC2.slurm  # TZVP
-
-# 4. Comparer λ_max calculé vs expérimental
-# Décision : Si écart < 5 nm → garder def2-SVP; si > 10 nm → garder def2-TZVP
-grep "Excitation energy" ADC2_vertical_SVP.out | head -1
-grep "Excitation energy" ADC2_vertical_TZVP.out | head -1
+# 2. Extraire λ_max
+grep "Excitation energy" TDDFT_vertical.out | head -1
 ```
 
 ### Étape 4 : États excités relaxés (Phase 3)
 
 ```bash
 # 1. Optimisation T₁ (robuste)
-sbatch submit_T1.slurm
+orca T1_opt_UKS.inp > T1_opt_UKS.out &
 
 # 2. Pré-test des guesses S₁ (Semaine 7)
-./gen_s1_guesses.sh -t S1_opt_DeltaUKS.inp -x S0_water_opt.xyz -g S0_water_opt.gbw -n 8
+./gen_s1_guesses.sh -t S1_opt_DeltaUKS.inp -x S0_water_opt.xyz -g S0_water_opt.gbw -n 4
 
 # 3. Lancer S₁ (Semaine 8–9)
-sbatch submit_S1.slurm
+orca S1_opt_DeltaUKS.inp > S1_opt_DeltaUKS.out &
 
 # 4. Si S₁ ne converge pas après 5 tentatives
 ./run_troubleshoot_S1.sh -i S1_opt_DeltaUKS.inp -x S0_water_opt.xyz -g S0_water_opt.gbw -n 8
@@ -104,7 +93,7 @@ grep "FINAL SINGLE POINT ENERGY" S1_opt_DeltaUKS.out
 
 ```bash
 # 1. Lancer ΔDFT+SOC (recommandé)
-sbatch submit_SOC.slurm
+orca DeltaSCF_SOC.inp > DeltaSCF_SOC.out &
 
 # 2. Ou TD-DFT SOC (Plan B si ΔSCF S₁ échoue)
 orca TDDFT_SOC_quick.inp > TDDFT_SOC_quick.out &
@@ -121,9 +110,9 @@ grep "Spin-Orbit Coupling" DeltaSCF_SOC.out
 
 | Paramètre | Défaut | Production | Notes |
 | :--- | :--- | :--- | :--- |
-| **nprocs** | 8 | 8–16 | Nombre de cœurs CPU |
-| **Basis set (ADC(2))** | def2-SVP | def2-TZVP | Test comparatif en semaine 3 |
-| **Basis set (autres)** | def2-SVP | def2-SVP | Bon compromis |
+| **nprocs** | 4 | 4 | Limite matérielle |
+| **maxcore** | 3500 | 3500 | Pour 16 Go RAM (14 Go total + OS) |
+| **Basis set** | def2-SVP | def2-SVP | Recommandé pour rapidité |
 | **MaxIter (SCF)** | 500 | 500–1000 | Augmenter si convergence difficile |
 | **ConvForce (géom)** | 1e-6 | 1e-6 | Critère de convergence |
 | **DampPercentage** | 40 | 60–80 | Augmenter pour S₁ difficile |

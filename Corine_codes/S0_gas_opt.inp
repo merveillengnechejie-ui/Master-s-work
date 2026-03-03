@@ -1,7 +1,8 @@
 ! Opt RKS B3LYP D3BJ def2-SVP TightSCF TIGHTOPT
 %pal
-  nprocs 8
+  nprocs 4
 end
+%maxcore 3500
 %scf
   MaxIter 500
   ConvForce 1e-6

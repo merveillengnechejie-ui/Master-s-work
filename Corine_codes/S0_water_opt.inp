@@ -3,8 +3,9 @@
 ! SMD
 
 %pal
-  nprocs 8
+  nprocs 4
 end
+%maxcore 3500
 
 %cpcm
   SMDSolvent "mixed"  # for more complex biological media

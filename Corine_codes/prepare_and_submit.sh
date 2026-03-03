@@ -63,55 +63,44 @@ for p in "${PROTOS[@]}"; do
     done
   fi
 
-  # Submit workflow with dependencies; similar logic as before but robust to missing templates
-  # Helper to submit either via provided slurm script or a simple sbatch --wrap
-  submit_or_wrap() {
-    local script="$1"; shift
-    local cmd="$1"; shift
-    if [ -f "$script" ]; then
-      echo "  -> Submitting $script"
-      sbatch "$script" | awk '{print $4}'
+  # Execute workflow sequentially on the local machine
+  echo "  -> Running S0_gas_opt.inp..."
+  nohup orca S0_gas_opt.inp > S0_gas_opt.out 2>&1
+  
+  if grep -q "TERMINATED NORMALLY" S0_gas_opt.out; then
+    echo "  -> S0_gas converged. Running S0_water_opt.inp..."
+    nohup orca S0_water_opt.inp > S0_water_opt.out 2>&1
+  else
+    echo "  -> Error in S0_gas. Stopping sequence for $p."
+    continue
+  fi
+
+  if grep -q "TERMINATED NORMALLY" S0_water_opt.out; then
+    echo "  -> S0_water converged. Running TDDFT_vertical.inp..."
+    nohup orca TDDFT_vertical.inp > TDDFT_vertical.out 2>&1
+    
+    echo "  -> S0_water converged. Running T1_opt_UKS.inp..."
+    nohup orca T1_opt_UKS.inp > T1_opt_UKS.out 2>&1
+    
+    echo "  -> S0_water converged. Note: S1_opt requires manual inspection and optional gen_s1_guesses.sh."
+    echo "  -> Attempting default S1_opt_DeltaUKS.inp run..."
+    nohup orca S1_opt_DeltaUKS.inp > S1_opt_DeltaUKS.out 2>&1 || true
+    
+    if grep -q "TERMINATED NORMALLY" S1_opt_DeltaUKS.out; then
+      echo "  -> S1_opt converged. Running DeltaSCF_SOC.inp..."
+      nohup orca DeltaSCF_SOC.inp > DeltaSCF_SOC.out 2>&1
     else
-      echo "  -> Submitting wrapped command: $cmd"
-      sbatch --wrap="$cmd" | awk '{print $4}'
+      echo "  -> Error in S1_opt. Please use run_troubleshoot_S1.sh."
+      echo "  -> Running fallback TDDFT_SOC_quick.inp instead."
+      nohup orca TDDFT_SOC_quick.inp > TDDFT_SOC_quick.out 2>&1
     fi
-  }
-
-  jid_s0=$(submit_or_wrap submit_S0.slurm "orca S0_gas_opt.inp > S0_gas_opt.out 2>&1")
-  echo "Submitted S0_gas job id: $jid_s0"
-
-  jid_s0w=$(sbatch --dependency=afterok:$jid_s0 ${PWD}/submit_S0_water.slurm 2>/dev/null | awk '{print $4}' || true)
-  if [ -z "$jid_s0w" ]; then
-    jid_s0w=$(sbatch --dependency=afterok:$jid_s0 --wrap="orca S0_water_opt.inp > S0_water_opt.out 2>&1" | awk '{print $4}')
+  else
+    echo "  -> Error in S0_water. Stopping sequence for $p."
+    continue
   fi
-  echo "Submitted S0_water job id: $jid_s0w"
 
-  jid_adc=$(sbatch --dependency=afterok:$jid_s0w ${PWD}/submit_ADC2.slurm 2>/dev/null | awk '{print $4}' || true)
-  if [ -z "$jid_adc" ]; then
-    jid_adc=$(sbatch --dependency=afterok:$jid_s0w --wrap="orca ADC2_vertical.inp > ADC2_vertical.out 2>&1" | awk '{print $4}')
-  fi
-  echo "Submitted ADC2 job id: $jid_adc"
-
-  jid_t1=$(sbatch --dependency=afterok:$jid_s0w ${PWD}/submit_T1.slurm 2>/dev/null | awk '{print $4}' || true)
-  if [ -z "$jid_t1" ]; then
-    jid_t1=$(sbatch --dependency=afterok:$jid_s0w --wrap="orca T1_water_opt.inp > T1_water_opt.out 2>&1" | awk '{print $4}')
-  fi
-  echo "Submitted T1 job id: $jid_t1"
-
-  jid_s1=$(sbatch --dependency=afterok:$jid_adc ${PWD}/submit_S1.slurm 2>/dev/null | awk '{print $4}' || true)
-  if [ -z "$jid_s1" ]; then
-    jid_s1=$(sbatch --dependency=afterok:$jid_adc --wrap="orca S1_water_opt.inp > S1_water_opt.out 2>&1" | awk '{print $4}')
-  fi
-  echo "Submitted S1 job id: $jid_s1"
-
-  jid_soc=$(sbatch --dependency=afterok:$jid_s1 ${PWD}/submit_SOC.slurm 2>/dev/null | awk '{print $4}' || true)
-  if [ -z "$jid_soc" ]; then
-    jid_soc=$(sbatch --dependency=afterok:$jid_s1 --wrap="orca TDDFT_SOC_quick.inp > TDDFT_SOC_quick.out 2>&1" | awk '{print $4}')
-  fi
-  echo "Submitted SOC job id: $jid_soc"
-
-  echo "All jobs submitted for $p (S0:$jid_s0 S0w:$jid_s0w ADC:$jid_adc T1:$jid_t1 S1:$jid_s1 SOC:$jid_soc)"
+  echo "All sequential local jobs completed for $p."
 
 done
 
-echo "Submission complete for all prototypes. Monitor with squeue -u $USER" 
+echo "Sequential execution complete for all prototypes." 

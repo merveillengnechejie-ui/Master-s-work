@@ -40,12 +40,12 @@ if [ ${#XYZ_FILES[@]} -gt 0 ]; then
     chmod +x "$TARGET"/*.inp 2>/dev/null || true
   done
 else
-  # fallback: keep legacy proto names
-  PROTOS=("proto-A" "proto-B" "proto-C")
+  # explicitly target the new scope
+  PROTOS=("Reference" "Iodo_BODIPY" "TPP_Iodo_BODIPY")
   for p in "${PROTOS[@]}"; do
     TARGET="$PROJECT_ROOT/$p"
     mkdir -p "$TARGET"
-    echo "- Creating $TARGET (legacy proto)"
+    echo "- Creating $TARGET"
     cp "$TEMPLATES_DIR"/*.inp "$TARGET/" 2>/dev/null || true
     cp "$TEMPLATES_DIR"/*.md "$TARGET/" 2>/dev/null || true
 

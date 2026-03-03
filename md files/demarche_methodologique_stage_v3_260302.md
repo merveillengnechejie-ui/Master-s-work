@@ -12,7 +12,8 @@ Portée révisée du projet (suite à l'analyse du 15/11/2025) :
   - **Référence expérimentale** : BODIPY de la littérature avec λ_max, Φ_f, et si possible SOC publiés (voir section 8.1)
   - **Prototype 1 : Iodo-BODIPY** (PDT optimisée) — tester l'effet d'atome lourd sur ISC et NIR-I
   - **Prototype 2 : TPP–Iodo–BODIPY** (théranostique ciblé) — ajouter un ciblage mitochondrial TPP+ sans dégrader les performances optiques
-- Remplacement du calcul SOC FIC-NEVPT2 par un workflow ΔDFT+SOC (perturbatif).
+- **Mise à jour Matérielle (Mar. 2026)** : Passage à 4 cœurs / 16 Go RAM.
+- **Méthodologie** : Utilisation de TD-DFT (wB97X-D) pour rapidité et précision sur les excitations diagnostiques. SOC via ΔDFT+SOC (perturbatif).
 
 Ce projet vise à concevoir de nouvelles armes moléculaires contre les cancers agressifs en répondant à des interrogations scientifiques fondamentales. Pour ce faire, nous utilisons le cancer du sein triple négatif (TNBC) comme un cas d'étude paradigmatique.
 
@@ -49,8 +50,8 @@ L'objectif de ce stage est de mener une **mission de conception *in silico*** po
 
 Pour concevoir une molécule *in silico*, nous utilisons une approche en cascade, combinant plusieurs niveaux de théorie :
 
-1. **Géométries de référence** : DFT classique (B3LYP-D3/def2-SVP en phase gaz et SMD mixed pour environnement biologique complexe)
-2. **Énergies d'excitation verticales** : ADC(2)/def2-TZVP pour améliorer la précision sur λ_max
+1. **Géométries de référence** : DFT classique (B3LYP-D3/def2-SVP, %pal nprocs 4, %maxcore 3500)
+2. **Énergies d'excitation verticales** : TD-DFT/wB97X-D/def2-SVP pour la rapidité et précision (λ_max)précision sur λ_max
 3. **États excités relaxés** : **ΔUKSou ΔROKS** pour les énergies adiabatiques (PTT)
 4. **Écarts singlet-triplet** : **ΔUKSet ΔROKS** pour ΔE_{ST} (crucial pour la PDT/ISC)
 5. **Couplage spin-orbite** : ΔDFT+SOC perturbatif (ZORA, dosoc) pour les constantes SOC; réserver les méthodes MR (NEVPT2/CASSCF) uniquement pour validation ponctuelle si nécessaire

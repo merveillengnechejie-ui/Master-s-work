@@ -10,7 +10,9 @@ révisée du projet (15/11/2025) :
 
 - 1 molécule de référence expérimentale (externe, publiée)
 - 2 prototypes internes : Iodo-BODIPY + TPP–Iodo–BODIPY
-- Méthodologie : ΔDFT+SOC (remplace NEVPT2)
+- Méthodologie : ΔDFT+SOC (SOC perturbatif)
+- Calcul spectre : TD-DFT/wB97X-D3 (Remplace ADC2)
+- Configuration : 4 cœurs / 16 Go RAM (%maxcore 3500)
 
 ================================================================================
 ✅ FICHIERS MIS À JOUR
@@ -45,7 +47,7 @@ Phase 1 : Optimisation S₀
 - S0_water_opt.inp ✅
 
 Phase 2 : Excitations verticales
-- ADC2_vertical.inp ✅ (def2-TZVP standardisé)
+- TDDFT_vertical.inp ✅ (Remplace ADC2, adapté laptop)
 
 Phase 3 : États excités relaxés
 - T1_opt_UKS.inp ✅
@@ -56,15 +58,11 @@ Phase 4 : Couplage spin-orbite
 - TDDFT_SOC_quick.inp ✅ (Plan B)
 
 ================================================================================
-✅ FICHIERS SCRIPTS SLURM (À jour)
+❌ FICHIERS SUPPRIMÉS (Exécution Locale)
 ================================================================================
 
-- submit_S0.slurm ✅
-- submit_S0_water.slurm ✅
-- submit_ADC2.slurm ✅
-- submit_T1.slurm ✅
-- submit_S1.slurm ✅
-- submit_SOC.slurm ✅
+Tous les fichiers `.slurm` ont été supprimés car le projet s'exécute désormais
+en local de façon séquentielle (prepare_and_submit.sh).
 
 ================================================================================
 ✅ FICHIERS SCRIPTS BASH (À vérifier)
@@ -97,10 +95,11 @@ Phase 4 : Couplage spin-orbite
    - Après : ΔDFT+SOC (30–60 min)
    - Impact : Gain 10× en temps, cohérence ΔDFT
 
-3. Test comparatif ADC(2)
-   - Avant : Pas de test
-   - Après : def2-SVP vs def2-TZVP en semaine 3
-   - Impact : Économie potentielle 9h mur
+3. Exécution locale
+   - Avant : Submit via SLURM sur HPC
+   - Après : Exécution sequential/background via nohup
+   - Impact : Contrôle direct des ressources (4 cœurs)
+   - Paramètre : %maxcore 3500 (pour 16Go RAM)
 
 4. Grille Go/No-Go
    - Avant : Critères implicites
