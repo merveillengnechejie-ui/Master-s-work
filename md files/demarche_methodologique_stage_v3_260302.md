@@ -51,7 +51,7 @@ L'objectif de ce stage est de mener une **mission de conception *in silico*** po
 Pour concevoir une molécule *in silico*, nous utilisons une approche en cascade, combinant plusieurs niveaux de théorie :
 
 1. **Géométries de référence** : DFT classique (B3LYP-D3/def2-SVP, %pal nprocs 4, %maxcore 3500)
-2. **Énergies d'excitation verticales** : TD-DFT/wB97X-D/def2-SVP pour la rapidité et précision (λ_max)précision sur λ_max
+2. **Énergies d'excitation verticales** : TD-DFT/wB97X-D/def2-SVP pour la rapidité et précision (λ_max)
 3. **États excités relaxés** : **ΔUKSou ΔROKS** pour les énergies adiabatiques (PTT)
 4. **Écarts singlet-triplet** : **ΔUKSet ΔROKS** pour ΔE_{ST} (crucial pour la PDT/ISC)
 5. **Couplage spin-orbite** : ΔDFT+SOC perturbatif (ZORA, dosoc) pour les constantes SOC; réserver les méthodes MR (NEVPT2/CASSCF) uniquement pour validation ponctuelle si nécessaire
@@ -90,7 +90,7 @@ Sur la base des analyses comparatives récentes et des remarques issues de l'aud
 Objectifs de benchmarking à viser (règles pratiques) :
 
 - ΔE_{ST} : cible MAE < 0,05 eV (précision chimique souhaitée pour décisions design)
-- λ_max / E_{em} : viser MAE ≤ 0,1 eV (≈ 10 nm à ~700 nm) avec ADC(2)/def2-TZVP pour validation contre données expérimentales
+- λ_max / E_{em} : viser MAE ≤ 0,1 eV (≈ 10 nm à ~700 nm) avec TD-DFT/wB97X-D/def2-SVP pour validation contre données expérimentales (ou ADC(2) si ressources HPC disponibles)
 
 Remarque sur l'avenir : des méthodes inspirées de l'informatique quantique (ΔADAPT-VQE, ΔUCCSD) ont montré un fort potentiel pour certains systèmes BODIPY et méritent une veille méthodologique pour des études futures.
 

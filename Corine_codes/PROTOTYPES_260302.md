@@ -2,9 +2,10 @@
 
 ## 📋 Vue d'ensemble
 
-Ce document décrit les **3 molécules** du projet révisé (15/11/2025) :
+Ce document décrit les **3 molécules** du projet révisé (Mar. 2026) :
 - **1 molécule de référence expérimentale** (externe, publiée) pour benchmarking
 - **2 prototypes internes** : Iodo-BODIPY + TPP–Iodo–BODIPY
+- **Configuration** : 4 cœurs / 16 Go RAM (%maxcore 3500)
 
 ---
 
@@ -44,7 +45,7 @@ Valider la **chaîne de calcul ΔDFT+SOC** en reproduisant une molécule dont le
 
 1. **Construire la géométrie de la molécule de référence** (Avogadro/IQmol)
 2. **Optimiser S₀** pour la molécule de référence (B3LYP-D3/def2-SVP, SMD mixed pour environnement biologique complexe)
-3. **Calculer λ_max** pour la molécule de référence (ADC(2)/def2-TZVP, SMD mixed pour environnement biologique complexe)
+3. **Calculer λ_max** pour la molécule de référence (TD-DFT/wB97X-D3/def2-SVP, SMD mixed)
 4. **Comparer avec expérience** :
    - **Critère de validation** : MAE < 0.1 eV (≈ 10 nm à 700 nm)
    - Si MAE > 0.1 eV : Investiguer (base? solvant? géométrie?)
@@ -57,10 +58,10 @@ Valider la **chaîne de calcul ΔDFT+SOC** en reproduisant une molécule dont le
 ```
 Référence_BODIPY_Ph.xyz          # Géométrie optimisée
 S0_ref_opt.gbw                   # Résultat S0 optimisé
-ADC2_ref_vertical.out            # Résultat ADC(2)
+TDDFT_ref_vertical.out           # Résultat TD-DFT (wB97X-D3)
 T1_ref_opt.gbw                   # Résultat T1 optimisé
 S1_ref_opt.gbw                   # Résultat S1 optimisé
-SOC_ref_DELTADFT.out             # Résultat SOC
+SOC_ref_DELTADFT.out             # Résultat SOC (Quick/ΔDFT)
 ```
 
 ---
@@ -111,7 +112,7 @@ Modifications possibles :
 ```
 Iodo_BODIPY.xyz                  # Géométrie optimisée
 S0_iodo_opt.gbw                  # Résultat S0 optimisé
-ADC2_iodo_vertical.out           # Résultat ADC(2)
+TDDFT_iodo_vertical.out          # Résultat TD-DFT (wB97X-D3)
 T1_iodo_opt.gbw                  # Résultat T1 optimisé
 S1_iodo_opt.gbw                  # Résultat S1 optimisé
 SOC_iodo_DELTADFT.out            # Résultat SOC
@@ -198,7 +199,7 @@ Groupement TPP⁺ :
 ```
 TPP_Iodo_BODIPY.xyz             # Géométrie optimisée
 S0_tpp_iodo_opt.gbw             # Résultat S0 optimisé
-ADC2_tpp_iodo_vertical.out      # Résultat ADC(2)
+TDDFT_tpp_iodo_vertical.out     # Résultat TD-DFT (wB97X-D3)
 T1_tpp_iodo_opt.gbw             # Résultat T1 optimisé
 S1_tpp_iodo_opt.gbw             # Résultat S1 optimisé
 SOC_tpp_iodo_DELTADFT.out       # Résultat SOC
@@ -311,12 +312,12 @@ Décision :
 - Optimisation S₀ (état fondamental)
 - Optimisation T₁ (état triplet)
 - Optimisation S₁ (état singulet excité)
-- Calculs ADC(2) pour λ_max
+- Calculs TD-DFT (wB97X-D3) pour λ_max
 - Calculs SOC (couplage spin-orbite)
 - Évaluation finale via grille Go/No-Go
 
 ---
 
-**Dernière mise à jour** : 15 novembre 2025
-**Version** : 2.0 (révisée)
-**Statut** : À jour
+**Dernière mise à jour** : 3 mars 2026
+**Version** : 3.0 (révisée pour exécution matériel local)
+**Statut** : À jour (16 Go RAM / TD-DFT)
