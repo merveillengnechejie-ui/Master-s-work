@@ -2,7 +2,7 @@
 
 ## 🎯 Objectif
 
-Mettre à jour **tous les fichiers md et Corine_codes** pour refléter les changements majeurs du projet révisé (15/11/2025).
+Mettre à jour **tous les fichiers md et Corine_codes** pour refléter les changements majeurs du projet révisé (Fisalisé le 03/03/2026 : Exécution locale 16Go / TD-DFT).
 
 ---
 
@@ -28,10 +28,10 @@ Mettre à jour **tous les fichiers md et Corine_codes** pour refléter les chang
 - **Changements** : Portée révisée, test comparatif def2-SVP vs def2-TZVP, workflow recommandé
 - **Utilité** : Guide complet des scripts et inputs
 
-### 5. `Corine_codes/PROTOTYPES.md` (Mis à jour)
-- **Statut** : ✅ MIS À JOUR
-- **Changements** : Description 1 référence + 2 prototypes, grille Go/No-Go quantitative
-- **Utilité** : Description détaillée des molécules
+### 5. `Corine_codes/PROTOTYPES_260302.md` (Mis à jour)
+- **Statut** : ✅ MIS À JOUR (Laptop 16Go)
+- **Changements** : Portée révisée, TD-DFT wB97X-D3, configuration locale
+- **Utilité** : Description détaillée des molécules et du workflow local
 
 ### 6. `SYNTHESE_MISE_A_JOUR_COMPLETE.md` (Ce fichier)
 - **Statut** : ✅ CRÉÉ
@@ -105,13 +105,9 @@ Mettre à jour **tous les fichiers md et Corine_codes** pour refléter les chang
 - **Temps estimé** : 30 min
 - **Priorité** : MOYENNE
 
-#### 8. `Corine_codes/run_examples.README.md`
-- **Changements requis** :
-  - [ ] Ajouter exemple test comparatif def2-SVP vs def2-TZVP
-  - [ ] Ajouter exemple grille Go/No-Go
-  - [ ] Ajouter exemple workflow complet
-- **Temps estimé** : 30 min
-- **Priorité** : MOYENNE
+#### 8. `Corine_codes/run_examples.README_260302.md`
+- **Statut** : ✅ TERMINÉ
+- **Changements** : Adapté pour 16Go RAM et sequential run (nohup)
 
 ---
 
@@ -136,8 +132,7 @@ Mettre à jour **tous les fichiers md et Corine_codes** pour refléter les chang
 
 #### 4. `Corine_codes/Bodipy_Opt.xyz`
 - **Raison** : Hors portée (BODIPY de base supprimé)
-- **Action** : Supprimer
-- **Commande** : `rm Corine_codes/Bodipy_Opt.xyz`
+- **Action** : ✅ SUPPRIMÉ le 03/03/2026
 
 ---
 
@@ -162,7 +157,7 @@ Mettre à jour **tous les fichiers md et Corine_codes** pour refléter les chang
 | `Corine_codes/run_examples.README.md` | Corine_codes/ | ⚠️ À faire | Ajouter exemples | 30 min | MOYENNE |
 | `demarche_methodologique_stage.md` | md files/ | ❌ À archiver | Supprimer | — | — |
 | `Analyse251114.md` | md files/ | ❌ À archiver | Supprimer | — | — |
-| `INDEX_DOCUMENTS_COMPLETS.md` | md files/ | ❌ À archiver | Supprimer | — | — |
+| `INDEX_DOCUMENTS_COMPLETS.md` | md files/ | ❌ Archivé | — | — | — |
 | `Corine_codes/Bodipy_Opt.xyz` | Corine_codes/ | ❌ À supprimer | Supprimer | — | — |
 
 ---

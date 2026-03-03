@@ -42,7 +42,7 @@ Ces points résument les ajustements pratiques intégrés dans `demarche_methodo
         ↓
 ÉTAPE 2 (rapide)     → S0 optimisation (DFT, CPCM-eau)   [REFERENCE]
         ↓
-ÉTAPE 3 (cher)       → Excitation verticale (ADC(2)/def2-TZVP ou def2-SVP*) [λ_max]
+ÉTAPE 3 (rapide)     → Excitation verticale (TD-DFT/wB97X-D3/def2-SVP) [λ_max]
         ↓
 ÉTAPE 4 (cher)       → T1 optimisation (ΔUKS, CPCM)      [ISC]
         ↓
@@ -61,7 +61,7 @@ ANALYSE & DECISION   → Comparer prototypes, scorer les candidats (grille Go/No
 
 ```
 S0_opt.gbw (Étape 2)
-    ├─→ ADC2_vertical.inp  (Étape 3) → λ_max, spectrum
+    ├─→ TDDFT_vertical.inp  (Étape 3) → λ_max, spectrum
     ├─→ T1_opt.inp         (Étape 4) → E_T1, geometry
     ├─→ S1_opt.inp         (Étape 5) → E_S1, ΔE_ST
     ├─→ SOC_opt.inp        (Étape 6) → SOC matrix (ΔDFT+SOC)
@@ -88,7 +88,7 @@ Résultats:  E_ad = E_S0 - E_S1  (PTT potential)
 #### Prototype 1 : Iodo-BODIPY (PDT optimisée)
 | Critère | Cible | Poids | Calcul ORCA | Note sur 25/25 |
 |:---|:---|:---|:---|:---|
-| **λ_max (absorption)** | 680-720 nm (NIR-I) | 25% | ADC(2) | |
+| **λ_max (absorption)** | 680-720 nm (NIR-I) | 25% | TD-DFT (wB97X-D3) | |
 | **E_adiabatic (PTT)** | < 1.0 eV | 15% | ΔE_S0-S1 | |
 | **ΔE_ST (ISC/PDT)** | < 0.05 eV | 25% | ΔE_S1-T1 | |
 | **SOC (ISC speed)** | > 50 cm⁻¹ | 25% | ΔDFT+SOC | |
@@ -97,7 +97,7 @@ Résultats:  E_ad = E_S0 - E_S1  (PTT potential)
 #### Prototype 2 : TPP-Iodo-BODIPY (théranostique ciblé)
 | Critère | Cible | Poids | Calcul ORCA | Note sur 25/25 |
 |:---|:---|:---|:---|:---|
-| **λ_max (absorption)** | 690-730 nm (NIR-I, légère perturbation par TPP+) | 20% | ADC(2) | |
+| **λ_max (absorption)** | 690-730 nm (NIR-I, légère perturbation par TPP+) | 20% | TD-DFT (wB97X-D3) | |
 | **E_adiabatic (PTT)** | < 1.2 eV | 15% | ΔE_S0-S1 | |
 | **ΔE_ST (ISC/PDT)** | < 0.08 eV | 20% | ΔE_S1-T1 | |
 | **SOC (ISC speed)** | > 40 cm⁻¹ | 15% | ΔDFT+SOC | |
@@ -161,7 +161,7 @@ squeue -u $USER
 | **Lancer calcul** | `orca input.inp > output.out &` |
 | **Voir progression** | `tail -f output.out` |
 | **Extraire énergie** | `grep "FINAL SINGLE POINT" output.out` |
-| **Voir λ_max (ADC2)** | `grep "S_1 state" output.out` |
+| **Voir λ_max (TD-DFT)** | `grep "STATE 1:" output.out` |
 | **Vérifier SOC** | `grep -A5 "Spin-Orbit" output.out` |
 | **Converger géométrie** | `grep "Geometry convergence" output.out` |
 | **Vérifier fréquences** | `grep "imaginary frequencies" output.out` |
@@ -234,24 +234,22 @@ $$\text{Indice de conversion thermique (TCI)} = \frac{k_{nr}}{k_f + k_{ISC}}$$
 - **Jeu de test pré-rempli** : Équipe fournit BODIPY de référence avec fichiers ORCA pour valider la chaîne complète
 - **Archivage systématique** : Convention de nommage pour fichiers
 
-### Semaine 3 : Préparation et test comparatif
+### Semaine 3 : Préparation et optimisations
 - Construction des 3 fichiers XYZ (référence + 2 prototypes)
-- Lancer optimisations rapides GFN2-xTB
-- **TEST CRITIQUE** : ADC(2) def2-SVP vs def2-TZVP sur référence
-- Comparer λ_max (MAE par rapport à expérience)
-- **Décision** : Si écart < 5 nm → garder def2-SVP (gain ~3h/molécule)
-- **Impact** : Peut économiser 9h mur sur le projet si def2-SVP suffisant
+- Lancer optimisations S0 (4 cœurs, 16 Go RAM)
+- **TEST CRITIQUE** : Vérification λ_max sur référence
+- **Ressources** : %maxcore 3500 pour exploiter les 16 Go
+- **Impact** : TD-DFT wB97X-D3 permet un screening rapide et précis sur matériel local.
 
 ### Semaine 4 : S0 optimisations (3-4 heures mur total)
 - S0 gas + S0 water pour les 3 prototypes
 - **Total estimé** : ~3-4 h mur pour les 3 en parallèle
 - **Stratégie** : Lancer les 3 calculs gaz simultanément
 
-### Semaines 5-6 : Excitations verticales (12-18 heures mur total)
-- ADC(2)/def2-TZVP ou def2-SVP* pour λ_max de tous les prototypes
-- **Total estimé** : ~12-18 h mur pour les 3 (à faire en série, batch de nuit)
+### Semaines 5-6 : Excitations verticales (Screening rapide)
+- TD-DFT/wB97X-D3 pour λ_max de tous les prototypes
+- **Total estimé** : ~1-2 h mur pour les 3 (calculs rapides)
 - Comparer avec données expérimentales (benchmarking)
-- *Base dépend du test comparatif semaine 3*
 
 ### Semaines 7-9 : États excités relaxés et SOC
 - **Optimisations T₁** (rapide, lancer en parallèle)

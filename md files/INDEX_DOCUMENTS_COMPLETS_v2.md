@@ -4,10 +4,11 @@
 
 Ce projet de Master 2 porte sur l'**optimisation computationnelle de nanoparticules BODIPY** pour une thérapie combinée photodynamique (PDT) et photothermique (PTT) ciblée sur le cancer du sein triple négatif (TNBC).
 
-**Portée révisée (15/11/2025)** :
+**Portée révisée (Mar. 2026)** :
 - **1 molécule de référence expérimentale** (externe, publiée) pour benchmarking
 - **2 prototypes internes** : Iodo-BODIPY (PDT) + TPP–Iodo–BODIPY (théranostique)
-- **Méthodologie** : ΔDFT+SOC (remplace NEVPT2 pour cohérence et rapidité)
+- **Méthodologie** : TD-DFT/wB97X-D3 (Remplace ADC(2) pour rapidité/précision laptop)
+- **Configuration** : 4 cœurs / 16 Go RAM (%maxcore 3500)
 - **Durée** : 14 semaines de stage Master 2
 
 ---
@@ -16,16 +17,15 @@ Ce projet de Master 2 porte sur l'**optimisation computationnelle de nanoparticu
 
 ### 1. **Documents Méthodologiques Principaux**
 
-#### `demarche_methodologique_stage_v2_integree.md` ⭐ **DOCUMENT PRINCIPAL**
-- **Statut** : ✅ À jour (15/11/2025)
+#### `md files/demarche_methodologique_stage_v3_260302.md` ⭐ **DOCUMENT PRINCIPAL**
+- **Statut** : ✅ À jour (03/03/2026)
 - **Contenu** : 
   - Portée révisée (1 référence + 2 prototypes)
-  - Architecture méthodologique complète (ΔDFT+SOC)
+  - Méthodologie adaptée localement (16 Go RAM)
+  - TD-DFT wB97X-D3 pour les excitations verticales
   - Protocole détaillé ORCA 6.1 (5 phases)
-  - Tableau synthétique des temps de calcul
-  - Chronogramme 14 semaines avec jalons critiques
+  - Chronogramme 14 semaines adapté localement
   - Grille Go/No-Go quantitative
-  - Recommandations pour l'étudiant + gestion des risques
 - **Utilisation** : Lire en premier, c'est le guide complet du projet
 
 #### `demarche_methodologique_stage.md`
@@ -57,9 +57,9 @@ Ce projet de Master 2 porte sur l'**optimisation computationnelle de nanoparticu
 ### 3. **Documents de Synthèse et Aide-M��moire**
 
 #### `Resume_Executif_Aide_Memoire.md`
-- **Statut** : ⚠️ À mettre à jour
-- **Contenu** : Résumé exécutif du projet
-- **Action requise** : Intégrer les changements (2 prototypes, ΔDFT+SOC, grille Go/No-Go)
+- **Statut** : ✅ À jour
+- **Contenu** : Résumé exécutif du projet (16 Go / TD-DFT)
+- **Action** : Aucune requise
 
 #### `Synthese_Analyse_Integration.md`
 - **Statut** : ⚠️ À mettre à jour
@@ -105,9 +105,9 @@ Ce projet de Master 2 porte sur l'**optimisation computationnelle de nanoparticu
 ### 5. **Documents de Navigation et Démarrage**
 
 #### `README_GUIDE_NAVIGATION.md`
-- **Statut** : ⚠️ À mettre à jour
-- **Contenu** : Guide de navigation
-- **Action requise** : Ajouter lien vers INDEX_v2, clarifier portée révisée
+- **Statut** : ✅ À jour
+- **Contenu** : Guide de navigation (Référence aux fichiers _260302)
+- **Action** : Aucune requise
 
 #### `DEMARRAGE_RAPIDE.txt`
 - **Statut** : ⚠️ À mettre à jour
@@ -129,7 +129,8 @@ Ce projet de Master 2 porte sur l'**optimisation computationnelle de nanoparticu
 | :--- | :--- | :--- | :--- |
 | `S0_gas_opt.inp` | Phase 1a | ✅ | Optimisation S₀ gaz |
 | `S0_water_opt.inp` | Phase 1b | ✅ | Optimisation S₀ eau (CPCM) |
-| `ADC2_vertical.inp` | Phase 2 | ⚠️ | À vérifier : def2-TZVP vs def2-SVP |
+| `ADC2_vertical.inp` | Phase 2 | ❌ | Remplacé par `TDDFT_vertical.inp` |
+| `TDDFT_vertical.inp` | Phase 2 | ✅ | TD-DFT wB97X-D3 (16 Go RAM) |
 | `T1_opt_UKS.inp` | Phase 3a | ✅ | Optimisation T₁ |
 | `S1_opt_DeltaUKS.inp` | Phase 3b | ✅ | Optimisation S₁ (ΔSCF) |
 | `DeltaSCF_SOC.inp` | Phase 4 | ✅ | ΔDFT+SOC (recommandé) |

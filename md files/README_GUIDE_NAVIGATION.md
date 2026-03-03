@@ -13,7 +13,7 @@ Ce projet vise à concevoir et valider *in silico* trois prototypes de molécule
 ## 📁 Structure des Fichiers Documentaires
 
 ### Document 1️⃣ : **Méthodologie Intégrée (VERSION 2)**
-**Fichier :** `demarche_methodologique_stage_v2_integree.md`
+**Fichier :** `md files/demarche_methodologique_stage_v3_260302.md`
 
 **Contenu clé :**
 - ✅ Fondements théoriques complets (sections 1-2)
@@ -127,7 +127,7 @@ mkdir -p ~/stage_BODIPY/{proto-{A,B,C},calculs,results,scripts}
 cd ~/stage_BODIPY
 
 # Copier les documents de référence
-cp ~/Documents/Corine/demarche_methodologique_stage_v2_integree.md .
+cp ~/Documents/Corine/demarche_methodologique_stage_v3_260302.md .
 cp ~/Documents/Corine/Guide_Pratique_ORCA_Scripts_Troubleshooting.md .
 cp ~/Documents/Corine/Resume_Executif_Aide_Memoire.md .
 cp ~/Documents/Corine/Planification_Gantt_Optimisation_Ressources.md .
@@ -180,7 +180,7 @@ cp proto-C.xyz ~/stage_BODIPY/proto-C/
 
 ### Pour les **théoriciens** (chimistes quantiques)
 
-1. **Jour 1 :** Sections 1-2 de `demarche_methodologique_stage_v2_integree.md`
+1. **Jour 1 :** Sections 1-2 de `demarche_methodologique_stage_v3_260302.md`
 2. **Jour 2-3 :** Sections 2.1-2.2 (justification OO-DFT)
 3. **Semaine 1 :** Sections 3-5 (codes ORCA, stratégies convergence)
 
