@@ -32,6 +32,6 @@ Ce test évalue l'impact du changement de base sur l'optimisation de la géomét
 
 ## Conclusion
 
-La base **def2-TZVP** est clairement supérieure (réduction de l'erreur de près de 20% par rapport à SVP) et s'impose pour valider physiquement les propriétés optiques dans ce cas précis (écart inter-base > 10 nm). 
+La base **def2-TZVP** est clairement supérieure (réduction de l'erreur de près de 20% par rapport à def2-SVP) et s'impose pour valider physiquement les propriétés optiques dans ce cas précis (écart inter-base > 10 nm). 
 
 
