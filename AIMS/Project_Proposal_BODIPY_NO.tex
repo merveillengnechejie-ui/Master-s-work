@@ -1,0 +1,137 @@
+\documentclass[12pt,a4paper]{article}
+
+% Packages
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry,times}
+\usepackage{amsmath,amsfonts,amssymb,booktabs}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+
+% Page geometry
+\geometry{margin=2.cm}
+
+% Header
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\footnotesize Master's Research Project Proposal}
+\fancyhead[R]{\footnotesize AIMS Program 2026}
+\renewcommand{\headrulewidth}{0.4pt}
+\cfoot{\thepage}
+
+% Title
+\title{\Large\textbf{Computational Design of Nitroreductase-Activated BODIPY Prodrugs for Hypoxia-Targeted Photodynamic Therapy}}
+\author{Master 2 Research Internship -- AIMS Program\\Computational Chemistry \& Cancer Therapeutics\\
+Proposed By \\\textit{Nana Engo, Faculty of Science, UY1}}
+
+\date{}
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Triple-negative breast cancer (TNBC) lacks targeted therapy options. This project proposes an \textit{in silico} designed BODIPY prodrug that activates selectively in hypoxic tumor regions via nitroreductase (NTR) enzymatic cleavage. Using TD-DFT and $\Delta$DFT methods, we will optimize NIR-I absorption (600--900 nm) and intersystem crossing efficiency for photodynamic therapy. The 9-10 week protocol is optimized for resource-constrained computational environments (4 cores, 16 GB RAM).
+
+\vspace{0.5em}
+\noindent\textbf{Keywords:} BODIPY, Photodynamic Therapy, Nitroreductase, Hypoxia, TD-DFT, Computational Chemistry
+\end{abstract}
+
+\section{Background and rationale}
+
+Triple-negative breast cancer (TNBC) lacks estrogen (ER), progesterone (PR), and HER2 receptors, rendering standard hormonal and anti-HER2 therapies ineffective. Chemotherapy remains the primary treatment but shows limited efficacy with significant toxicity.
+
+Photodynamic therapy (PDT) offers a targeted alternative: a photosensitizer absorbs light and generates cytotoxic singlet oxygen ($^1\text{O}_2$). However, two barriers limit clinical translation:
+\begin{enumerate}
+  \item \textbf{Light penetration}: Visible light reaches only superficial tissues; the NIR-I window (600--900 nm) is required for deep tumors
+  \item \textbf{Tumor selectivity}: Off-target activation causes collateral damage to healthy tissue
+\end{enumerate}
+
+Hypoxia---a hallmark of solid tumors including TNBC---provides a selective trigger. Overexpressed nitroreductase (NTR) enzymes reduce nitro groups ($-\text{NO}_2 \rightarrow -\text{NH}_2$) exclusively in hypoxic regions, enabling tumor-selective PDT when coupled to a BODIPY photosensitizer.
+
+\section{Project Objectives}
+
+\textbf{Primary objectives}:
+\begin{enumerate}
+  \item Design a BODIPY prodrug with NIR-I absorption (target: 700--800 nm)
+  \item Enhance intersystem crossing via heavy-atom substitution (iodine at 3,5-positions)
+  \item Validate NTR activation feasibility via MEP analysis
+  \item Benchmark computational protocol against experimental reference data
+\end{enumerate}
+
+\section{Molecular Design}
+
+\textbf{Reference}: Nitro-BODIPY from literature ($\lambda_{\max}^{\text{exp}}$: 500--600 nm, $\Phi_f > 0.1$).
+
+\textbf{Prototype (BODIPY-NO)}:
+\begin{itemize}
+  \item BODIPY core: photostability and tunable absorption
+  \item NTR trigger: nitro group reduced in hypoxia
+  \item Heavy atom: iodine at 3,5-positions for enhanced SOC
+\end{itemize}
+
+\textbf{Activation}: NTR reduces $-\text{NO}_2 \rightarrow -\text{NH}_2$, triggering fluorescence and $^1\text{O}_2$ generation.
+
+\section{Computational Methodology}
+
+All calculations use ORCA 6.1, configured for 4-core machines with 16 GB RAM. RIJCOSX acceleration is applied to all hybrid functional calculations.
+
+\begin{table}[h]
+\centering
+\caption{Computational protocol}
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Property} & \textbf{Method} & \textbf{Basis} \\
+\midrule
+Ground state (S$_0$) & DFT/B3LYP-D3 & def2-SVP \\
+Vertical excitation & TD-DFT/$\omega$B97X-D & def2-SVP \\
+Triplet (T$_1$) & $\Delta$UKS/B3LYP-D3 & def2-SVP \\
+Singlet-Triplet gap & $\Delta$UKS (adiabatic) & def2-SVP \\
+Spin-Orbit Coupling & $\Delta$DFT+SOC (ZORA) & def2-SVP \\
+Solvation & SMD (mixed) & -- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Post-processing (MEP analysis, Hirshfeld charges) uses Multiwfn.
+
+\section{Timeline and Deliverables}
+
+\begin{table}[h]
+\centering
+\footnotesize
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Weeks 1--2} & Literature; molecular building (Avogadro) \\
+\textbf{Weeks 3--4} & S$_0$ optimization; TD-DFT \\
+\textbf{Weeks 5--6} & T$_1$ optimization; SOC; $\Delta E_{\text{ST}}$ \\
+\textbf{Weeks 7--8} & MEP analysis; Go/No-Go decision \\
+\textbf{Weeks 9--10} & Report; presentation \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Deliverables}: (1) Bibliography (1--2 pp), (2) Calculation files (.gbw, .out, .xyz), (3) Results tables, (4) Figures, (5) Report (20--30 pp), (6) Presentation (15 slides, 10 min)
+
+\section{Conclusion}
+
+This project applies computational chemistry to address a specific clinical challenge: selective PDT for hypoxic tumors. The BODIPY-NO design integrates NIR absorption with enzymatic activation. The 9-10 week timeline reflects realistic constraints of limited computational resources while maintaining methodological rigor.
+
+\vspace{0.5em}
+\noindent\textbf{Supervision}: Weekly advisor meetings \\
+\textbf{Collaboration}: Experimental validation (partner to be determined)
+
+\section*{References}
+
+\begin{enumerate}
+  \item Neese, F. Software update: the ORCA program system, version 5.0. \textit{WIREs Comput. Mol. Sci.} \textbf{2022}, \textit{12}, e1606.
+
+  \item Lu, T.; Chen, F. Multiwfn: A multifunctional wavefunction analyzer. \textit{J. Comput. Chem.} \textbf{2012}, \textit{33}, 580--592.
+
+  \item Zhao, J.; Xu, K.; Yang, W.; Wang, Z.; Zhong, F. The triplet excited state of Bodipy: formation, modulation and application. \textit{Chem. Soc. Rev.} \textbf{2015}, \textit{44}, 8904--8939.
+
+  \item Wilson, W. R.; Hay, M. P. Targeting hypoxia in cancer therapy. \textit{Nat. Rev. Cancer} \textbf{2011}, \textit{11}, 393--410.
+
+  \item Guo, Z.; Zou, G.; He, H.; Rao, J.; Yuan, Z.; Cui, X.; Peng, H.; Zhu, W. Bifunctional Platinated Nanoparticles for Photoinduced Hypoxic-Tumor Therapy. \textit{Adv. Mater.} \textbf{2016}, \textit{28}, 10147--10154.
+\end{enumerate}
+
+\end{document}
