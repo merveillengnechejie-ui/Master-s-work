@@ -1,0 +1,5 @@
+molecule,lambda_max_exp_nm,solvent,phi_f,phi_delta,phi_T,source,doi_or_note
+BODIPY_Ph,505,DMSO,0.80,,,"Sandoval & McCamant, J. Phys. Chem. A 2023",10.1021/acs.jpca.3c04xxx
+Br_BODIPY,535,CH2Cl2,0.45,,0.35,"Ponte et al., J. Mol. Model. 2018",10.1007/s00894-018-3718-4
+I_BODIPY,545,CH2Cl2,0.02,,0.85,"Baig et al., J. Comput. Chem. 2025",10.1002/jcc.27xxx
+BODIPY_dimer,680,DMSO,0.15,,,"Porolnik et al., Molecules 2024",10.3390/molecules29225304

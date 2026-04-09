@@ -1,0 +1,9 @@
+id,molecule,smiles,category,ntr_state,heavy_atom,targeting,priority,notes
+1,BODIPY_Ph,B1(F)(F)N2C=CC(=C2/C=C\1)c1ccccc1,A,none,none,none,1,Reference for benchmarking
+2,BODIPY_Ph_NO2,B1(F)(F)N2C=CC(=C2/C=C\1)c1ccc([N+](=O)[O-])cc1,E,OFF,none,none,1,NTR prodrug form
+3,BODIPY_Ph_NH2,B1(F)(F)N2C=CC(=C2/C=C\1)c1ccc(N)cc1,E,ON,none,none,1,NTR activated form
+4,Iodo_BODIPY,B1(F)(F)N2C(I)=CC(=C2/C(I)=C\1)c1ccccc1,B,none,I,none,1,High SOC reference
+5,Iodo_BODIPY_NO2,B1(F)(F)N2C(I)=CC(=C2/C(I)=C\1)c1ccc([N+](=O)[O-])cc1,BE,OFF,I,none,1,Heavy atom + NTR OFF
+6,Iodo_BODIPY_NH2,B1(F)(F)N2C(I)=CC(=C2/C(I)=C\1)c1ccc(N)cc1,BE,ON,I,none,1,Heavy atom + NTR ON — KEY CANDIDATE
+7,TPP_Iodo_BODIPY,[P+](c1ccccc1)(c1ccccc1)(c1ccccc1)CCCc1ccc(cc1)C2=CC3=C(C=C2)N=B(F)(F)N3,B,none,I,TPP,1,Mitochondrial targeting
+8,aza_BODIPY_NO2,,G,OFF,none,none,2,NIR-extended — build if time permits

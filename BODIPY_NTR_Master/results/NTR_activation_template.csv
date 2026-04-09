@@ -1,0 +1,10 @@
+molecule,state,lambda_max_nm,f_S1,delta_E_ST_TDDFT_eV,delta_E_ST_deltaDFT_eV,SOC_cm,E_T1_eV,E_ad_eV,flexibility_index,twist_factor,notes
+BODIPY_Ph,S0,,,,,,,,,,Reference
+BODIPY_Ph_NO2,OFF,,,,,,,,,,NTR prodrug
+BODIPY_Ph_NH2,ON,,,,,,,,,,NTR activated
+Iodo_BODIPY,S0,,,,,,,,,,Heavy atom reference
+Iodo_BODIPY_NO2,OFF,,,,,,,,,,
+Iodo_BODIPY_NH2,ON,,,,,,,,,,KEY CANDIDATE
+TPP_Iodo_BODIPY,S0,,,,,,,,,,Mitochondrial targeting
+aza_BODIPY_NO2,OFF,,,,,,,,,,Extension
+aza_BODIPY_NH2,ON,,,,,,,,,,Extension
