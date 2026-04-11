@@ -23,7 +23,7 @@
 ### Vérifications critiques
 - ✅ sTDA disponible dans ORCA 6.1.1 : OUI / NON
 - ✅ CC2 disponible dans ORCA 6.1.1 : OUI / NON
-- ☐ Bug SMDSolvent "mixed" corrigé
+- ✅Bug SMDSolvent "mixed" corrigé
 - ☐ Test de chaîne BODIPY-Ph réussi
 
 ### Test de chaîne BODIPY-Ph
