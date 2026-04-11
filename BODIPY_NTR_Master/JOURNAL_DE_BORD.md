@@ -14,15 +14,15 @@
 ### Logiciels installés
 | Logiciel | Version | Statut |
 |----------|---------|--------|
-| ORCA | | ☐ OK ☐ Problème |
-| xTB | | ☐ OK ☐ Problème |
-| RDKit | | ☐ OK ☐ Problème |
-| Multiwfn | | ☐ OK ☐ Problème |
-| Python | | ☐ OK ☐ Problème |
+| ORCA | | ✅ OK ☐ Problème |
+| xTB | | ✅ OK ☐ Problème |
+| RDKit | | ✅ OK ☐ Problème |
+| Multiwfn | | ✅ OK ☐ Problème |
+| Python | | ✅ OK ☐ Problème |
 
 ### Vérifications critiques
-- ☐ sTDA disponible dans ORCA 6.1.1 : OUI / NON
-- ☐ CC2 disponible dans ORCA 6.1.1 : OUI / NON
+- ☐ sTDA disponible dans ORCA 6.1.1 : OUI ✅/ NON
+- ☐ CC2 disponible dans ORCA 6.1.1 : OUI ✅/ NON
 - ☐ Bug SMDSolvent "mixed" corrigé
 - ☐ Test de chaîne BODIPY-Ph réussi
 
