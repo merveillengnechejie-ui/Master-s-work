@@ -88,11 +88,29 @@ for p in "${PROTOS[@]}"; do
     
     if grep -q "TERMINATED NORMALLY" S1_opt_DeltaUKS.out; then
       echo "  -> S1_opt converged. Running DeltaSCF_SOC.inp..."
-      nohup orca DeltaSCF_SOC.inp > DeltaSCF_SOC.out 2>&1
+      if [ -f "DeltaSCF_SOC.inp" ]; then
+        nohup orca DeltaSCF_SOC.inp > DeltaSCF_SOC.out 2>&1
+      fi
     else
-      echo "  -> Error in S1_opt. Please use run_troubleshoot_S1.sh."
-      echo "  -> Running fallback TDDFT_SOC_quick.inp instead."
-      nohup orca TDDFT_SOC_quick.inp > TDDFT_SOC_quick.out 2>&1
+      echo "  -> S1_opt FAILED. Attempting LevelShift Escalation..."
+      # Create Escalation input on the fly
+      cp S1_opt_DeltaUKS.inp S1_opt_Escalate.inp
+      sed -i 's/LevelShift 0.2/LevelShift 0.5/g' S1_opt_Escalate.inp
+      sed -i 's/DampPercentage 40/DampPercentage 70/g' S1_opt_Escalate.inp
+      nohup orca S1_opt_Escalate.inp > S1_opt_Escalate.out 2>&1
+      
+      if grep -q "TERMINATED NORMALLY" S1_opt_Escalate.out; then
+        echo "  -> S1_opt (Escalated) converged. Running DeltaSCF_SOC.inp..."
+        if [ -f "DeltaSCF_SOC.inp" ]; then
+          nohup orca DeltaSCF_SOC.inp > DeltaSCF_SOC.out 2>&1
+        fi
+      else
+        echo "  -> Escalation also FAILED. Please use run_troubleshoot_S1.sh."
+        echo "  -> Running fallback TDDFT_SOC_quick.inp instead."
+        if [ -f "TDDFT_SOC_quick.inp" ]; then
+          nohup orca TDDFT_SOC_quick.inp > TDDFT_SOC_quick.out 2>&1
+        fi
+      fi
     fi
   else
     echo "  -> Error in S0_water. Stopping sequence for $p."

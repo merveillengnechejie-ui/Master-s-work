@@ -1,5 +1,4 @@
-! Opt UKS B3LYP D3BJ def2-SVP TightSCF TIGHTOPT SlowConv
-! CPCM
+! Opt UKS PBE0 D3BJ def2-SVP TightSCF TIGHTOPT SlowConv
 ! SMD
 
 %pal
@@ -8,7 +7,7 @@ end
 %maxcore 3500
 
 %cpcm
-  SMDSolvent "mixed"  # for more complex biological media
+  SMDSolvent "water"
 end
 
 %scf
@@ -16,6 +15,7 @@ end
   SCF_ALGORITHM DIIS_TRAH
   MaxIter 500
   ConvForce 1e-6
+  MOM true            # Maximum Overlap Method (Critical for S1 stability)
   LevelShift 0.2      # Shift (perturbation mineure des orbitales)
   DampPercentage 40   # Amortissement du cycle SCF
 end

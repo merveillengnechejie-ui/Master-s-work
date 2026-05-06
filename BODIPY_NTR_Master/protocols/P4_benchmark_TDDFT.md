@@ -57,6 +57,14 @@ end
 - `B3LYP` → B3LYP
 - `M06-2X` → M06-2X
 - `MN15` → MN15
+- `SOS-wB2GP-PLYP` → **Double-Hybride à Séparation de Portée (RSDH)** — **OBLIGATOIRE pour la forme OFF (nitro-BODIPY)** afin d'éviter les artefacts de transfert de charge (CT).
+- `RS-PBE-P86` → Alternative RSDH.
+
+> [!CAUTION]
+> **Abolition du moyennage ON/OFF** : Ne jamais moyenner les erreurs (MAE) entre les formes ON et OFF. Les fonctionnelles globales (B3LYP, PBE0) échouent systématiquement sur les états CT de la forme nitro. Le benchmark doit être partitionné.
+
+> [!IMPORTANT]
+> **Méthode MOM (Maximum Overlap Method)** : Pour tous les calculs Δ-DFT (Tier 2.5), l'utilisation du mot-clé `MOM` est impérative pour éviter l'effondrement de l'état excité vers l'état fondamental pendant l'optimisation des orbitales (Audit #21).
 
 ---
 

@@ -11,7 +11,10 @@
 
 ## 🎯 Question scientifique centrale
 
-> *Comment concevoir computationnellement des photosensibilisateurs BODIPY activés sélectivement par la nitroreductase (NTR) — une enzyme surexprimée dans les tumeurs hypoxiques — pour une thérapie combinée PDT/PTT contre le TNBC ?*
+> *Comment concevoir computationnellement des théranostiques BODIPY fonctionnant comme des **portes logiques moléculaires sensibles au microenvironnement tumoral (TME)** — activées sélectivement par la nitroreductase (NTR) surexprimée dans les tumeurs hypoxiques — pour une thérapie combinée PDT/PTT contre le TNBC ?*
+
+**Contexte clinique (Wang 2026)** : Le TNBC présente une urgence thérapeutique majeure due à son hétérogénéité et son caractère agressif. L'utilisation de nanoplatforms exosomales pour le ciblage et la synergie ferroptose/immunoactivation positionne ces travaux au cœur des perspectives translationnelles actuelles.
+
 
 ---
 
@@ -131,4 +134,4 @@ Les résultats obtenus ici (benchmark TD-DFT, activation NTR ON/OFF, ΔE_ST, SOC
 
 ---
 
-*Dernière mise à jour : Avril 2026*
+*Dernière mise à jour : Mai 2026*

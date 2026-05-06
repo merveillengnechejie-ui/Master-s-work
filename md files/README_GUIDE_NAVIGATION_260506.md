@@ -2,7 +2,7 @@
 
 **Conception In Silico d'Agents Théranostiques Photodynamiques pour le TNBC**
 
-> **Mise à jour : 04 mars 2026 (260304)**
+> **Mise à jour : 06 mai 2026 (260506)**
 > - Exécution locale 16 Go RAM / TD-DFT ωB97X-D3
 > - Configuration : 4 cœurs, %maxcore 3500
 > - Archivage v1 créé pour anciens documents
@@ -13,11 +13,14 @@
 
 Ce projet vise à concevoir et valider *in silico* des molécules BODIPY pour la photothérapie dynamique (PDT) et photothermique (PTT) du cancer du sein triple négatif (TNBC).
 
-**Portée révisée (260304) :**
-- **1 molécule de référence expérimentale** (benchmarking uniquement)
-- **2 prototypes internes** : Iodo-BODIPY + TPP-Iodo-BODIPY
-- **Configuration** : 4 cœurs / 16 Go RAM (%maxcore 3500)
-- **Méthodologie** : ΔDFT+SOC (remplace NEVPT2, gain 10×)
+**Portée révisée & Hardening (260506) :**
+- **Bibliothèque de 8 molécules** (Reference, Iodo, TPP, aza-BODIPY)
+- **Hardening Roadmap** :
+  - **OPI 2.0** : Extraction JSON robuste (remplace RegEx brittle)
+  - **MOM Escalation** : Gestion automatique de l'effondrement S1
+  - **RSDH Functional** : `SOS-wB2GP-PLYP` pour la précision des états CT
+  - **Logic Gate Framing** : Théranostique sensible au microenvironnement tumoral (TME)
+- **Configuration** : 4-8 cœurs / 32 Go RAM
 
 ---
 
@@ -46,7 +49,7 @@ Ce projet vise à concevoir et valider *in silico* des molécules BODIPY pour la
 
 ### 📄 Document 2 : Guide Pratique ORCA et Scripts
 
-**Fichier :** `md files/Guide_Pratique_ORCA_Scripts_Troubleshooting.md`
+**Fichier :** `md files/Guide_Pratique_ORCA_Scripts_Troubleshooting_260506.md`
 
 **Contenu clé :**
 - 🔧 Scripts bash automatisés (partie 1)
@@ -64,7 +67,7 @@ Ce projet vise à concevoir et valider *in silico* des molécules BODIPY pour la
 
 ### 📄 Document 3 : Résumé Exécutif et Aide-Mémoire
 
-**Fichier :** `md files/Resume_Executif_Aide_Memoire_260304.md` ⭐ **MIS À JOUR**
+**Fichier :** `md files/Resume_Executif_Aide_Memoire_260506.md` ⭐ **MIS À JOUR**
 
 **Contenu clé :**
 - 📊 Tableau comparatif TD-DFT vs OO-DFT
@@ -82,7 +85,7 @@ Ce projet vise à concevoir et valider *in silico* des molécules BODIPY pour la
 
 ### 📄 Document 4 : Planification Gantt et Optimisation
 
-**Fichier :** `md files/Planification_Gantt_Optimisation_Ressources.md`
+**Fichier :** `md files/Planification_Gantt_Optimisation_Ressources_260506.md`
 
 **Contenu clé :**
 - 📅 Gantt détaillé par semaine
@@ -117,7 +120,7 @@ Ce projet vise à concevoir et valider *in silico* des molécules BODIPY pour la
 
 ### 📄 Document 7 : Synthèse Analyse Intégration
 
-**Fichier :** `md files/Synthese_Analyse_Integration.md`
+**Fichier :** `md files/Synthese_Analyse_Integration_260506.md`
 
 **Contenu clé :**
 - 🔗 Intégration des recommandations méthodologiques
@@ -128,7 +131,7 @@ Ce projet vise à concevoir et valider *in silico* des molécules BODIPY pour la
 
 ### 📄 Document 8 : Synthèse Visuelle Points Clés
 
-**Fichier :** `md files/Synthese_Visuelle_Points_Cles.md`
+**Fichier :** `md files/Synthese_Visuelle_Points_Cles_260506.md`
 
 **Contenu clé :**
 - 🎨 Diagrammes visuels
@@ -148,8 +151,8 @@ cd ~/stage_BODIPY
 
 # Copier les documents de référence
 cp ~/Master-s-work/md\ files/demarche_methodologique_stage_v3_260302.md .
-cp ~/Master-s-work/md\ files/Resume_Executif_Aide_Memoire_260304.md .
-cp ~/Master-s-work/md\ files/Guide_Pratique_ORCA_Scripts_Troubleshooting.md .
+cp ~/Master-s-work/md\ files/Resume_Executif_Aide_Memoire_260506.md .
+cp ~/Master-s-work/md\ files/Guide_Pratique_ORCA_Scripts_Troubleshooting_260506.md .
 
 # Imprimer l'aide-mémoire (Partie 4)
 ```
@@ -187,7 +190,7 @@ cp proto-tpp-iodo.xyz ~/stage_BODIPY/tpp-iodo/
 ### Étape 4 : Première lecture (1 h)
 
 - Lire la section "1. Introduction" de `demarche_methodologique_stage_v3_260302.md`
-- Imprimer l'aide-mémoire (Partie 4 de `Resume_Executif_Aide_Memoire_260304.md`)
+- Imprimer l'aide-mémoire (Partie 4 de `Resume_Executif_Aide_Memoire_260506.md`)
 
 ---
 
@@ -201,13 +204,13 @@ cp proto-tpp-iodo.xyz ~/stage_BODIPY/tpp-iodo/
 
 ### Pour les **computationnels** (programmeurs HPC)
 
-1. **Jour 1 :** `Resume_Executif_Aide_Memoire_260304.md` entièrement
-2. **Jour 2 :** `Guide_Pratique_ORCA_Scripts_Troubleshooting.md` (partie 1)
+1. **Jour 1 :** `Resume_Executif_Aide_Memoire_260506.md` entièrement
+2. **Jour 2 :** `Guide_Pratique_ORCA_Scripts_Troubleshooting_260506.md` (partie 1)
 3. **Semaine 1 :** Templates ORCA et scripts bash
 
 ### Pour les **managers** (encadrants, jury)
 
-1. **10 min :** `Resume_Executif_Aide_Memoire_260304.md` (parties 1, 3, 4)
+1. **10 min :** `Resume_Executif_Aide_Memoire_260506.md` (parties 1, 3, 4)
 2. **30 min :** Sections 1, 3 de `demarche_methodologique_stage_v3_260302.md`
 3. **30 min :** `Analyse251115.md` (évaluation et risques)
 
@@ -219,7 +222,7 @@ cp proto-tpp-iodo.xyz ~/stage_BODIPY/tpp-iodo/
 
 **Documents clés :**
 - `demarche_methodologique_stage_v3_260302.md` (sections 1-2)
-- `Resume_Executif_Aide_Memoire_260304.md` (partie 3 : critères prototypes)
+- `Resume_Executif_Aide_Memoire_260506.md` (partie 3 : critères prototypes)
 
 **Tâches :**
 - [ ] Lire 10 articles clés
@@ -232,9 +235,9 @@ cp proto-tpp-iodo.xyz ~/stage_BODIPY/tpp-iodo/
 ### Phase 2 : Calculs Fondamentaux (Semaines 4-8)
 
 **Documents clés :**
-- `Guide_Pratique_ORCA_Scripts_Troubleshooting.md` (templates)
+- `Guide_Pratique_ORCA_Scripts_Troubleshooting_260506.md` (templates)
 - `demarche_methodologique_stage_v3_260302.md` (section 3 : codes ORCA)
-- `Resume_Executif_Aide_Memoire_260304.md` (partie 4 : aide-mémoire)
+- `Resume_Executif_Aide_Memoire_260506.md` (partie 4 : aide-mémoire)
 
 **Processus :**
 ```
@@ -250,7 +253,7 @@ Chaque semaine:
 ### Phase 3 : Analyse (Semaines 9-11)
 
 **Documents clés :**
-- `Resume_Executif_Aide_Memoire_260304.md` (parties 3, 5 : scoring)
+- `Resume_Executif_Aide_Memoire_260506.md` (parties 3, 5 : scoring)
 - `demarche_methodologique_stage_v3_260302.md` (section 8 : grille Go/No-Go)
 
 **Processus :**
@@ -337,12 +340,12 @@ Rapport (30-50 pages):
 
 | Problème | Solution |
 |:---|:---|
-| "Je ne sais pas par où commencer" | Lire `Resume_Executif_Aide_Memoire_260304.md` partie 2 |
-| "Mon calcul S0 ne converge pas" | Consulter `Guide_Pratique_ORCA_Scripts_Troubleshooting.md` Problème 1 |
-| "Je suis en retard sur le calendrier" | Consulter `Planification_Gantt_Optimisation_Ressources.md` partie 5 |
+| "Je ne sais pas par où commencer" | Lire `Resume_Executif_Aide_Memoire_260506.md` partie 2 |
+| "Mon calcul S0 ne converge pas" | Consulter `Guide_Pratique_ORCA_Scripts_Troubleshooting_260506.md` Problème 1 |
+| "Je suis en retard sur le calendrier" | Consulter `Planification_Gantt_Optimisation_Ressources_260506.md` partie 5 |
 | "Je ne comprends pas la théorie ΔDFT" | Lire `demarche_methodologique_stage_v3_260302.md` section 2.1-2.2 |
-| "Je dois réduire les temps de calcul" | Consulter `Resume_Executif_Aide_Memoire_260304.md` partie 7 |
-| "Comment scorer les prototypes ?" | Utiliser le tableau `Resume_Executif_Aide_Memoire_260304.md` partie 3 |
+| "Je dois réduire les temps de calcul" | Consulter `Resume_Executif_Aide_Memoire_260506.md` partie 7 |
+| "Comment scorer les prototypes ?" | Utiliser le tableau `Resume_Executif_Aide_Memoire_260506.md` partie 3 |
 
 ---
 
@@ -367,9 +370,9 @@ Rapport (30-50 pages):
 ~/stage_BODIPY/
 ├── 📄 README.md (ce fichier)
 ├── 📚 demarche_methodologique_stage_v3_260302.md
-├── 📚 Resume_Executif_Aide_Memoire_260304.md ⭐
-├── 📚 Guide_Pratique_ORCA_Scripts_Troubleshooting.md
-├── 📚 Planification_Gantt_Optimisation_Ressources.md
+├── 📚 Resume_Executif_Aide_Memoire_260506.md ⭐
+├── 📚 Guide_Pratique_ORCA_Scripts_Troubleshooting_260506.md
+├── 📚 Planification_Gantt_Optimisation_Ressources_260506.md
 │
 ├── 🗂️ reference/
 │   ├── S0_gas_opt.inp
@@ -417,7 +420,7 @@ Ce projet est **ambitieux mais faisable** en 14 semaines si vous :
 
 ---
 
-**Version :** 2.0 (260304)
-**Date :** 04 mars 2026
+**Version :** 2.0 (260506)
+**Date :** 06 mai 2026
 **Pour :** Stage Master 2 UY1
 **Configuration :** Local 16 Go RAM / 4 cœurs / TD-DFT ωB97X-D3

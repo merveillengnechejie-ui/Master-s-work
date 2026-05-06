@@ -1,6 +1,6 @@
 # Audit Report and Workspace Improvements
 
-> **Date:** 04 March 2026 (260304)
+> **Date:** 06 May 2026 (260506)
 > **Status:** Complete
 
 ---
@@ -74,12 +74,12 @@ Master-s-work/
 
 ### 2.2 Update CRITIQUE Priority Documents
 
-**Action:** Created updated versions with _260304 suffix
+**Action:** Created updated versions with _260506 suffix
 
 | Document | Updates |
 | :--- | :--- |
-| `Resume_Executif_Aide_Memoire_260304.md` | Local 16 Go config, TD-DFT ωB97X-D3, 4 cœurs |
-| `README_GUIDE_NAVIGATION_260304.md` | Updated links, new document references |
+| `Resume_Executif_Aide_Memoire_260506.md` | Local 16 Go config, TD-DFT ωB97X-D3, 4 cœurs |
+| `README_GUIDE_NAVIGATION_260506.md` | Updated links, new document references |
 
 **Status:** ✅ COMPLETE
 
@@ -87,12 +87,12 @@ Master-s-work/
 
 ### 2.3 Update HAUTE Priority Documents
 
-**Action:** Created updated versions with _260304 suffix
+**Action:** Created updated versions with _260506 suffix
 
 | Document | Updates |
 | :--- | :--- |
-| `Synthese_Analyse_Integration_260304.md` | Local execution, ΔDFT+SOC, SMD mixed |
-| `Synthese_Visuelle_Points_Cles_260304.md` | Updated diagrams, Go/No-Go grid |
+| `Synthese_Analyse_Integration_260506.md` | Local execution, ΔDFT+SOC, SMD mixed |
+| `Synthese_Visuelle_Points_Cles_260506.md` | Updated diagrams, Go/No-Go grid |
 
 **Status:** ✅ COMPLETE
 
@@ -100,14 +100,14 @@ Master-s-work/
 
 ### 2.4 Update MOYENNE Priority Documents
 
-**Action:** Created updated versions with _260304 suffix
+**Action:** Created updated versions with _260506 suffix
 
 | Document | Updates |
 | :--- | :--- |
-| `Planification_Gantt_Optimisation_Ressources_260304.md` | Local 16 Go, sequential execution |
-| `Estimation_Temps_Calculs_260304.md` | Updated timing (4 cœurs, nohup) |
-| `Guide_Pratique_ORCA_Scripts_Troubleshooting_260304.md` | Local templates, troubleshooting |
-| `run_examples.README_260304.md` (Corine_codes/) | Local workflow examples |
+| `Planification_Gantt_Optimisation_Ressources_260506.md` | Local 16 Go, sequential execution |
+| `Estimation_Temps_Calculs_260506.md` | Updated timing (4 cœurs, nohup) |
+| `Guide_Pratique_ORCA_Scripts_Troubleshooting_260506.md` | Local templates, troubleshooting |
+| `run_examples.README_260506.md` (Corine_codes/) | Local workflow examples |
 
 **Status:** ✅ COMPLETE
 
@@ -133,7 +133,7 @@ Master-s-work/
 
 | Document | Content |
 | :--- | :--- |
-| `PROJECT_IMPROVEMENTS_260304.md` | 5 categories of improvements, 20+ proposals |
+| `PROJECT_IMPROVEMENTS_260506.md` | 5 categories of improvements, 20+ proposals |
 
 **Categories:**
 1. Methodological improvements (solvation, excited-states, rates)
@@ -153,16 +153,16 @@ Master-s-work/
 | File | Purpose |
 | :--- | :--- |
 | `md files/archive_v1/` | Archive directory |
-| `md files/Resume_Executif_Aide_Memoire_260304.md` | Updated executive summary |
-| `md files/README_GUIDE_NAVIGATION_260304.md` | Updated navigation guide |
-| `md files/Synthese_Analyse_Integration_260304.md` | Updated synthesis |
-| `md files/Synthese_Visuelle_Points_Cles_260304.md` | Updated visual summary |
-| `md files/Planification_Gantt_Optimisation_Ressources_260304.md` | Updated planning |
-| `md files/Estimation_Temps_Calculs_260304.md` | Updated time estimates |
-| `md files/Guide_Pratique_ORCA_Scripts_Troubleshooting_260304.md` | Updated troubleshooting |
-| `Corine_codes/run_examples.README_260304.md` | Updated examples |
-| `PROJECT_IMPROVEMENTS_260304.md` | Improvement proposals |
-| `AUDIT_REPORT_260304.md` | This report |
+| `md files/Resume_Executif_Aide_Memoire_260506.md` | Updated executive summary |
+| `md files/README_GUIDE_NAVIGATION_260506.md` | Updated navigation guide |
+| `md files/Synthese_Analyse_Integration_260506.md` | Updated synthesis |
+| `md files/Synthese_Visuelle_Points_Cles_260506.md` | Updated visual summary |
+| `md files/Planification_Gantt_Optimisation_Ressources_260506.md` | Updated planning |
+| `md files/Estimation_Temps_Calculs_260506.md` | Updated time estimates |
+| `md files/Guide_Pratique_ORCA_Scripts_Troubleshooting_260506.md` | Updated troubleshooting |
+| `Corine_codes/run_examples.README_260506.md` | Updated examples |
+| `PROJECT_IMPROVEMENTS_260506.md` | Improvement proposals |
+| `AUDIT_REPORT_260506.md` | This report |
 
 **Total:** 11 new files/directories
 
@@ -192,7 +192,7 @@ All updated documents now reflect:
 
 ### 4.2 Navigation Clarity
 
-- ✅ Clear entry points (LIRE_D_ABORD.md, README_GUIDE_NAVIGATION_260304.md)
+- ✅ Clear entry points (LIRE_D_ABORD.md, README_GUIDE_NAVIGATION_260506.md)
 - ✅ Updated cross-references between documents
 - ✅ Archived old versions separated from current
 
@@ -234,15 +234,15 @@ All updated documents now reflect:
 
 ```
 New files (untracked):
-  - Corine_codes/run_examples.README_260304.md
-  - PROJECT_IMPROVEMENTS_260304.md
-  - md files/Estimation_Temps_Calculs_260304.md
-  - md files/Guide_Pratique_ORCA_Scripts_Troubleshooting_260304.md
-  - md files/Planification_Gantt_Optimisation_Ressources_260304.md
-  - md files/README_GUIDE_NAVIGATION_260304.md
-  - md files/Resume_Executif_Aide_Memoire_260304.md
-  - md files/Synthese_Analyse_Integration_260304.md
-  - md files/Synthese_Visuelle_Points_Cles_260304.md
+  - Corine_codes/run_examples.README_260506.md
+  - PROJECT_IMPROVEMENTS_260506.md
+  - md files/Estimation_Temps_Calculs_260506.md
+  - md files/Guide_Pratique_ORCA_Scripts_Troubleshooting_260506.md
+  - md files/Planification_Gantt_Optimisation_Ressources_260506.md
+  - md files/README_GUIDE_NAVIGATION_260506.md
+  - md files/Resume_Executif_Aide_Memoire_260506.md
+  - md files/Synthese_Analyse_Integration_260506.md
+  - md files/Synthese_Visuelle_Points_Cles_260506.md
   - md files/archive_v1/
 
 Deleted files (to stage):
@@ -254,14 +254,14 @@ Deleted files (to stage):
 ### Suggested Commit Message
 
 ```
-Docs: Comprehensive audit and documentation update (260304)
+Docs: Comprehensive audit and documentation update (260506)
 
 - Archive obsolete files (3 old versions to archive_v1/)
 - Update CRITIQUE documents (Resume_Executif, README_GUIDE_NAVIGATION)
 - Update HAUTE documents (Synthese_Analyse, Synthese_Visuelle)
 - Update MOYENNE documents (Planning, Estimation, Guide, run_examples)
-- Add project improvement proposals (PROJECT_IMPROVEMENTS_260304.md)
-- Add audit report (AUDIT_REPORT_260304.md)
+- Add project improvement proposals (PROJECT_IMPROVEMENTS_260506.md)
+- Add audit report (AUDIT_REPORT_260506.md)
 - Verify geometry files (Iodo_Opt.xyz, TPP_Iodo_BODIPY.xyz OK)
 
 All updated documents reflect:
@@ -306,6 +306,6 @@ The workspace audit is **complete**. All identified improvements have been imple
 
 ---
 
-**Audit completed:** 04 March 2026
+**Audit completed:** 06 May 2026
 
 **Status:** ✅ COMPLETE - Ready for commit

@@ -1,13 +1,13 @@
 # 🎯 Synthèse Visuelle : Points-Clés et Diagrammes
 
-> **Mise à jour : 04 mars 2026 (260304)**
+> **Mise à jour : 06 mai 2026 (260506)**
 > - Exécution locale 16 Go RAM / TD-DFT ωB97X-D3
 > - Configuration : 4 cœurs, %maxcore 3500
 > - Grille Go/No-Go quantitative intégrée
 
 ---
 
-## Partie 1 : Vue d'Ensemble (Portée Révisée 260304)
+## Partie 1 : Vue d'Ensemble (Portée Révisée 260506)
 
 ### Les 3 Molécules du Projet
 
@@ -62,7 +62,7 @@
                           │ REMPLACER
                           ↓
 ┌─────────────────────────────────────────────────────────────┐
-│        ΔDFT + ΔDFT+SOC (Nouveau - 260304)                   │
+│        ΔDFT + ΔDFT+SOC (Nouveau - 260506)                   │
 ├─────────────────────────────────────────────────────────────┤
 │ ✅ Précision chimique < 0.05 eV                             │
 │ ✅ ΔE_ST excellent (essai pour ISC)                         │
@@ -78,7 +78,7 @@ IMPACT : Meilleure sélection du prototype PDT optimal + gain 10× temps
 
 ---
 
-### 2️⃣ Stratégie des 7 Étapes de Calcul (Version 260304)
+### 2️⃣ Stratégie des 7 Étapes de Calcul (Version 260506)
 
 ```
                     FLUX COMPUTATIONNEL (Local 16 Go)
@@ -268,7 +268,7 @@ DIAGRAMME JABLONSKI (États d'énergie et processus)
 ## Partie 3 : Matrice de Sélection Révisée
 
 ```
-                    MATRICE DE SÉLECTION (260304)
+                    MATRICE DE SÉLECTION (260506)
 
                                 Référence  Iodo-BODY  TPP-Iodo
                                 ─────────  ─────────  ────────
@@ -376,7 +376,7 @@ Indicateurs performance:
 ## Partie 6 : Signaux d'Alerte (Troubleshooting)
 
 ```
-                    ⚠️ TROUBLESHOOTING RAPIDE (260304)
+                    ⚠️ TROUBLESHOOTING RAPIDE (260506)
 
 CALCUL NE CONVERGE PAS:
 ├─ ❌ Géométrie mauvaise → Revoir XYZ, réduire MaxStep
@@ -429,7 +429,7 @@ TEST def2-SVP vs def2-TZVP:
 ```
 ┌───────────────────────────────────────────────────────────────┐
 │            🎯 CHECKLIST AVANT SOUTENANCE 🎯                   │
-│                Version 260304 (Local 16 Go)                   │
+│                Version 260506 (Local 16 Go)                   │
 └───────────────────────────────────────────────────────────────┘
 
 MÉTHODOLOGIE:
@@ -485,7 +485,7 @@ PRÉPARATION:
 
 ┌───────────────────────────────────────────────────────────────┐
 │         BON COURAGE POUR LA SOUTENANCE! 🚀                    │
-│                Version 260304 (04 mars 2026)                  │
+│                Version 260506 (06 mai 2026)                  │
 └───────────────────────────────────────────────────────────────┘
 ```
 
@@ -529,7 +529,7 @@ Figure 7: Indicateurs de performance (PSI, TCI, Φ_Δ)
 
 **Document Final Révisé — Prêt pour la Soutenance !** 🎓
 
-*Créé le 04 mars 2026 (260304) pour le stage Master 2 UY1*
+*Créé le 06 mai 2026 (260506) pour le stage Master 2 UY1*
 
 **Version : 2.0 (Exécution locale 16 Go / TD-DFT ωB97X-D3)**
 

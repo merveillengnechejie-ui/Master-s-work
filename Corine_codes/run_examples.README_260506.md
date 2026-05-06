@@ -1,6 +1,6 @@
-# Run Examples and Quick Notes (Version 260304)
+# Run Examples and Quick Notes (Version 260506)
 
-> **Mise à jour : 04 mars 2026 (260304)**
+> **Mise à jour : 06 mai 2026 (260506)**
 > - Exécution locale 16 Go RAM / TD-DFT ωB97X-D3
 > - Configuration : 4 cœurs, %maxcore 3500
 > - Séquentiel local (nohup) au lieu de SLURM
@@ -34,7 +34,7 @@ cp ../Corine_codes/TPP_Iodo_BODIPY.xyz molecules/tpp_iodo_bodipy/
 # (La référence doit être construite en semaine 2)
 
 # 3. Copier les templates d'inputs depuis md files/
-cp ../md\ files/Guide_Pratique_ORCA_Scripts_Troubleshooting_260304.md/*.inp molecules/iodo_bodipy/
+cp ../md\ files/Guide_Pratique_ORCA_Scripts_Troubleshooting_260506.md/*.inp molecules/iodo_bodipy/
 ```
 
 ### Étape 2 : Optimisation S₀ (Phase 1)
@@ -230,9 +230,9 @@ cp *.xyz results/
 ### Documents clés
 
 - **Document principal** : `md files/demarche_methodologique_stage_v3_260302.md`
-- **Guide scripts** : `md files/Guide_Pratique_ORCA_Scripts_Troubleshooting_260304.md`
+- **Guide scripts** : `md files/Guide_Pratique_ORCA_Scripts_Troubleshooting_260506.md`
 - **Description molécules** : `Corine_codes/PROTOTYPES_260302.md`
-- **Résumé** : `md files/Resume_Executif_Aide_Memoire_260304.md`
+- **Résumé** : `md files/Resume_Executif_Aide_Memoire_260506.md`
 
 ### Inputs ORCA
 
@@ -325,7 +325,7 @@ grep "imaginary frequencies" S0_water_opt.out
 
 ---
 
-**Dernière mise à jour** : 04 mars 2026 (260304)
+**Dernière mise à jour** : 06 mai 2026 (260506)
 
 **Version** : 3.0 (Exécution locale 16 Go / TD-DFT ωB97X-D3)
 

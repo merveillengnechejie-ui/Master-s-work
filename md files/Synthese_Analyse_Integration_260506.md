@@ -1,6 +1,6 @@
 # Synthèse : Intégration des recommandations méthodologiques
 
-> **Mise à jour : 04 mars 2026 (260304)**
+> **Mise à jour : 06 mai 2026 (260506)**
 > - Exécution locale 16 Go RAM / TD-DFT ωB97X-D3
 > - Configuration : 4 cœurs, %maxcore 3500
 > - Tous les calculs en milieu biologique complexe (SMD mixed)
@@ -33,11 +33,11 @@ Cette synthèse (1 page) rassemble les recommandations pratiques issues de l'aud
 | Modèle | Usage | Recommandation |
 |:---|:---|:---|
 | **ptSS-PCM** | Émissions CT en solution | État-spécifique non-équilibre |
-| **SMD mixed** | Environnement biologique | Tous calculs (standard 260304) |
+| **SMD mixed** | Environnement biologique | Tous calculs (standard 260506) |
 | **CPCM** | Comparaison | Alternative |
 | **COSMO** | Comparaison | Alternative |
 
-**Nouveau (260304)** : Pour simulations environnements biologiques, comparer CPCM, SMD, COSMO et envisager solvatation explicite sélective si pertinent.
+**Nouveau (260506)** : Pour simulations environnements biologiques, comparer CPCM, SMD, COSMO et envisager solvatation explicite sélective si pertinent.
 
 ---
 
@@ -273,7 +273,7 @@ tail -f S0_gas_opt.out
 
 ---
 
-**Document mis à jour le 04 mars 2026 (260304)**
+**Document mis à jour le 06 mai 2026 (260506)**
 
 **Version : 2.0 (Exécution locale 16 Go / TD-DFT ωB97X-D3)**
 

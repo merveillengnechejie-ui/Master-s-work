@@ -1,5 +1,4 @@
 ! UKS PBE0 D3BJ def2-SVP ZORA RIJCOSX AutoAux TightSCF
-! CPCM
 ! SMD
 
 %pal
@@ -8,7 +7,7 @@ end
 %maxcore 3500
 
 %cpcm
-  SMDSolvent "mixed"  # for more complex biological media
+  SMDSolvent "water"
 end
 
 %scf
@@ -16,6 +15,7 @@ end
   SCF_ALGORITHM DIIS_TRAH
   MaxIter 500
   ConvForce 1e-6
+  MOM true
 end
 
 # ΔDFT+SOC perturbatif (recommandé) :

@@ -6,17 +6,17 @@
 ## Vue d'ensemble
 
 ```
-Sem 1   : Installation + validation chaîne
-Sem 2   : Construction molécules + xTB (Tier 0)
-Sem 3   : Optimisation S₀ + sTDA (Tier 1)
-Sem 4-5 : Benchmark TD-DFT 6 fonctionnelles (Tier 2)
-Sem 6   : Protocole NTR ON/OFF + optimisation T₁
-Sem 7   : Δ-DFT ΔE_ST + SOC (Tier 2.5)
-Sem 8   : Scoring PDT/PTT + Go/No-Go
-Sem 9   : Rédaction sections Introduction + Méthodes
-Sem 10  : Rédaction Résultats + figures
-Sem 11  : Discussion + Conclusion
-Sem 12  : Finalisation + soutenance
+Sem 1   : Installation + validation chaîne     → [Garantie de reproductibilité]
+Sem 2   : Construction molécules + xTB (Tier 0) → [Exploration du paysage chimique]
+Sem 3   : Optimisation S₀ + sTDA (Tier 1)       → [Criblage spectral rapide]
+Sem 4-5 : Benchmark TD-DFT (Tier 2)             → [Validation de la précision (MAE)]
+Sem 6   : Protocole NTR ON/OFF (Tier 2)         → [Preuve de concept du switch]
+Sem 7   : Δ-DFT ΔE_ST + SOC (Tier 2.5)          → [Hardening du mécanisme PDT/PTT]
+Sem 8   : Solvatation explicite (Audit #10)     → [Validation microenvironnementale]
+Sem 9   : Scoring Synergique et Sélectivité     → [Optimisation du front de Pareto]
+Sem 10  : Agrégation et Data Foundry            → [Robustesse statistique (OPI 2.0)]
+Sem 11  : Discussion + Conclusion               → [Synthèse théranostique]
+Sem 12  : Finalisation + soutenance             → [Livraison scientifique]
 ```
 
 > **Principe de chevauchement** : Les calculs longs (Tier 2, sem 4–5) tournent en arrière-plan pendant que vous rédigez la bibliographie et préparez les inputs suivants. Ne pas attendre la fin d'un calcul pour commencer la tâche suivante.

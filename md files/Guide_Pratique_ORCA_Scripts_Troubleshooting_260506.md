@@ -1,6 +1,6 @@
 # Guide Pratique ORCA 6.1 : Scripts Prêts à l'Emploi et Troubleshooting
 
-> **Mise à jour : 04 mars 2026 (260304)**
+> **Mise à jour : 06 mai 2026 (260506)**
 > - Exécution locale 16 Go RAM / TD-DFT ωB97X-D3
 > - Configuration : 4 cœurs, %maxcore 3500
 > - Séquentiel local (nohup) au lieu de SLURM
@@ -552,6 +552,6 @@ if __name__ == "__main__":
 
 ---
 
-**Document complément — Version 260304 (04 mars 2026)**
+**Document complément — Version 260506 (06 mai 2026)**
 
 **Configuration : Local 16 Go RAM / 4 cœurs / TD-DFT ωB97X-D3**

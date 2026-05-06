@@ -21,7 +21,7 @@ This project focuses on the *in silico* design, geometric optimization, and phot
 - **`Revue_Bibliographique/`**: LaTeX sources for the literature review on TNBC, computational methods, and phototherapies.
 - **`Planning_travail/`**: Interactive Gantt charts and operational work plans.
 
-*For detailed navigation, please consult: [`md files/README_GUIDE_NAVIGATION_260304.md`](md%20files/README_GUIDE_NAVIGATION_260304.md).*
+*For detailed navigation, please consult: [`md files/README_GUIDE_NAVIGATION_260506.md`](md%20files/README_GUIDE_NAVIGATION_260506.md).*
 
 ## 🚀 Methodology and Workflow
 

@@ -1,18 +1,19 @@
-# Concept 4 — La Nitroreductase (NTR) : L'Interrupteur Moléculaire
-## Comment transformer un prodrug inactif en agent thérapeutique actif
+# Concept 4 — La Nitroreductase (NTR) : Porte Logique Moléculaire
+## Transformer la biochimie du TME en signal d'activation thérapeutique
 
 ---
 
-## 1. Qu'est-ce qu'un prodrug ?
+## 1. Qu'est-ce qu'une porte logique moléculaire ?
 
-Un **prodrug** est une molécule inactive qui se transforme en médicament actif sous l'action d'une enzyme ou d'une condition biologique spécifique.
+Contrairement à un simple **prodrug**, une **porte logique moléculaire** (Molecular Logic Gate) intègre un signal biologique spécifique (ici, l'hypoxie et l'activité enzymatique NTR) pour produire une réponse binaire (OFF/ON) prédictible.
 
 ```
-Prodrug (inactif)  →  Enzyme/Condition  →  Médicament actif
-BODIPY-NO₂ (OFF)  →  NTR + NADPH       →  BODIPY-NH₂ (ON)
+Signal (Hypoxie + NTR)  ───→  Porte Logique  ───→  Réponse (Thérapie)
+BODIPY-NO₂ (OFF)        ───→  NTR + NADPH    ───→  BODIPY-NH₂ (ON)
 ```
 
-**Avantage** : La molécule ne cause pas d'effets secondaires dans les tissus normaux. Elle n'est activée que là où l'enzyme est présente (tumeur hypoxique).
+**Avantage (Hardened Framing)** : Cette approche transforme le **Microenvironnement Tumoral (TME)** de barrière thérapeutique en switch d'activation. La molécule reste "quenched" (éteinte) dans les tissus sains, minimisant la phototoxicité systémique.
+
 
 ---
 

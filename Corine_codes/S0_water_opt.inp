@@ -1,5 +1,4 @@
-! Opt RKS B3LYP D3BJ def2-SVP TightSCF TIGHTOPT
-! CPCM
+! Opt RKS PBE0 D3BJ def2-SVP TightSCF TIGHTOPT
 ! SMD
 
 %pal
@@ -8,7 +7,7 @@ end
 %maxcore 3500
 
 %cpcm
-  SMDSolvent "mixed"  # for more complex biological media
+  SMDSolvent "water"
 end
 
 %scf

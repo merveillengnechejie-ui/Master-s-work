@@ -1,6 +1,6 @@
 # Résumé Exécutif : Comparaison TD-DFT vs OO-DFT/ΔDFT et Aide-Mémoire Pratique
 
-> **Mise à jour : 04 mars 2026 (260304)**
+> **Mise à jour : 06 mai 2026 (260506)**
 > - Exécution locale 16 Go RAM / TD-DFT ωB97X-D3
 > - Configuration : 4 cœurs, %maxcore 3500
 > - Tous les calculs en milieu biologique complexe (SMD mixed)
@@ -251,7 +251,7 @@ TCI (Conversion Thermique) = k_nr / (k_f + k_ISC)
 
 ---
 
-## Partie 6 : Chronogramme Réaliste (14 semaines - Version 260304)
+## Partie 6 : Chronogramme Réaliste (14 semaines - Version 260506)
 
 ### Semaine 1-2 : Immersion et conception stratégique
 - Formation ORCA 6.1, lecture intensive
@@ -391,7 +391,7 @@ projet/
 
 ---
 
-**Document mis à jour le 04 mars 2026 (260304)**
+**Document mis à jour le 06 mai 2026 (260506)**
 **Version : 3.0 (Exécution locale 16 Go / TD-DFT ωB97X-D3)**
 **Configuration : 4 cœurs, %maxcore 3500, SMD mixed**
 

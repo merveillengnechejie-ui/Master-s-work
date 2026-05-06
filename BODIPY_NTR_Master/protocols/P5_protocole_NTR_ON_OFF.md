@@ -64,7 +64,7 @@ Forme OFF (—NO₂)              Forme ON (—NH₂)
 ```orca
 # BODIPY_Ph_NO2_S0_opt.inp  (changer NO2 en NH2 pour la forme ON)
 
-! Opt RKS B3LYP D3BJ def2-SVP AutoAux RIJCOSX TightSCF TIGHTOPT
+! Opt RKS PBE0 D3BJ def2-SVP AutoAux RIJCOSX TightSCF TIGHTOPT
 ! CPCM(water)
 %pal nprocs 4 end
 %maxcore 7000

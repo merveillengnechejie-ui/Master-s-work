@@ -56,6 +56,7 @@ end
   HFTyp ROKS
   SCF_ALGORITHM DIIS_TRAH
   MaxIter 500
+  MOM true                      # OBLIGATOIRE : évite l'effondrement vers S0
 end
 * xyzfile 0 3 ../T1_opt/Iodo_BODIPY_NH2_T1_opt.xyz
 ```

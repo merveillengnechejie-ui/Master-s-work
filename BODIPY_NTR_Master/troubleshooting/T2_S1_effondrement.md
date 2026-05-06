@@ -37,6 +37,21 @@ grep "ORBITAL ENERGIES" S1_attempt.out -A 30
 
 ---
 
+## Solution 0 : MOM (Maximum Overlap Method) — LA SOLUTION STANDARD
+
+C'est la méthode la plus efficace pour empêcher ORCA de glisser vers S₀. Elle force le maintien des orbitales sélectionnées au début du calcul.
+
+```orca
+%scf
+  MOM true
+end
+```
+
+> [!IMPORTANT]
+> MOM doit être utilisé avec un bon guess initial (voir Solution 1). C'est le duo **Guess + MOM** qui garantit la convergence vers l'état excité.
+
+---
+
 ## Solution 1 : Générer un bon guess initial (HOMO→LUMO)
 
 C'est l'étape la plus importante. Il faut forcer ORCA à démarrer avec les électrons dans la bonne configuration.

@@ -7,40 +7,32 @@
 
 ---
 
-## Semaine 1 — Installation et validation
-
+## Semaine 1 — Installation et Hardening Initialization
 **Dates** : ___/___/___ au ___/___/___
 
-### Logiciels installés
-| Logiciel | Version | Statut |
-|----------|---------|--------|
-| ORCA | | ✅ OK ☐ Problème |
-| xTB | | ✅ OK ☐ Problème |
-| RDKit | | ✅ OK ☐ Problème |
-| Multiwfn | | ✅ OK ☐ Problème |
-| Python | | ✅ OK ☐ Problème |
+### 🛠️ Configuration Technique
+- [ ] **ORCA 6.1.1** : Installé et validé sur test de chaîne (BODIPY-Ph)
+- [ ] **xTB 6.6** : Installé et testé sur GFN2
+- [ ] **OPI 2.0** : Scripts de parsing JSON (`parse_orca_json.py`) opérationnels
+- [ ] **Environment** : `%maxcore` ajusté à 7000 (32 Go RAM)
 
-### Vérifications critiques
-- ✅ sTDA disponible dans ORCA 6.1.1 : OUI / NON
-- ✅ CC2 disponible dans ORCA 6.1.1 : OUI / NON
-- ✅Bug SMDSolvent "mixed" corrigé
-- ☐ Test de chaîne BODIPY-Ph réussi
+### 📈 Résultats Critiques (Test de Chaîne)
+- **Molécule de référence** : BODIPY-Ph
+- **λ_max calculé** : _____ nm (Cible : 505 nm)
+- **Fonctionnelle** : PBE0 / wB97X-D
+- **Observations** : [Vérifier le shift spectral et la force d'oscillateur]
 
-### Test de chaîne BODIPY-Ph
-- λ_max calculé : _____ nm
-- λ_max expérimental : 505 nm
-- Erreur : _____ nm
-- Fonctionnelle utilisée : _____
+### 🆘 Troubleshooting & Hardening
+| Problème | Cause | Solution Appliquée |
+|:---|:---|:---|
+| Bug SMD "mixed" | Incompatibilité ORCA 6 | Remplacé par `SMDSolvent "water"` |
+| Brittle Parsing | RegEx unstable | Migré vers `parse_orca_json.py` (OPI 2.0) |
 
-### Problèmes rencontrés
-```
-[Décrire ici tout problème rencontré et comment il a été résolu]
-```
+### 📚 Bibliographie du Projet (Hardened Framing)
+- [ ] Lu **Wang et al. (ACS Nano 2026)** : Contextualisation TNBC et Ferroptose.
+- [ ] Lu **Baig (2025)** : Abolition des corrections de décohérence en TSH-MD.
 
-### Temps passé
-- Calculs : _____ h
-- Lecture/bibliographie : _____ h
-- Rédaction/documentation : _____ h
+---
 
 ---
 

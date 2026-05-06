@@ -1,6 +1,6 @@
-# Planification Détaillée et Optimisation des Ressources (Version 260304)
+# Planification Détaillée et Optimisation des Ressources (Version 260506)
 
-> **Mise à jour : 04 mars 2026 (260304)**
+> **Mise à jour : 06 mai 2026 (260506)**
 > - Exécution locale 16 Go RAM / TD-DFT ωB97X-D3
 > - Configuration : 4 cœurs, %maxcore 3500
 > - Séquentiel local (nohup) au lieu de SLURM
@@ -432,7 +432,7 @@ Soutenance                   | ⏱ WAIT  |            |          |         |
 ## Partie 6 : Ressources à Archiver
 
 ```
-/archive/projet_BODIPY_260304/
+/archive/projet_BODIPY_260506/
 ├── COMPUTE/
 │   ├── reference/
 │   ├── iodo/
@@ -451,6 +451,6 @@ Soutenance                   | ⏱ WAIT  |            |          |         |
 
 ---
 
-**Document de planification — Version 260304 (04 mars 2026)**
+**Document de planification — Version 260506 (06 mai 2026)**
 
 **Configuration : Local 16 Go RAM / 4 cœurs / TD-DFT ωB97X-D3**
