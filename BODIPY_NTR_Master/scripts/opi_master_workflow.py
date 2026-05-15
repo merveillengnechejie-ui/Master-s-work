@@ -56,7 +56,7 @@ def run_workflow(proto_name, xyz_file):
     struct_s0_gas = out_s0_gas.get_structure() 
     calc_s0_water = setup_calculator("S0_water_opt", struct_s0_gas, working_dir)
     calc_s0_water.input.add_simple_keywords(Opt.OPT, Functional.B3LYP, BasisSet.DEF2_SVP, "D3BJ", Scf.TIGHTSCF)
-    calc_s0_water.input.add_blocks(BlockCpcm(smdsolvent="water"))
+    calc_s0_water.input.add_blocks(BlockCpcm(smdsolvent="n-octanol"))
     calc_s0_water.write_input()
     calc_s0_water.run()
     
@@ -97,7 +97,7 @@ def run_workflow(proto_name, xyz_file):
     scf_block = BlockScf(maxiter=500, mom=True)
     scf_block.shift = Shift(0.2)
     scf_block.damp = Damp(40)
-    calc_s1.input.add_blocks(scf_block, BlockCpcm(smdsolvent="water"))
+    calc_s1.input.add_blocks(scf_block, BlockCpcm(smdsolvent="n-octanol"))
     
     # Utiliser le guess de S0
     calc_s1.input.add_keyword("MORead")
@@ -114,29 +114,45 @@ def run_workflow(proto_name, xyz_file):
         scf_esc = BlockScf(maxiter=500, mom=True)
         scf_esc.shift = Shift(0.5)
         scf_esc.damp = Damp(70)
-        calc_s1_esc.input.add_blocks(scf_esc, BlockCpcm(smdsolvent="water"))
+        calc_s1_esc.input.add_blocks(scf_esc, BlockCpcm(smdsolvent="n-octanol"))
         calc_s1_esc.write_input()
         calc_s1_esc.run()
         out_s1 = calc_s1_esc.get_output()
 
     # ---------------------------------------------------------
-    # Étape 5 : Propriétés Finales (SOC)
+    # Étape 5 : Propriétés Finales (SOC précis avec ZORA)
     # ---------------------------------------------------------
     if out_s1.terminated_normally():
-        print(f"  -> Étape 5 : Calcul SOC (DeltaSCF_SOC)")
+        print(f"  -> Étape 5 : Calcul SOC précis (ZORA + SOC-TDDFT)")
         struct_s1 = out_s1.get_structure()
-        calc_soc = setup_calculator("DeltaSCF_SOC", struct_s1, working_dir)
-        # Keywords pour SOC (à adapter selon vos besoins exacts)
-        calc_soc.input.add_simple_keywords(Functional.PBE0, BasisSet.DEF2_SVP, "EPRNMR")
-        calc_soc.input.add_keyword("SOC") 
+        calc_soc = setup_calculator("SOC_ZORA_TDDFT", struct_s1, working_dir)
+        
+        # Keywords pour SOC précis
+        # ZORA est indispensable pour l'Iode (atome lourd)
+        calc_soc.input.add_simple_keywords(
+            Functional.PBE0, 
+            "ZORA-def2-TZVP", # Base adaptée pour ZORA
+            "ZORA",           # Relativité
+            "RIJCOSX",        # Accélération
+            "TightSCF"
+        )
+        
+        # Bloc TD-DFT avec couplage spin-orbite
+        calc_soc.input.add_blocks(
+            BlockTddft(
+                nroots=10,
+                triplets=True, # Calculer aussi les triplets
+                soc=True       # Activer le calcul Spin-Orbit Coupling
+            )
+        )
+        
         calc_soc.write_input()
         calc_soc.run()
     else:
-        print(f"  [!] S1 n'a pas pu converger même avec escalade. Passage au Plan B (TD-DFT SOC).")
-        # Pattern pour calcul SOC rapide en TD-DFT
+        print(f"  [!] S1 n'a pas pu converger. Passage au Plan B (SOC rapide).")
         calc_soc_q = setup_calculator("TDDFT_SOC_quick", struct_s0_water, working_dir)
         calc_soc_q.input.add_simple_keywords(Functional.PBE0, BasisSet.DEF2_SVP, "TD-DFT")
-        calc_soc_q.input.add_blocks(BlockTddft(nroots=5, soc=True))
+        calc_soc_q.input.add_blocks(BlockTddft(nroots=5, triplets=True, soc=True))
         calc_soc_q.write_input()
         calc_soc_q.run()
 
